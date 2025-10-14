@@ -1,0 +1,61 @@
+---
+title: "autism_project"
+author: "Maiko Hata"
+format: html
+editor: visual
+---
+
+```{r}
+library(dplyr)
+library(finalfit)
+library(lubridate)
+library(reticulate)
+```
+
+```{r}
+setwd("~/Desktop/EDLD654_ML")
+```
+
+### Following the steps on Kaggle **Assignment 1**
+
+Task 1.1. Read data
+
+```{r}
+autism <- read.csv('/Users/maiko/Desktop/EDLD654_ML/data/Autism_Screening.csv', header=TRUE)
+```
+
+```{r}
+str(autism)
+```
+
+Task 1.2. Recode cyclical data – N/A\
+Task 1.3. Recode text data into binary variable\
+—\> start here by recoding gender, jundice, autism, class/ASD as binary?
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
