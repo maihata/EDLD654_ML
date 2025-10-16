@@ -10,6 +10,8 @@ library(dplyr)
 library(finalfit)
 library(lubridate)
 library(reticulate)
+library(finalfit)
+library(stringr)
 ```
 
 ```{r}
@@ -28,29 +30,103 @@ autism <- read.csv('/Users/maiko/Desktop/EDLD654_ML/data/Autism_Screening.csv', 
 str(autism)
 ```
 
-Task 1.2. Recode cyclical data – N/A\
+Task 1.2. through Task 1.8. Recode cyclical data, text data – N/A\
 Task 1.3. Recode text data into binary variable\
 —\> start here by recoding gender, jundice, autism, class/ASD as binary?
 
 ```{r}
+autism$gender_binary <- ifelse(autism$gender == "m", 1, 0)
+autism$jundice_binary <- ifelse(autism$jundice == "yes", 1, 0)
+autism$Class.ASD_binary <- ifelse(autism$Class.ASD == "YES", 1, 0)
+
+# It made a new column, will need to delete original later 
+```
+
+```{r}
+head(autism[c("gender", "gender_binary")])
+```
+
+```{r}
+table(autism$gender_binary)
+```
+
+Task 2.2 Using the `ff_glimpse()` function from the `finalfit` package, provide a snapshot of missingness in this dataset. This function also returns the number of levels for categorical variables. If there is any variable with large amount of missingness (e.g. more than 75%), remove this variable from the dataset.
+
+```{r}
+ff_glimpse(autism)
+```
+
+```{r}
+autism <- autism[, colMeans(is.na(autism)) <= 0.75]
+```
+
+```{r}
+str(autism)
+```
+
+✅ 1️⃣ Count how many “?” entries exist in `ethnicity`
+
+```{r}
+sum(autism$ethnicity == "?", na.rm = TRUE)
+```
+
+✅ 2️⃣ Check total rows (for percentage)
+
+```{r}
+nrow(autism)
+```
+
+✅ 3️⃣ Compute percentage of missing (“?”) entries
+
+```{r}
+mean(autism$ethnicity == "?", na.rm = TRUE) * 100
+```
+
+Yep—those quotes are literally part of the values (e.g., `'United States'` vs `Bahamas`). That comes from inconsistent quoting in the source or how it was imported, and it will bite you later because they’ll become different factor levels.
+
+```{r}
+# library(readr)
+# autism <- read_csv("data/Autism_Data.csv", quote = "\"'")
+```
+
+If you’ve already loaded it, clean the column
+
+```{r}
+library(dplyr)
+library(stringr)
+
+autism <- autism %>%
+  mutate(
+    contry_of_res = str_trim(contry_of_res),
+    # remove leading/trailing single or double quotes
+    contry_of_res = str_replace_all(contry_of_res, "^[\"']+|[\"']+$", ""),
+    # collapse internal extra spaces
+    contry_of_res = str_squish(contry_of_res),
+    # optional: normalize common variants
+    contry_of_res = recode(contry_of_res,
+      "USA" = "United States", "U.S." = "United States",
+      "United States of America" = "United States"
+    )
+  )
 
 ```
 
 ```{r}
-
+autism %>% count(contry_of_res, sort = TRUE)
 ```
+
+✅ If you’re done using the original columns\
+If you’ve already converted variables like `gender`, `jaundice`, `family_mem_with_asd`, etc. into `_binary` versions (0/1) and those originals were categorical or text,\
+then yes — you can safely remove them to avoid redundancy before modeling.
 
 ```{r}
+# autism <- autism %>%
+#  select(-gender, -jaundice, -family_mem_with_asd)
 
 ```
 
-```{r}
-
-```
-
-```{r}
-
-```
+⚠️ If you’re still exploring or not sure yet\
+Keep both for now! You can always drop the original columns later once you’ve confirmed that: 1) the `_binary` variables are correctly coded (0 for No, 1 for Yes, etc.) 2) and your model runs fine without the originals.
 
 ```{r}
 
