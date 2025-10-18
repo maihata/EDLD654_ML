@@ -12,6 +12,8 @@ library(lubridate)
 library(reticulate)
 library(finalfit)
 library(stringr)
+library(recipes)
+library(ggplot2)
 ```
 
 ```{r}
@@ -76,7 +78,7 @@ sum(autism$ethnicity == "?", na.rm = TRUE)
 nrow(autism)
 ```
 
-✅ 3️⃣ Compute percentage of missing (“?”) entries
+✅ 3️⃣ Compute percentage of missing (“?”) entries (--\> I decided it's good enough, as the example from class had 75% threshold)
 
 ```{r}
 mean(autism$ethnicity == "?", na.rm = TRUE) * 100
@@ -115,6 +117,18 @@ autism <- autism %>%
 autism %>% count(contry_of_res, sort = TRUE)
 ```
 
+Fixing the "ethnicity" column the same way as above to remove ' " etc.
+
+```{r}
+autism <- autism %>%
+  mutate(
+    ethnicity = str_trim(ethnicity),
+    ethnicity = str_replace_all(ethnicity, "^[\"']+|[\"']+$", ""),
+    ethnicity = str_squish(ethnicity)
+    )
+
+```
+
 ✅ If you’re done using the original columns\
 If you’ve already converted variables like `gender`, `jaundice`, `family_mem_with_asd`, etc. into `_binary` versions (0/1) and those originals were categorical or text,\
 then yes — you can safely remove them to avoid redundancy before modeling.
@@ -132,6 +146,160 @@ Keep both for now! You can always drop the original columns later once you’ve 
 
 ```
 
+ASD Diagnosis Data Analysis and Prediction (<https://www.kaggle.com/code/devraai/asd-diagnosis-data-analysis-and-prediction-model>)\
+— Data Cleaning —
+
+🧩 In your **autism dataset** – If `age` is already text (e.g., `"18"`, `"2.5"`, `"?"`, `"n/a"`), then you don’t need `format()` — just convert directly:
+
+```{r}
+autism$age <- as.numeric(autism$age)
+```
+
+```{r}
+sum(is.na(autism$age))
+```
+
+```{r}
+# Checking to make sure "result" column is numeric already 
+is.numeric(autism$result)
+```
+
+From <https://www.kaggle.com/code/devraai/asd-diagnosis-data-analysis-and-prediction-model>:
+
+```{r}
+# Distribution of ASD Class
+
+ggplot(autism, aes(x = Class.ASD, fill = Class.ASD)) +
+  geom_bar() +
+  scale_fill_manual(values = c("NO" = "#69b3a2", "YES" = "#404080")) +
+  labs(title = "Distribution of Autism Class",
+       x = "Autism Class", y = "Count") +
+  theme_minimal() +
+  theme(
+    legend.position = "none",
+    plot.title = element_text(hjust = 0.5)
+  )
+```
+
+```{r}
+ggplot(autism, aes(x = age)) +
+  geom_histogram(binwidth = 0.5) +
+  labs(title = "Age Distribution",
+       x = "Age",
+       y = "Count") +
+  theme_minimal()
+```
+
 ```{r}
 
+ggplot(autism, aes(x = age)) +
+  geom_histogram(binwidth = 0.5) +
+  scale_x_continuous(limits = c(0, max(autism$age, na.rm = TRUE) + 10)) +
+  labs(title = "Age Distribution",
+       x = "Age",
+       y = "Count") +
+  theme_minimal()
+
+```
+
+```{r}
+# Trying to remove that weird error/outliner age around 380 years old 
+summary(autism$age)
+```
+
+```{r}
+autism <- autism %>% 
+  filter(age <= 100)
+```
+
+```{r}
+# Trying again to see if the 383 got removed -- and it's much better! 🙌
+ggplot(autism, aes(x = age)) +
+  geom_histogram(binwidth = 0.5) +
+  labs(title = "Age Distribution",
+       x = "Age",
+       y = "Count") +
+  theme_minimal()
+
+```
+
+```{r}
+autism <- autism %>% 
+  filter(age <= 100)
+
+ggplot(autism, aes(x = age)) +
+  geom_histogram(binwidth = 0.5, fill = "steelblue") +
+  labs(title = "Age Distribution",
+       x = "Age",
+       y = "Count") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
+
+```{r}
+# Because the column "result" was numeric, I should be able to plot it hte same way: 
+ggplot(autism, aes(x = result)) +
+  geom_histogram(binwidth = 0.5) +
+  labs(title = "Result Distribution",
+       x = "Result",
+       y = "Count") +
+  theme_minimal()
+
+```
+
+```{r}
+ggplot(autism, aes(x = result)) +
+  geom_histogram(binwidth = 0.5, fill = "steelblue") +
+  labs(title = "Screener Results",
+       x = "Score",
+       y = "Count") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+**Assignment 1: Task 2.3** Most of the variables in this dataset are categorical, and particularly a binary variable with a Yes and No response. Check the frequency of unique values for all categorical variables. If there is any inconsistency (e.g., Yes is coded as both 'y' and 'Y') for any of these variables in terms of how values are coded, fix them. Also, check the distribution of numeric variables and make sure there is no anomaly.
+
+```{r}
+names(autism)
+```
+
+```{r}
+# Categorical variables
+cat_vars <- c(
+  "gender", 
+  "ethnicity", 
+  "jundice",       # use your dataset’s spelling
+  "austim",        # same spelling as in your data
+  "contry_of_res", # same spelling as in your data
+  "Class.ASD"
+)
+
+# Numeric variables
+num_vars <- c(
+  "age",
+  "result"
+)
+
+# Binary-coded versions 
+binary_vars <- c(
+  "gender_binary",
+  "jundice_binary",
+  "Class.ASD_binary"
+)
+```
+
+```{r}
+list(
+  categorical = cat_vars,
+  numerical = num_vars,
+  binary = binary_vars
+)
+```
+
+```{r}
+
+```
+
+```         
 ```
