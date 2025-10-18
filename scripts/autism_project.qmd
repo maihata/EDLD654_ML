@@ -298,8 +298,21 @@ list(
 ```
 
 ```{r}
+invisible(lapply(cat_vars, function(v) {
+  cat("\n---", v, "---\n")
+  print(table(autism[[v]], useNA = "ifany"))
+}))
 
 ```
 
-```         
+```{r}
+summary(autism[num_vars])
+```
+
+```{r}
+
+```
+
+```{r}
+
 ```
