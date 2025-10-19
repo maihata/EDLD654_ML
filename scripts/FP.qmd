@@ -97,26 +97,106 @@ nrow(autism)
 mean(autism$ethnicity == "?", na.rm = TRUE) * 100
 ```
 
-## Code
+## Descriptive statistics 
+
+Autism Screener result
+
+```{r}
+autism <- autism %>%
+  mutate(
+    contry_of_res = str_trim(contry_of_res),
+    contry_of_res = str_replace_all(contry_of_res, "^[\"']+|[\"']+$", ""),
+    contry_of_res = str_squish(contry_of_res),
+    contry_of_res = recode(contry_of_res,
+      "USA" = "United States", "U.S." = "United States",
+      "United States of America" = "United States"
+    )
+  )
+```
+
+```{r}
+autism %>% count(contry_of_res, sort = TRUE)
+```
+
+```{r}
+autism <- autism %>%
+  mutate(
+    ethnicity = str_trim(ethnicity),
+    ethnicity = str_replace_all(ethnicity, "^[\"']+|[\"']+$", ""),
+    ethnicity = str_squish(ethnicity)
+    )
+```
+
+```{r}
+autism$age <- as.numeric(autism$age)
+sum(is.na(autism$age))
+is.numeric(autism$result)
+```
+
+```{r}
+#| echo: true 
+#| fig-align: center
+ggplot(autism, aes(x = Class.ASD, fill = Class.ASD)) +
+  geom_bar() +
+  scale_fill_manual(values = c("NO" = "#69b3a2", "YES" = "#404080")) +
+  labs(title = "Autism Prevalence by Screener Result",
+       x = "Autism Class", y = "Count") +
+  theme_minimal() +
+  theme(
+    legend.position = "none",
+    plot.title = element_text(hjust = 0.5)
+  )
+```
+
+## Descriptive statistics 
+
+Autism Screener user age
+
+```{r}
+#| echo: true 
+#| fig-align: center
+ggplot(autism, aes(x = age)) +
+  geom_histogram(binwidth = 0.5) +
+  scale_x_continuous(limits = c(0, max(autism$age, na.rm = TRUE) + 10)) +
+  labs(title = "Age Distribution",
+       x = "Age",
+       y = "Count") +
+  theme_minimal()
+
+```
+
+## Descriptive statistics 
+
+Autism Screener user age with filter(age \<= 100)
+
+```{r}
+#| echo: true 
+#| fig-align: center
+autism <- autism %>% 
+  filter(age <= 100)
+
+ggplot(autism, aes(x = age)) +
+  geom_histogram(binwidth = 0.5, fill = "steelblue") +
+  labs(title = "Age Distribution",
+       x = "Age",
+       y = "Count") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
+
+## Descriptive statistics 
 
 When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
 
-```{r}
-1 + 1
-```
+## Descriptive statistics 
 
-```{r}
+When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
 
-```
+## Descriptive statistics 
 
-```{r}
+When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
 
-```
+## Descriptive statistics 
 
-```{r}
-
-```
-
-```{r}
-
-```
+When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
