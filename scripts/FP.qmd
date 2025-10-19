@@ -27,13 +27,13 @@ library(tidyverse)
 library(gt)
 ```
 
-## Research Problem
+## Research problem
 
 The big question: How can I design and apply ML models without reinforcing existing biases?
 
 ![](images/Asian_student_turned_white.png){fig-align="center"}
 
-## Research Question
+## Research question
 
 -   **Goal**: Predict Autism Spectrum Quotient (AQ-10) screener scores from demographic information.
 
@@ -61,27 +61,41 @@ The big question: How can I design and apply ML models without reinforcing exist
 #I looked for dataset on Kaggle as recommended by Lina. There were a few Autism related datasets, and I chose this one based on the columns and the score for “ease of use”. I really had ethical dilemma, though, reducing complex lives of people down to just these columns. As an Autism consultant who spends 20+ hours to evaluate infants and toddlers for educational Autism eligibility, I really didn’t want to use the binary outcome of YES Autism or NO Autism based on an online screener of 10 questions, especially because it seemed like if you had a score of 7+, you were “yes Autism” group. So, I decided to use the total score of 0-10 as the numerical, continuous outcomes that i will try to predict. 
 ```
 
-## Data 
+## Cleaning up missing data 
 
-When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
+```{r}
+autism <- read.csv('/Users/maiko/Desktop/EDLD654_ML/data/Autism_Screening.csv', header=TRUE)
+```
 
-## Code
+```{r}
+setwd("~/Desktop/EDLD654_ML")
+```
 
-Cleaning up
+```{r}
+autism$gender_binary <- ifelse(autism$gender == "m", 1, 0)
+autism$jundice_binary <- ifelse(autism$jundice == "yes", 1, 0)
+autism$Class.ASD_binary <- ifelse(autism$Class.ASD == "YES", 1, 0)
+```
 
 ```{r}
 #| echo: true 
 #| fig-align: center
-# #| output-location: makes the plot go next page, or column etc. 
+#| # #| output-location: makes the plot go next page, or column etc. 
 
-
-
-
+ff_glimpse(autism[, 1:20])
 ```
 
-## Code
+## Cleaning up missing data
 
-When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
+Because the dataset had "?" for missing data, I calculated the percentage of "?" values in the Ethnicity column.
+
+```{r}
+#| echo: true 
+#| fig-align: center
+sum(autism$ethnicity == "?", na.rm = TRUE)
+nrow(autism)
+mean(autism$ethnicity == "?", na.rm = TRUE) * 100
+```
 
 ## Code
 
