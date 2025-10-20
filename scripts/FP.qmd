@@ -353,3 +353,13 @@ When you click the **Render** button a presentation will be generated that inclu
 ## Conclusion
 
 When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+## Thank you!
+
+Please don’t hesitate to reach out via [LinkedIn page](https://www.linkedin.com/in/maikohata/) or [Email](mailto:hata@uoregon.edu), I would love to hear from you! I also invite you to [my website I created using Quarto](https://maihata.github.io/finalproj/) and take a look at [my professional history](#0).
+
+::: {style="text-align: center;"}
+Maiko Hata, University of Oregon
+:::
+
+![](images/Thank-You-in-Different-Languages.png){fig-align="center" width="60%"}
