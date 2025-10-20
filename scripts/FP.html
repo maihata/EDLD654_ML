@@ -219,12 +219,10 @@ Maiko Hata
 </section>
 <section id="data" class="slide level2">
 <h2>Data</h2>
-<ul>
-<li><p>From <a href="https://www.kaggle.com/datasets/umeradnaan/autism-screening">Kaggle</a></p>
+<p>From <a href="https://www.kaggle.com/datasets/umeradnaan/autism-screening">Kaggle</a></p>
 <ul>
 <li><strong>Numerical</strong> (age, screener result)</li>
 <li><strong>Categorical</strong> (gender f/m, jaundice yes/no, family history of Autism yes/no, used app before yes/no, results from screener results YES (7+) NO (~6), ethnicity, country of residence)</li>
-</ul></li>
 </ul>
 <div class="center">
 <div class="quarto-figure quarto-figure-center">
@@ -291,9 +289,7 @@ relation             -            -              -</code></pre>
 </section>
 <section id="cleaning-up-missing-data-1" class="slide level2">
 <h2>Cleaning up missing data</h2>
-<ul>
-<li>Because the dataset had “?” for missing data, I calculated the percentage of “?” values in the Ethnicity column.</li>
-</ul>
+<p>Because the dataset had “?” for missing data, I calculated the percentage of “?” values in the Ethnicity column.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a><span class="fu">sum</span>(autism<span class="sc">$</span>ethnicity <span class="sc">==</span> <span class="st">"?"</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -323,7 +319,7 @@ relation             -            -              -</code></pre>
 <span id="cb9-8"><a href=""></a>        <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="FP_files/figure-revealjs/unnamed-chunk-16-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<img data-src="FP_files/figure-revealjs/unnamed-chunk-15-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
 <section id="descriptive-statistics-1" class="slide level2">
 <h2>Descriptive statistics</h2>
 <p>Autism Screener user age</p>
@@ -337,7 +333,7 @@ relation             -            -              -</code></pre>
 <span id="cb10-7"><a href=""></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="FP_files/figure-revealjs/unnamed-chunk-17-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<img data-src="FP_files/figure-revealjs/unnamed-chunk-16-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
 <section id="descriptive-statistics-2" class="slide level2">
 <h2>Descriptive statistics</h2>
 <p>Autism Screener user age with <code>filter(age &lt;= 100)</code></p>
@@ -354,7 +350,7 @@ relation             -            -              -</code></pre>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="FP_files/figure-revealjs/unnamed-chunk-18-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
+<p><img data-src="FP_files/figure-revealjs/unnamed-chunk-17-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
 </figure>
 </div>
 </div>
@@ -469,7 +465,7 @@ Middle Eastern         others         Others       Pasifika    South Asian
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="FP_files/figure-revealjs/unnamed-chunk-24-1.png" width="960"></p>
+<p><img data-src="FP_files/figure-revealjs/unnamed-chunk-23-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -722,7 +718,7 @@ Middle Eastern         others         Others       Pasifika    South Asian
         height: 700,
 
         // Factor of the display size that should remain empty around the content
-        margin: 4.0e-2,
+        margin: 8.0e-2,
 
         math: {
           mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js',

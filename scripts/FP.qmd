@@ -7,7 +7,7 @@ format:
     footer: "EDLD654 Final Project - Maiko Hata"
     width: 960
     height: 700
-    margin: 0.04
+    margin: 0.08
 editor: visual
 ---
 
@@ -61,10 +61,10 @@ library(AppliedPredictiveModeling)
 
 ## Data
 
--   From [Kaggle](https://www.kaggle.com/datasets/umeradnaan/autism-screening)
+From [Kaggle](https://www.kaggle.com/datasets/umeradnaan/autism-screening)
 
-    -   **Numerical** (age, screener result)
-    -   **Categorical** (gender f/m, jaundice yes/no, family history of Autism yes/no, used app before yes/no, results from screener results YES (7+) NO (\~6), ethnicity, country of residence)
+-   **Numerical** (age, screener result)
+-   **Categorical** (gender f/m, jaundice yes/no, family history of Autism yes/no, used app before yes/no, results from screener results YES (7+) NO (\~6), ethnicity, country of residence)
 
 ::: center
 ![](images/Autism_Spectrum_dataset.png){fig-align="center" width="60%"}
@@ -119,7 +119,7 @@ ff_glimpse(autism[, 1:20])
 
 ## Cleaning up missing data
 
--   Because the dataset had "?" for missing data, I calculated the percentage of "?" values in the Ethnicity column.
+Because the dataset had "?" for missing data, I calculated the percentage of "?" values in the Ethnicity column.
 
 ```{r}
 #| echo: true 
@@ -127,10 +127,6 @@ ff_glimpse(autism[, 1:20])
 sum(autism$ethnicity == "?", na.rm = TRUE)
 nrow(autism)
 mean(autism$ethnicity == "?", na.rm = TRUE) * 100
-```
-
-```{r}
-
 ```
 
 ## Descriptive statistics
