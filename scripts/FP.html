@@ -10,7 +10,7 @@
   <meta name="generator" content="quarto-1.7.32">
 
   <meta name="author" content="Maiko Hata">
-  <title>EDLD654 Final Project</title>
+  <title>EDLD654 ML Project</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -193,7 +193,7 @@
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">EDLD654 Final Project</h1>
+  <h1 class="title">EDLD654 ML Project</h1>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -206,7 +206,7 @@ Maiko Hata
 </section>
 <section id="research-problem" class="slide level2">
 <h2>Research problem</h2>
-<p>The big question: How can I design and apply ML models without reinforcing existing biases?</p>
+<p><strong>The big question</strong>: How can I design and apply Machine Learning (ML) models without reinforcing existing biases?</p>
 
 <img data-src="images/Asian_student_turned_white.png" class="quarto-figure quarto-figure-center r-stretch"></section>
 <section id="research-question" class="slide level2">
@@ -214,17 +214,16 @@ Maiko Hata
 <ul>
 <li><p><strong>Goal</strong>: Predict Autism Spectrum Quotient (AQ-10) screener scores from demographic information.</p></li>
 <li><p><strong>Potential benefit</strong>: Understanding factors relating to scores can potentially support more focused outreach.</p></li>
-<li><p><strong>Ethical &amp; equity considerations</strong>: As an Autistic researcher and Early Intervention (EI) specialist, I want to understand how predictive models are created, their limitations, and ethical considerations.</p></li>
+<li><p><strong>Ethical &amp; equity considerations</strong>: As an Autistic researcher and Early Intervention (EI) specialist, I want to understand how predictive models are created, what their limitations are, and the ethical considerations.</p></li>
 </ul>
 </section>
 <section id="data" class="slide level2">
 <h2>Data</h2>
 <ul>
-<li><p>From Kaggle</p>
+<li><p>From <a href="https://www.kaggle.com/datasets/umeradnaan/autism-screening">Kaggle</a></p>
 <ul>
 <li><strong>Numerical</strong> (age, screener result)</li>
-<li><strong>Binary</strong> (gender f/m, jaundice yes/no, family history of Autism yes/no, used app before yes/no, results from screener results YES (7+) NO (~6)</li>
-<li><strong>Text</strong> (ethnicity, country of residence)</li>
+<li><strong>Categorical</strong> (gender f/m, jaundice yes/no, family history of Autism yes/no, used app before yes/no, results from screener results YES (7+) NO (~6), ethnicity, country of residence)</li>
 </ul></li>
 </ul>
 <div class="center">
@@ -292,7 +291,9 @@ relation             -            -              -</code></pre>
 </section>
 <section id="cleaning-up-missing-data-1" class="slide level2">
 <h2>Cleaning up missing data</h2>
-<p>Because the dataset had “?” for missing data, I calculated the percentage of “?” values in the Ethnicity column.</p>
+<ul>
+<li>Because the dataset had “?” for missing data, I calculated the percentage of “?” values in the Ethnicity column.</li>
+</ul>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a><span class="fu">sum</span>(autism<span class="sc">$</span>ethnicity <span class="sc">==</span> <span class="st">"?"</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -311,145 +312,106 @@ relation             -            -              -</code></pre>
 <section id="descriptive-statistics" class="slide level2">
 <h2>Descriptive statistics</h2>
 <p>Autism Screener result</p>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>          contry_of_res   n
-1         United States 113
-2  United Arab Emirates  82
-3                 India  81
-4           New Zealand  81
-5        United Kingdom  77
-6                Jordan  47
-7             Australia  27
-8                Canada  15
-9             Sri Lanka  14
-10          Afghanistan  13
-11               France  11
-12          Netherlands  10
-13               Brazil   9
-14               Mexico   8
-15                 Iran   7
-16               Russia   7
-17              Ireland   5
-18                Italy   5
-19             Malaysia   5
-20             Viet Nam   5
-21              Austria   4
-22              Germany   4
-23          Philippines   4
-24         Saudi Arabia   4
-25           Bangladesh   3
-26              Belgium   3
-27                Egypt   3
-28           Kazakhstan   3
-29             Pakistan   3
-30              Romania   3
-31                Spain   3
-32        AmericanSamoa   2
-33            Argentina   2
-34              Armenia   2
-35              Bahamas   2
-36             Ethiopia   2
-37              Iceland   2
-38         South Africa   2
-39               Sweden   2
-40              Ukraine   2
-41               Angola   1
-42                Aruba   1
-43           Azerbaijan   1
-44              Bolivia   1
-45              Burundi   1
-46                Chile   1
-47                China   1
-48           Costa Rica   1
-49               Cyprus   1
-50       Czech Republic   1
-51              Ecuador   1
-52              Finland   1
-53            Hong Kong   1
-54            Indonesia   1
-55                 Iraq   1
-56                Japan   1
-57              Lebanon   1
-58                Nepal   1
-59            Nicaragua   1
-60                Niger   1
-61                 Oman   1
-62             Portugal   1
-63               Serbia   1
-64         Sierra Leone   1
-65                Tonga   1
-66               Turkey   1
-67              Uruguay   1</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 2</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] TRUE</code></pre>
-</div>
-</div>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a><span class="fu">ggplot</span>(autism, <span class="fu">aes</span>(<span class="at">x =</span> Class.ASD, <span class="at">fill =</span> Class.ASD)) <span class="sc">+</span></span>
-<span id="cb12-2"><a href=""></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
-<span id="cb12-3"><a href=""></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"NO"</span> <span class="ot">=</span> <span class="st">"#69b3a2"</span>, <span class="st">"YES"</span> <span class="ot">=</span> <span class="st">"#404080"</span>)) <span class="sc">+</span></span>
-<span id="cb12-4"><a href=""></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Autism Prevalence by Screener Result"</span>,</span>
-<span id="cb12-5"><a href=""></a>       <span class="at">x =</span> <span class="st">"Autism Class"</span>, <span class="at">y =</span> <span class="st">"Count"</span>) <span class="sc">+</span></span>
-<span id="cb12-6"><a href=""></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb12-7"><a href=""></a>  <span class="fu">theme</span>(</span>
-<span id="cb12-8"><a href=""></a>    <span class="at">legend.position =</span> <span class="st">"none"</span>,</span>
-<span id="cb12-9"><a href=""></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>)</span>
-<span id="cb12-10"><a href=""></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href=""></a><span class="fu">ggplot</span>(autism, <span class="fu">aes</span>(<span class="at">x =</span> Class.ASD, <span class="at">fill =</span> Class.ASD)) <span class="sc">+</span></span>
+<span id="cb9-2"><a href=""></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
+<span id="cb9-3"><a href=""></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"NO"</span> <span class="ot">=</span> <span class="st">"#69b3a2"</span>, <span class="st">"YES"</span> <span class="ot">=</span> <span class="st">"#404080"</span>)) <span class="sc">+</span></span>
+<span id="cb9-4"><a href=""></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Autism Prevalence by Screener Result"</span>,</span>
+<span id="cb9-5"><a href=""></a>       <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb9-6"><a href=""></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">14</span>) <span class="sc">+</span></span>
+<span id="cb9-7"><a href=""></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>,</span>
+<span id="cb9-8"><a href=""></a>        <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="FP_files/figure-revealjs/unnamed-chunk-14-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<img data-src="FP_files/figure-revealjs/unnamed-chunk-13-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
 <section id="descriptive-statistics-1" class="slide level2">
 <h2>Descriptive statistics</h2>
 <p>Autism Screener user age</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href=""></a><span class="fu">ggplot</span>(autism, <span class="fu">aes</span>(<span class="at">x =</span> age)) <span class="sc">+</span></span>
-<span id="cb13-2"><a href=""></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb13-3"><a href=""></a>  <span class="fu">scale_x_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(autism<span class="sc">$</span>age, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> <span class="dv">10</span>)) <span class="sc">+</span></span>
-<span id="cb13-4"><a href=""></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Age Distribution"</span>,</span>
-<span id="cb13-5"><a href=""></a>       <span class="at">x =</span> <span class="st">"Age"</span>,</span>
-<span id="cb13-6"><a href=""></a>       <span class="at">y =</span> <span class="st">"Count"</span>) <span class="sc">+</span></span>
-<span id="cb13-7"><a href=""></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href=""></a><span class="fu">ggplot</span>(autism, <span class="fu">aes</span>(<span class="at">x =</span> age)) <span class="sc">+</span></span>
+<span id="cb10-2"><a href=""></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb10-3"><a href=""></a>  <span class="fu">scale_x_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(autism<span class="sc">$</span>age, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> <span class="dv">10</span>)) <span class="sc">+</span></span>
+<span id="cb10-4"><a href=""></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Age Distribution"</span>,</span>
+<span id="cb10-5"><a href=""></a>       <span class="at">x =</span> <span class="st">"Age"</span>,</span>
+<span id="cb10-6"><a href=""></a>       <span class="at">y =</span> <span class="st">"Count"</span>) <span class="sc">+</span></span>
+<span id="cb10-7"><a href=""></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="FP_files/figure-revealjs/unnamed-chunk-14-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="descriptive-statistics-2" class="slide level2">
+<h2>Descriptive statistics</h2>
+<p>Autism Screener user age with <code>filter(age &lt;= 100)</code></p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href=""></a>autism <span class="ot">&lt;-</span> autism <span class="sc">%&gt;%</span> <span class="fu">filter</span>(age <span class="sc">&lt;=</span> <span class="dv">100</span>)</span>
+<span id="cb11-2"><a href=""></a></span>
+<span id="cb11-3"><a href=""></a><span class="fu">ggplot</span>(autism, <span class="fu">aes</span>(<span class="at">x =</span> age)) <span class="sc">+</span></span>
+<span id="cb11-4"><a href=""></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="fl">0.5</span>, <span class="at">fill =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
+<span id="cb11-5"><a href=""></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Age Distribution"</span>,</span>
+<span id="cb11-6"><a href=""></a>       <span class="at">x =</span> <span class="st">"Age"</span>,</span>
+<span id="cb11-7"><a href=""></a>       <span class="at">y =</span> <span class="st">"Count"</span>) <span class="sc">+</span></span>
+<span id="cb11-8"><a href=""></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb11-9"><a href=""></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
 <img data-src="FP_files/figure-revealjs/unnamed-chunk-15-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="descriptive-statistics-2" class="slide level2">
-<h2>Descriptive statistics</h2>
-<p>Autism Screener user age with filter(age &lt;= 100)</p>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a>autism <span class="ot">&lt;-</span> autism <span class="sc">%&gt;%</span> </span>
-<span id="cb14-2"><a href=""></a>  <span class="fu">filter</span>(age <span class="sc">&lt;=</span> <span class="dv">100</span>)</span>
-<span id="cb14-3"><a href=""></a></span>
-<span id="cb14-4"><a href=""></a><span class="fu">ggplot</span>(autism, <span class="fu">aes</span>(<span class="at">x =</span> age)) <span class="sc">+</span></span>
-<span id="cb14-5"><a href=""></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="fl">0.5</span>, <span class="at">fill =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
-<span id="cb14-6"><a href=""></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Age Distribution"</span>,</span>
-<span id="cb14-7"><a href=""></a>       <span class="at">x =</span> <span class="st">"Age"</span>,</span>
-<span id="cb14-8"><a href=""></a>       <span class="at">y =</span> <span class="st">"Count"</span>) <span class="sc">+</span></span>
-<span id="cb14-9"><a href=""></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb14-10"><a href=""></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="FP_files/figure-revealjs/unnamed-chunk-16-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="descriptive-statistics-3" class="slide level2">
-<h2>Descriptive statistics</h2>
+<section id="model-1" class="slide level2">
+<h2>Model 1</h2>
+<p>“… all model building efforts are constrained by the existing data” (p.&nbsp;61, Kuhn &amp; Johnson, 2016).</p>
+</section>
+<section id="model-2" class="slide level2">
+<h2>Model 2</h2>
 <p>When you click the <strong>Render</strong> button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:</p>
 </section>
-<section id="descriptive-statistics-4" class="slide level2">
-<h2>Descriptive statistics</h2>
+<section id="model-3" class="slide level2">
+<h2>Model 3</h2>
 <p>When you click the <strong>Render</strong> button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:</p>
 </section>
-<section id="descriptive-statistics-5" class="slide level2">
-<h2>Descriptive statistics</h2>
+<section id="specific-setting-for-model-fitting" class="slide level2">
+<h2>Specific setting for model fitting</h2>
 <p>When you click the <strong>Render</strong> button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:</p>
 </section>
-<section id="descriptive-statistics-6" class="slide level2">
-<h2>Descriptive statistics</h2>
+<section id="evaluating-model-performance" class="slide level2">
+<h2>Evaluating model performance</h2>
+<p>When you click the <strong>Render</strong> button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:</p>
+</section>
+<section id="model-fit---model-performance" class="slide level2">
+<h2>Model fit - Model performance</h2>
+<p>When you click the <strong>Render</strong> button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:</p>
+</section>
+<section id="model-fit---final-model-selection" class="slide level2">
+<h2>Model fit - Final model selection</h2>
+<p>When you click the <strong>Render</strong> button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:</p>
+</section>
+<section id="model-fit---cut-off-point" class="slide level2">
+<h2>Model fit - Cut off point</h2>
+<p>When you click the <strong>Render</strong> button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:</p>
+</section>
+<section id="model-fit---other-considerations" class="slide level2">
+<h2>Model fit - Other considerations</h2>
+<p>When you click the <strong>Render</strong> button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:</p>
+</section>
+<section id="data-visualization-1" class="slide level2">
+<h2>Data visualization 1</h2>
+<p>When you click the <strong>Render</strong> button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:</p>
+</section>
+<section id="data-visualization-2" class="slide level2">
+<h2>Data visualization 2</h2>
+<p>When you click the <strong>Render</strong> button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:</p>
+</section>
+<section id="discussion---what-i-learned" class="slide level2">
+<h2>Discussion - What I learned</h2>
+<p>When you click the <strong>Render</strong> button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:</p>
+</section>
+<section id="discussion---variables" class="slide level2">
+<h2>Discussion - Variables</h2>
+<p>When you click the <strong>Render</strong> button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:</p>
+</section>
+<section id="discussion---findings" class="slide level2">
+<h2>Discussion - Findings</h2>
+<p>When you click the <strong>Render</strong> button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:</p>
+</section>
+<section id="conclusion" class="slide level2">
+<h2>Conclusion</h2>
 <p>When you click the <strong>Render</strong> button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:</p>
 
 </section>
@@ -634,12 +596,12 @@ relation             -            -              -</code></pre>
         // The "normal" size of the presentation, aspect ratio will be preserved
         // when the presentation is scaled to fit different resolutions. Can be
         // specified using percentage units.
-        width: 1050,
+        width: 960,
 
         height: 700,
 
         // Factor of the display size that should remain empty around the content
-        margin: 0.1,
+        margin: 4.0e-2,
 
         math: {
           mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js',
