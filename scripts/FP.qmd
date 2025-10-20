@@ -184,7 +184,7 @@ ggplot(autism, aes(x = age)) +
 
 ```
 
-## Model 1 
+## Model 1
 
 "... all model building efforts are constrained by the existing data" (p. 61, Kuhn & Johnson, 2016).
 
@@ -204,15 +204,15 @@ ggplot(autism, aes(x = age)) +
 
 When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
 
-## Model 3 
+## Model 3
 
 When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
 
-## Specific setting for model fitting 
+## Specific setting for model fitting
 
 When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
 
-## Evaluating model performance 
+## Evaluating model performance
 
 When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
 
@@ -220,23 +220,23 @@ When you click the **Render** button a presentation will be generated that inclu
 
 When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
 
-## Model fit - Final model selection 
+## Model fit - Final model selection
 
 When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
 
-## Model fit - Cut off point 
+## Model fit - Cut off point
 
 When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
 
-## Model fit - Other considerations 
+## Model fit - Other considerations
 
 When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
 
-## Data visualization 1 
+## Data visualization 1
 
 When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
 
-## Data visualization 2 
+## Data visualization 2
 
 When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
 
@@ -244,14 +244,14 @@ When you click the **Render** button a presentation will be generated that inclu
 
 When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
 
-## Discussion - Variables 
+## Discussion - Variables
 
 When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
 
-## Discussion - Findings  
+## Discussion - Findings
 
 When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
 
-## Conclusion  
+## Conclusion
 
 When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
