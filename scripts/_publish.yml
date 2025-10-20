@@ -1,0 +1,4 @@
+- source: FP.qmd
+  quarto-pub:
+    - id: ddae16ae-8658-4c52-8721-381b305674ba
+      url: https://maihata.quarto.pub/edld654-ml-project
