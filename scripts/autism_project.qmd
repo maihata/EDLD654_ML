@@ -414,7 +414,7 @@ rec_prep
 tidy(rec_prep)
 ```
 
-### Bake it! 
+### Bake it!
 
 ```{r}
 autism_xf <- bake(rec_prep, new_data = NULL)
