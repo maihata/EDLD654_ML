@@ -414,6 +414,36 @@ rec_prep
 tidy(rec_prep)
 ```
 
+### Bake it! 
+
+```{r}
+autism_xf <- bake(rec_prep, new_data = NULL)
+```
+
 ```{r}
 head(autism)
+```
+
+```{r}
+autism_final <- autism_xf |>
+  dplyr::rename(score = result) |>
+  dplyr::relocate(score)
+```
+
+```{r}
+View(autism_final)
+```
+
+```{r}
+### 701 rows, 112 variables(features) ### 
+dim(autism_final)
+names(autism_final)[1:20]
+```
+
+```{r}
+
+```
+
+```{r}
+
 ```
