@@ -41,6 +41,9 @@ library(AppliedPredictiveModeling)
 ```
 
 ## Research problem
+<style>
+.reveal .slides { font-size:80%; }
+</style>
 
 **The big question**: How can I design and apply Machine Learning (ML) models without reinforcing existing biases?
 
@@ -353,6 +356,12 @@ When you click the **Render** button a presentation will be generated that inclu
 ## Conclusion
 
 When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+## References:
+
+-   Allison, C., Auyeung, B., & Baron-Cohen, S. (2012). Toward brief “Red Flags” for Autism screening: The short Autism Spectrum Quotient and the short Quantitative Checklist in 1,000 cases and 3,000 controls. *Journal of the American Academy of Child & Adolescent Psychiatry*, *51*(2), 202-212.e7.
+-   Growcoot, M. (2023, August 3). *Asian MIT student asks AI for a pro headshot, gets turned White.* PetaPixel. <https://petapixel.com/2023/08/03/asian-mit-student-asks-ai-for-a-pro-headshot-gets-turned-white/>
+-   Kuhn, M. and Johnson, K. (2014). *Applied Predictive Modeling in R*. Springer.
 
 ## Thank you!
 
