@@ -473,6 +473,50 @@ Middle Eastern         others         Others       Pasifika    South Asian
 </div>
 </div>
 </div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>oper 1 step indicate na [training] 
+oper 2 step zv [training] 
+oper 3 step impute mean [training] 
+oper 4 step impute mode [training] 
+oper 5 step poly [training] 
+oper 6 step normalize [training] 
+oper 7 step dummy [training] 
+The retained training set is ~ 0.61 Mb  in memory.</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 7 × 6
+  number operation type        trained skip  id               
+   &lt;int&gt; &lt;chr&gt;     &lt;chr&gt;       &lt;lgl&gt;   &lt;lgl&gt; &lt;chr&gt;            
+1      1 step      indicate_na TRUE    FALSE indicate_na_1PyIh
+2      2 step      zv          TRUE    FALSE zv_4LTcw         
+3      3 step      impute_mean TRUE    FALSE impute_mean_S3cfK
+4      4 step      impute_mode TRUE    FALSE impute_mode_L7UzE
+5      5 step      poly        TRUE    FALSE poly_srqc9       
+6      6 step      normalize   TRUE    FALSE normalize_ztuwh  
+7      7 step      dummy       TRUE    FALSE dummy_YHBbC      </code></pre>
+</div>
+</div>
+</section>
+<section id="recipes-package" class="slide level2">
+<h2>recipes package</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href=""></a><span class="do">### 701 rows, 112 variables(features) </span><span class="al">###</span><span class="do"> </span></span>
+<span id="cb17-2"><a href=""></a><span class="fu">dim</span>(autism_final)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 701 112</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href=""></a><span class="fu">names</span>(autism_final)[<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "score"            "A1_Score"         "A2_Score"         "A3_Score"        
+ [5] "A4_Score"         "A5_Score"         "A6_Score"         "A7_Score"        
+ [9] "A8_Score"         "A9_Score"         "A10_Score"        "gender_binary"   
+[13] "jundice_binary"   "Class.ASD_binary" "age_poly_1"       "age_poly_2"      
+[17] "age_poly_3"       "gender_f"         "gender_m"         "ethnicity_X."    </code></pre>
+</div>
+</div>
 </section>
 <section id="model-1" class="slide level2">
 <h2>Model 1</h2>
@@ -543,7 +587,7 @@ Middle Eastern         others         Others       Pasifika    South Asian
 </ul>
 </section>
 <section id="thank-you" class="slide level2">
-<h2>Thank you!</h2>
+<h2>Thank you</h2>
 <p>Please don’t hesitate to reach out via <a href="https://www.linkedin.com/in/maikohata/">LinkedIn page</a> or <a href="mailto:hata@uoregon.edu">Email</a>, I would love to hear from you! I also invite you to <a href="https://maihata.github.io/finalproj/">my website I created using Quarto</a> and take a look at <a href="#/0">my professional history</a>.</p>
 <div style="text-align: center;">
 <p>Maiko Hata, University of Oregon</p>

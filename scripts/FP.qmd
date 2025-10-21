@@ -41,9 +41,12 @@ library(AppliedPredictiveModeling)
 ```
 
 ## Research problem
+
+```{=html}
 <style>
 .reveal .slides { font-size:80%; }
 </style>
+```
 
 **The big question**: How can I design and apply Machine Learning (ML) models without reinforcing existing biases?
 
@@ -285,6 +288,82 @@ ggplot(autism, aes(x = ethnicity)) +
         axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
+```{r}
+### RECIPES ### 
+autism_mod <- autism |>
+  transmute(
+    # outcome
+    result,
+    # numeric predictors
+    age,
+    # keep these categoricals to one-hot later
+    ethnicity, contry_of_res, austim,
+    # keep your existing 0/1 binaries as numeric predictors
+    gender_binary, jundice_binary, Class.ASD_binary
+  )
+```
+
+```{r}
+num_poly_ok <- "age"
+```
+
+```{r}
+rec <- recipe(result ~ ., data = autism)
+```
+
+```{r}
+rec <- rec |>
+  step_indicate_na(all_predictors()) |>        # (1)
+  step_zv(all_predictors()) |>                 # (2) catch single-level nominals like age_desc
+  step_impute_mean(all_numeric_predictors()) |># (3)
+  step_impute_mode(all_nominal_predictors())   # (4)
+```
+
+```{r}
+rec <- rec |>
+  step_poly(age, degree = 3, options = list(raw = TRUE)) |>  # (5)
+  step_normalize(all_numeric_predictors()) |>                # (6)
+  step_dummy(all_nominal_predictors(), one_hot = TRUE)       # (7)
+```
+
+```{r}
+
+rec_prep <- prep(rec, training = autism, verbose = TRUE)
+```
+
+```{r}
+rec_prep
+tidy(rec_prep)
+```
+
+## recipes package
+
+```{r}
+autism_xf <- bake(rec_prep, new_data = NULL)
+```
+
+```{r}
+# head(autism)
+```
+
+```{r}
+autism_final <- autism_xf |>
+  dplyr::rename(score = result) |>
+  dplyr::relocate(score)
+```
+
+```{r}
+view(autism_final)
+```
+
+```{r}
+#| echo: true 
+#| fig-align: center
+### 701 rows, 112 variables(features) ### 
+dim(autism_final)
+names(autism_final)[1:20]
+```
+
 ## Model 1
 
 "... all model building efforts are constrained by the existing data" (p. 61, Kuhn & Johnson, 2016).
@@ -363,7 +442,7 @@ When you click the **Render** button a presentation will be generated that inclu
 -   Growcoot, M. (2023, August 3). *Asian MIT student asks AI for a pro headshot, gets turned White.* PetaPixel. <https://petapixel.com/2023/08/03/asian-mit-student-asks-ai-for-a-pro-headshot-gets-turned-white/>
 -   Kuhn, M. and Johnson, K. (2014). *Applied Predictive Modeling in R*. Springer.
 
-## Thank you!
+## Thank you
 
 Please don’t hesitate to reach out via [LinkedIn page](https://www.linkedin.com/in/maikohata/) or [Email](mailto:hata@uoregon.edu), I would love to hear from you! I also invite you to [my website I created using Quarto](https://maihata.github.io/finalproj/) and take a look at [my professional history](#0).
 

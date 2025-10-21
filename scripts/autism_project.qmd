@@ -281,9 +281,9 @@ cat_vars <- c(
 
 # Numeric variables
 num_vars <- c(
-  "age",
-  "result"
+  "age"
 )
+### result is OUTCOME, so we exclude it ###
 
 # Binary-coded versions 
 binary_vars <- c(
@@ -335,4 +335,85 @@ ggplot(autism, aes(x = ethnicity)) +
   theme_minimal() +
   theme(plot.title = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+**Assignment 1: Task 2.3** Most of the variables in this dataset are categorical, and particularly a binary variable with a Yes and No response. Check the frequency of unique values for all categorical variables. If there is any inconsistency (e.g., Yes is coded as both 'y' and 'Y') for any of these variables in terms of how values are coded, fix them. Also, check the distribution of numeric variables and make sure there is no anomaly.
+
+---\> There is no inconsistencies (I already checked and changed it (like countries to have no " ").
+
+---\> I already checked for numerical anomaly by running summary(autism\$age) and filtered it out with autism \<- autism %\>% filter(age \<= 100)
+
+### ✅ Step 3 — Build the modeling dataframe
+
+why: we drop the original text columns you already replaced (gender/jundice/Class.ASD) and keep only what we’ll transform.
+
+```{r}
+autism_mod <- autism |>
+  transmute(
+    # outcome
+    result,
+    # numeric predictors
+    age,
+    # keep these categoricals to one-hot later
+    ethnicity, contry_of_res, austim,
+    # keep your existing 0/1 binaries as numeric predictors
+    gender_binary, jundice_binary, Class.ASD_binary
+  )
+```
+
+### ✅ 4) choose numeric vars for polynomial expansion
+
+why: you only have age as a numeric predictor; we’ll create degree-3 raw polynomial terms for it.
+
+```{r}
+num_poly_ok <- "age"
+```
+
+### ✅ 5) define the recipe (steps only; no training yet)
+
+### chunk 1 — recipe skeleton (declare outcome and predictors implicitly)
+
+why: tells recipes that result is the numeric outcome; everything else in autism is a predictor.
+
+```{r}
+rec <- recipe(result ~ ., data = autism)
+```
+
+### chunk 2 — steps (1)–(4): na indicators, zero-variance, impute numeric, impute categorical
+
+```{r}
+rec <- rec |>
+  step_indicate_na(all_predictors()) |>        # (1)
+  step_zv(all_predictors()) |>                 # (2) catch single-level nominals like age_desc
+  step_impute_mean(all_numeric_predictors()) |># (3)
+  step_impute_mode(all_nominal_predictors())   # (4)
+```
+
+### chunk 3 — steps (5)–(7): polynomial(age, deg=3), standardize, one-hot dummies
+
+```{r}
+rec <- rec |>
+  step_poly(age, degree = 3, options = list(raw = TRUE)) |>  # (5)
+  step_normalize(all_numeric_predictors()) |>                # (6)
+  step_dummy(all_nominal_predictors(), one_hot = TRUE)       # (7)
+```
+
+### chunk 4 — prep (train the recipe)
+
+why: learns means, modes, and scaling parameters from your data.
+
+```{r}
+### Redid the chunks 2 and 3 because "You hit a known quirk of this dataset: it has a column age_desc that’s always '18 and more' (only one level). step_dummy() chokes on single-level factors. Update chunks 2–3 to remove zero-variance columns for all predictors (not just numeric):" which makes sense. 
+rec_prep <- prep(rec, training = autism, verbose = TRUE)
+```
+
+### chunk 5 — blueprint
+
+```{r}
+rec_prep
+tidy(rec_prep)
+```
+
+```{r}
+head(autism)
 ```
