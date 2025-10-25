@@ -38,6 +38,8 @@ library(gt)
 library(caret)
 library(MASS)
 library(AppliedPredictiveModeling)
+library(glmnet) # extremely efficient and fast ch.6 HOML assumptions on glmnet to follow in ch. 6.3
+library(vip)
 ```
 
 ## Research problem
@@ -367,6 +369,14 @@ names(autism_final)[1:20]
 ## Model 1
 
 "... all model building efforts are constrained by the existing data" (p. 61, Kuhn & Johnson, 2016).
+
+-   Ordinary Least Squares (OLS) assumptions for linear regression (Hands On Machine Learning with R, Ch. 4 & 6):
+
+    -   Linear relationship
+
+    -   There are more observations (n) than features (p)
+
+    -   No or little multicollinearity.
 
 ```{r}
 

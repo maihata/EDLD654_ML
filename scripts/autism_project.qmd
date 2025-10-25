@@ -14,6 +14,9 @@ library(finalfit)
 library(stringr)
 library(recipes)
 library(ggplot2)
+library(glmnet)
+library(caret)
+library(vip)
 ```
 
 ```{r}
@@ -438,6 +441,41 @@ View(autism_final)
 ### 701 rows, 112 variables(features) ### 
 dim(autism_final)
 names(autism_final)[1:20]
+```
+
+Week 5 readings (Hands on ML ch. 6)
+
+-   Ordinary Least Squares (OLS) assumptions for linear regression (Hands On Machine Learning with R, Ch. 4 & 6):
+
+    -   Linear relationship
+
+    -   There are more observations (n) than features (p)
+
+    -   No or little multicollinearity.
+
+    **Why it matters**
+
+-   OLS is the foundation for many regression models (linear, multiple, and even as a base for regularized ones like ridge and lasso). When you understand the OLS object and these functions, you can interpret your models and check assumptions much more easily.
+
+```{r}
+nrow(autism)
+ncol(autism)
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
 ```
 
 ```{r}
