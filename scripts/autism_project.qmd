@@ -91,14 +91,7 @@ nrow(autism)
 mean(autism$ethnicity == "?", na.rm = TRUE) * 100
 ```
 
-Yep—those quotes are literally part of the values (e.g., `'United States'` vs `Bahamas`). That comes from inconsistent quoting in the source or how it was imported, and it will bite you later because they’ll become different factor levels.
-
-```{r}
-# library(readr)
-# autism <- read_csv("data/Autism_Data.csv", quote = "\"'")
-```
-
-If you’ve already loaded it, clean the column
+Yep—those quotes are literally part of the values (e.g., `'United States'` vs `Bahamas`). That comes from inconsistent quoting in the source or how it was imported, and it will bite you later because they’ll become different factor levels. If you’ve already loaded it, clean the column
 
 ```{r}
 library(dplyr)
@@ -117,7 +110,6 @@ autism <- autism %>%
       "United States of America" = "United States"
     )
   )
-
 ```
 
 ```{r}
@@ -133,25 +125,14 @@ autism <- autism %>%
     ethnicity = str_replace_all(ethnicity, "^[\"']+|[\"']+$", ""),
     ethnicity = str_squish(ethnicity)
     )
-
 ```
 
 ✅ If you’re done using the original columns\
 If you’ve already converted variables like `gender`, `jaundice`, `family_mem_with_asd`, etc. into `_binary` versions (0/1) and those originals were categorical or text,\
 then yes — you can safely remove them to avoid redundancy before modeling.
 
-```{r}
-# autism <- autism %>%
-#  select(-gender, -jaundice, -family_mem_with_asd)
-
-```
-
 ⚠️ If you’re still exploring or not sure yet\
 Keep both for now! You can always drop the original columns later once you’ve confirmed that: 1) the `_binary` variables are correctly coded (0 for No, 1 for Yes, etc.) 2) and your model runs fine without the originals.
-
-```{r}
-
-```
 
 ASD Diagnosis Data Analysis and Prediction (<https://www.kaggle.com/code/devraai/asd-diagnosis-data-analysis-and-prediction-model>)\
 — Data Cleaning —
@@ -198,7 +179,6 @@ ggplot(autism, aes(x = age)) +
 ```
 
 ```{r}
-
 ggplot(autism, aes(x = age)) +
   geom_histogram(binwidth = 0.5) +
   scale_x_continuous(limits = c(0, max(autism$age, na.rm = TRUE) + 10)) +
@@ -206,7 +186,6 @@ ggplot(autism, aes(x = age)) +
        x = "Age",
        y = "Count") +
   theme_minimal()
-
 ```
 
 ```{r}
@@ -227,7 +206,6 @@ ggplot(autism, aes(x = age)) +
        x = "Age",
        y = "Count") +
   theme_minimal()
-
 ```
 
 ```{r}
@@ -241,7 +219,6 @@ ggplot(autism, aes(x = age)) +
        y = "Count") +
   theme_minimal() +
   theme(plot.title = element_text(hjust = 0.5))
-
 ```
 
 ```{r}
@@ -252,7 +229,6 @@ ggplot(autism, aes(x = result)) +
        x = "Result",
        y = "Count") +
   theme_minimal()
-
 ```
 
 ```{r}
@@ -272,7 +248,6 @@ names(autism)
 ```
 
 ```{r}
-# Categorical variables
 cat_vars <- c(
   "gender", 
   "ethnicity", 
@@ -282,13 +257,11 @@ cat_vars <- c(
   "Class.ASD"
 )
 
-# Numeric variables
 num_vars <- c(
   "age"
 )
 ### result is OUTCOME, so we exclude it ###
 
-# Binary-coded versions 
 binary_vars <- c(
   "gender_binary",
   "jundice_binary",
@@ -309,7 +282,6 @@ invisible(lapply(cat_vars, function(v) {
   cat("\n---", v, "---\n")
   print(table(autism[[v]], useNA = "ifany"))
 }))
-
 ```
 
 ```{r}
@@ -469,7 +441,6 @@ dup_rows <- autism_final |>
   filter(duplicated(across(-row_id)) | duplicated(across(-row_id), fromLast = TRUE)) |> 
   arrange_all()
 dup_rows
-
 ```
 
 ## Model 1: Linear Regression without Regularization
@@ -506,11 +477,10 @@ length(intersect(loc, setdiff(seq_len(n), loc)))  # should be 0
 
 ```{r}
 lm_model <- lm(score ~ ., data = autism_tr)
-
 ```
 
 ```{r}
-# BECAUSE THE A1_Score so forth were included, it predicted PERFECTLY OF COURSE that makes sense 
+# BECAUSE THE A1_Score so forth were included, it predicted PERFECTLY OF COURSE that makes sense SO LATER I DROPPED THE A1_Score so forth, and also ASD.Class_Binary later
 pred  <- predict(lm_model, newdata = autism_te)
 
 R2    <- cor(pred, autism_te$score)^2
@@ -533,10 +503,8 @@ autism_tr_m <- autism_tr %>%
 autism_te_m <- autism_te %>%
   select(score, -matches("^A(10|[1-9])_Score$"))
 
-# Fit baseline linear regression (no regularization)
 lm_model <- lm(score ~ ., data = autism_tr_m)
 
-# Predict/evaluate
 pred  <- predict(lm_model, newdata = autism_te_m)
 R2    <- cor(pred, autism_te_m$score)^2
 MAE   <- mean(abs(pred - autism_te_m$score))
@@ -556,7 +524,6 @@ sum(is.na(pred))
 
 ```{r}
 length(coef(lm_model))
-
 ```
 
 ```{r}
@@ -567,7 +534,6 @@ baseline_metrics <- data.frame(
   RMSE = RMSE_base
 )
 baseline_metrics
-
 ```
 
 ```{coef(lm_model)}
@@ -607,17 +573,11 @@ blueprint <- recipe(score ~ ., data = autism_tr) %>%
 ```{r}
 # ✅ Chunk 2 – Create folds and cross-validation control
 
-require(caret)
-
-library(caret)
-
 autism_tr <- autism_tr[sample(nrow(autism_tr)), ]
 folds <- cut(seq_len(nrow(autism_tr)), breaks = 10, labels = FALSE)
 my.indices <- vector("list", 10)
 for (i in 1:10) my.indices[[i]] <- which(folds != i)
 cv <- trainControl(method = "cv", index = my.indices)
-
-
 ```
 
 ```{r}
@@ -651,7 +611,6 @@ I REALIZED, AFTER THE FITTING, that Class.ASD_binary, Class.ASD_NO, Class.ASD_YE
 # ✅ Chunk 5 – Check top predictors
 library(vip)
 vip(ridge, num_features = 10, geom = "point") + theme_bw()
-
 ```
 
 ```{r}
