@@ -366,7 +366,7 @@ dim(autism_final)
 names(autism_final)[1:20]
 ```
 
-## Model 1
+## Modeling
 
 "... all model building efforts are constrained by the existing data" (p. 61, Kuhn & Johnson, 2016).
 
@@ -382,19 +382,43 @@ names(autism_final)[1:20]
 
 ```
 
+## Model 1: No Linear Regression without Regularization 
+
+When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code.
+
 ```{r}
 
 ```
 
-```{r}
-
-```
-
-## Model 2
+## Model 2: Ridge Regression Model 
 
 When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
 
-## Model 3
+```{r}
+
+```
+
+```{r}
+
+```
+
+## Model 3: Lasso Regression Model 
+
+When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+## Model 4: Elastic Net Model 
 
 When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
 

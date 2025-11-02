@@ -490,13 +490,13 @@ The retained training set is ~ 0.61 Mb  in memory.</code></pre>
 <pre><code># A tibble: 7 × 6
   number operation type        trained skip  id               
    &lt;int&gt; &lt;chr&gt;     &lt;chr&gt;       &lt;lgl&gt;   &lt;lgl&gt; &lt;chr&gt;            
-1      1 step      indicate_na TRUE    FALSE indicate_na_gGFQ8
-2      2 step      zv          TRUE    FALSE zv_ek7qR         
-3      3 step      impute_mean TRUE    FALSE impute_mean_9ekss
-4      4 step      impute_mode TRUE    FALSE impute_mode_m4mIj
-5      5 step      poly        TRUE    FALSE poly_yNWRY       
-6      6 step      normalize   TRUE    FALSE normalize_8LrhO  
-7      7 step      dummy       TRUE    FALSE dummy_w4WIq      </code></pre>
+1      1 step      indicate_na TRUE    FALSE indicate_na_DR4jg
+2      2 step      zv          TRUE    FALSE zv_LmsHv         
+3      3 step      impute_mean TRUE    FALSE impute_mean_tnKlp
+4      4 step      impute_mode TRUE    FALSE impute_mode_pfTE3
+5      5 step      poly        TRUE    FALSE poly_qYixO       
+6      6 step      normalize   TRUE    FALSE normalize_cUBvM  
+7      7 step      dummy       TRUE    FALSE dummy_T2MH3      </code></pre>
 </div>
 </div>
 </section>
@@ -518,16 +518,32 @@ The retained training set is ~ 0.61 Mb  in memory.</code></pre>
 </div>
 </div>
 </section>
-<section id="model-1" class="slide level2">
-<h2>Model 1</h2>
+<section id="modeling" class="slide level2">
+<h2>Modeling</h2>
 <p>“… all model building efforts are constrained by the existing data” (p.&nbsp;61, Kuhn &amp; Johnson, 2016).</p>
+<ul>
+<li><p>Ordinary Least Squares (OLS) assumptions for linear regression (Hands On Machine Learning with R, Ch. 4 &amp; 6):</p>
+<ul>
+<li><p>Linear relationship</p></li>
+<li><p>There are more observations (n) than features (p)</p></li>
+<li><p>No or little multicollinearity.</p></li>
+</ul></li>
+</ul>
 </section>
-<section id="model-2" class="slide level2">
-<h2>Model 2</h2>
+<section id="model-1-no-linear-regression-without-regularization" class="slide level2">
+<h2>Model 1: No Linear Regression without Regularization</h2>
+<p>When you click the <strong>Render</strong> button a presentation will be generated that includes both content and the output of embedded code.</p>
+</section>
+<section id="model-2-ridge-regression-model" class="slide level2">
+<h2>Model 2: Ridge Regression Model</h2>
 <p>When you click the <strong>Render</strong> button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:</p>
 </section>
-<section id="model-3" class="slide level2">
-<h2>Model 3</h2>
+<section id="model-3-lasso-regression-model" class="slide level2">
+<h2>Model 3: Lasso Regression Model</h2>
+<p>When you click the <strong>Render</strong> button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:</p>
+</section>
+<section id="model-4-elastic-net-model" class="slide level2">
+<h2>Model 4: Elastic Net Model</h2>
 <p>When you click the <strong>Render</strong> button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:</p>
 </section>
 <section id="specific-setting-for-model-fitting" class="slide level2">

@@ -462,25 +462,67 @@ nrow(autism)
 ncol(autism)
 ```
 
-```{r}
-
-```
+## Model 1: No Linear Regression without Regularization 
 
 ```{r}
 
 ```
 
-```{r}
-
-```
+## Model 3: Lasso Regression Model 
 
 ```{r}
 
 ```
 
+## Model 4: Elastic Net Model 
+
 ```{r}
 
 ```
+
+## Specific setting for model fitting
+
+```{r}
+
+```
+
+## Evaluating model performance
+
+```{r}
+
+```
+
+## Model fit - Model performance
+
+```{r}
+
+```
+
+## Model fit - Final model selection
+
+```{r}
+
+```
+
+## Model fit - Cut off point
+
+```{r}
+
+```
+
+## Model fit - Other considerations
+
+```{r}
+
+```
+
+## Data visualization 1
+
+```{r}
+
+```
+
+## Data visualization 2
 
 ```{r}
 
