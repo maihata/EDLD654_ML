@@ -424,10 +424,6 @@ autism_xf <- bake(rec_prep, new_data = NULL)
 ```
 
 ```{r}
-head(autism)
-```
-
-```{r}
 autism_final <- autism_xf |>
   dplyr::rename(score = result) |>
   dplyr::relocate(score)
@@ -496,10 +492,14 @@ length(intersect(rownames(autism_tr), rownames(autism_te)))  # should now be 0
 
 ```{r}
 set.seed(20251102)
-n   <- nrow(autism_final)
-loc <- sample(seq_len(n), size = round(0.9 * n))
 
-# disjoint by construction
+n   <- nrow(autism_final)
+loc <- sample(seq_len(n), size = round(0.9 * n))  # train indices
+
+autism_tr <- autism_final[loc, ]
+autism_te <- autism_final[-loc, ]
+
+# True disjointness check:
 length(intersect(loc, setdiff(seq_len(n), loc)))  # should be 0
 
 ```
@@ -556,7 +556,21 @@ sum(is.na(pred))
 
 ```{r}
 length(coef(lm_model))
-coef(lm_model)
+
+```
+
+```{r}
+baseline_metrics <- data.frame(
+  Model = "Mean Only",
+  R2 = R2_base,
+  MAE = MAE_base,
+  RMSE = RMSE_base
+)
+baseline_metrics
+
+```
+
+```{coef(lm_model)}
 ```
 
 ### Why this happened
@@ -570,15 +584,24 @@ This is actually a **useful baseline** — it’s your “mean-only” model. It
 ## Model 1: Ridge Regression Model
 
 ```{r}
+set.seed(20251102)
+
+n <- nrow(autism_final)
+loc <- sample(seq_len(n), size = round(0.9 * n))
+
+autism_tr <- autism_final[loc, ]
+autism_te <- autism_final[-loc, ]
+```
+
+```{r}
 # ✅ Chunk 1 – Define the recipe (blueprint)
-require(recipes)
+library(recipes)
 
 blueprint <- recipe(score ~ ., data = autism_tr) %>%
-  step_rm(matches("^A(10|[1-9])_Score$")) %>%      # remove A1–A10 scores
+  step_rm(matches("^A(10|[1-9])_Score$"), Class.ASD_binary) %>%  # drop leak-prone vars
   step_zv(all_numeric()) %>%
   step_nzv(all_numeric()) %>%
   step_normalize(all_numeric_predictors())
-
 ```
 
 ```{r}
@@ -586,20 +609,14 @@ blueprint <- recipe(score ~ ., data = autism_tr) %>%
 
 require(caret)
 
-# Randomly shuffle training data
+library(caret)
+
 autism_tr <- autism_tr[sample(nrow(autism_tr)), ]
-
-# Create 10 folds
-folds <- cut(seq(1, nrow(autism_tr)), breaks = 10, labels = FALSE)
-
-# Create list of indices for each fold
+folds <- cut(seq_len(nrow(autism_tr)), breaks = 10, labels = FALSE)
 my.indices <- vector("list", 10)
-for (i in 1:10) {
-  my.indices[[i]] <- which(folds != i)
-}
-
-# CV control
+for (i in 1:10) my.indices[[i]] <- which(folds != i)
 cv <- trainControl(method = "cv", index = my.indices)
+
 
 ```
 
@@ -608,59 +625,39 @@ cv <- trainControl(method = "cv", index = my.indices)
 # Ridge grid (alpha = 0)
 grid <- data.frame(alpha = 0, lambda = seq(0.01, 3, 0.01))
 
-Sys.time()
 ridge <- caret::train(
   blueprint,
-  data = autism_tr,
-  method = "glmnet",
+  data      = autism_tr,
+  method    = "glmnet",
   trControl = cv,
-  tuneGrid = grid
+  tuneGrid  = grid
 )
-Sys.time()
-
 ```
 
 ```{r}
 # ✅ Chunk 4 – Inspect and plot results
-
 plot(ridge)
 ridge$results
 ridge$bestTune
 
-options(scipen = 99)
 coefs <- coef(ridge$finalModel, ridge$bestTune$lambda)
-coefs
+head(as.matrix(coefs[order(abs(coefs), decreasing = TRUE)[-1], ]), 10)
 
 ```
 
+I REALIZED, AFTER THE FITTING, that Class.ASD_binary, Class.ASD_NO, Class.ASD_YES were still there predicting away based on the TOTAL SCORE (DUH) so I removed them.
+
 ```{r}
 # ✅ Chunk 5 – Check top predictors
+library(vip)
+vip(ridge, num_features = 10, geom = "point") + theme_bw()
 
-# Rank coefficients by absolute size (exclude intercept)
-ind <- order(abs(coefs), decreasing = TRUE)
-head(as.matrix(coefs[ind[-1], ]), 10)
 ```
 
 ```{r}
 # ✅ Chunk 6 – Visualize feature importance
-
-require(vip)
-
-vip(ridge,
-    num_features = 10,
-    geom = "point") +
-  theme_bw()
-
-
-```
-
-```{r}
-# ✅ Chunk 7 – Evaluate model on test set
-
-# Predict on hold-out test data
 predict_te_ridge <- predict(ridge, newdata = autism_te)
 
-# Compute metrics
 rsq_te  <- cor(autism_te$score, predict_te_ridge, use = "complete.obs")^2
 mae_te  <- mean(abs(autism_te$score - predict_te_ridge))
 rmse_te <- sqrt(mean((autism_te$score - predict_te_ridge)^2))
@@ -669,14 +666,20 @@ cat("Ridge test R²:", round(rsq_te, 3),
     "\nMAE:", round(mae_te, 3),
     "\nRMSE:", round(rmse_te, 3), "\n")
 
+
+
 ```
 
 ```{r}
-# ✅ Chunk 8 – Save the trained model (optional)
+# ✅ Step 8: Compare to baselinec
+# dplyr way
+library(dplyr)
+comp_rounded <- comp %>% mutate(across(where(is.numeric), ~ round(.x, 3)))
+comp_rounded
+```
 
-# Keep only ridge object and save environment
-rm(list = ls()[!ls() %in% c("ridge")])
-save.image("./ridge.RData")
+```{r}
+print(comp, digits = 3)
 ```
 
 ## Model 2: Lasso Regression Model
