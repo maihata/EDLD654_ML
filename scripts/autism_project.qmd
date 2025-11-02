@@ -462,19 +462,230 @@ nrow(autism)
 ncol(autism)
 ```
 
-## Model 1: No Linear Regression without Regularization 
+## ADD this part to the slides- how I decided to keep the "duplicate" data
+
+STILL CLEANING UP AND FOUND DUPLICATES. I NEED TO LOOK AT THEM TO SEE IF IT'S DUPLICATES, OR 2 DIFFERENT PEOPLE ENTERING THE SAME DATA.
+
+```{r}
+library(dplyr)
+dup_rows <- autism_final |> 
+  mutate(row_id = row_number()) |> 
+  filter(duplicated(across(-row_id)) | duplicated(across(-row_id), fromLast = TRUE)) |> 
+  arrange_all()
+dup_rows
+
+```
+
+## Model 1: Linear Regression without Regularization
+
+Kaggle Notebook "Building a Ridge Regression Model\
+Step 2: Train/Test split
+
+"In order to obtain a realistic measure of model performance, we will split the data into two subsamples: training and test datasets. Due to the relatively small sample size, I will use a 90-10 split (typically a 80-20 or 70-30 split is used). The smaller test dataset will be used as a final hold-out set, and training dataset will be used to build the model."
+
+```{r}
+set.seed(20251102)
+
+n <- nrow(autism_final)
+loc <- sample(seq_len(n), size = round(0.9 * n))
+autism_tr <- autism_final[loc, ]
+autism_te <- autism_final[-loc, ]
+
+length(intersect(rownames(autism_tr), rownames(autism_te)))  # should now be 0
+```
+
+```{r}
+set.seed(20251102)
+n   <- nrow(autism_final)
+loc <- sample(seq_len(n), size = round(0.9 * n))
+
+# disjoint by construction
+length(intersect(loc, setdiff(seq_len(n), loc)))  # should be 0
+
+```
+
+```{r}
+lm_model <- lm(score ~ ., data = autism_tr)
+
+```
+
+```{r}
+# BECAUSE THE A1_Score so forth were included, it predicted PERFECTLY OF COURSE that makes sense 
+pred  <- predict(lm_model, newdata = autism_te)
+
+R2    <- cor(pred, autism_te$score)^2
+MAE   <- mean(abs(pred - autism_te$score))
+RMSE  <- sqrt(mean((pred - autism_te$score)^2))  # ← missing ) added here
+
+cat("Test R²:", round(R2, 3),
+    "\nTest MAE:", round(MAE, 3),
+    "\nTest RMSE:", round(RMSE, 3), "\n")
+
+```
+
+```{r}
+library(dplyr)
+
+# Keep score + all predictors except the A1_Score..A10_Score items
+autism_tr_m <- autism_tr %>%
+  select(score, -matches("^A(10|[1-9])_Score$"))
+
+autism_te_m <- autism_te %>%
+  select(score, -matches("^A(10|[1-9])_Score$"))
+
+# Fit baseline linear regression (no regularization)
+lm_model <- lm(score ~ ., data = autism_tr_m)
+
+# Predict/evaluate
+pred  <- predict(lm_model, newdata = autism_te_m)
+R2    <- cor(pred, autism_te_m$score)^2
+MAE   <- mean(abs(pred - autism_te_m$score))
+RMSE  <- sqrt(mean((pred - autism_te_m$score)^2))
+
+cat("Test R²:", round(R2, 3),
+    "\nTest MAE:", round(MAE, 3),
+    "\nTest RMSE:", round(RMSE, 3), "\n")
+
+```
+
+```{r}
+summary(pred)
+sum(is.na(pred))
+
+```
+
+```{r}
+length(coef(lm_model))
+coef(lm_model)
+```
+
+### Why this happened
+
+Once you removed the A1_Score–A10_Score columns (which directly determined the total), there wasn’t enough remaining signal in the other predictors for `lm()` to estimate meaningful slopes.
+
+That’s why: R² = NA → no variation in predictions, MAE and RMSE = the average deviation of true scores from the mean (≈ how far actual scores differ from 4.87).
+
+This is actually a **useful baseline** — it’s your “mean-only” model. It shows the model’s starting point: how well the simplest possible predictor (just the average score) performs.
+
+## Model 1: Ridge Regression Model
+
+```{r}
+# ✅ Chunk 1 – Define the recipe (blueprint)
+require(recipes)
+
+blueprint <- recipe(score ~ ., data = autism_tr) %>%
+  step_rm(matches("^A(10|[1-9])_Score$")) %>%      # remove A1–A10 scores
+  step_zv(all_numeric()) %>%
+  step_nzv(all_numeric()) %>%
+  step_normalize(all_numeric_predictors())
+
+```
+
+```{r}
+# ✅ Chunk 2 – Create folds and cross-validation control
+
+require(caret)
+
+# Randomly shuffle training data
+autism_tr <- autism_tr[sample(nrow(autism_tr)), ]
+
+# Create 10 folds
+folds <- cut(seq(1, nrow(autism_tr)), breaks = 10, labels = FALSE)
+
+# Create list of indices for each fold
+my.indices <- vector("list", 10)
+for (i in 1:10) {
+  my.indices[[i]] <- which(folds != i)
+}
+
+# CV control
+cv <- trainControl(method = "cv", index = my.indices)
+
+```
+
+```{r}
+#✅ Chunk 3 – Create tuning grid and train ridge model
+# Ridge grid (alpha = 0)
+grid <- data.frame(alpha = 0, lambda = seq(0.01, 3, 0.01))
+
+Sys.time()
+ridge <- caret::train(
+  blueprint,
+  data = autism_tr,
+  method = "glmnet",
+  trControl = cv,
+  tuneGrid = grid
+)
+Sys.time()
+
+```
+
+```{r}
+# ✅ Chunk 4 – Inspect and plot results
+
+plot(ridge)
+ridge$results
+ridge$bestTune
+
+options(scipen = 99)
+coefs <- coef(ridge$finalModel, ridge$bestTune$lambda)
+coefs
+
+```
+
+```{r}
+# ✅ Chunk 5 – Check top predictors
+
+# Rank coefficients by absolute size (exclude intercept)
+ind <- order(abs(coefs), decreasing = TRUE)
+head(as.matrix(coefs[ind[-1], ]), 10)
+```
+
+```{r}
+# ✅ Chunk 6 – Visualize feature importance
+
+require(vip)
+
+vip(ridge,
+    num_features = 10,
+    geom = "point") +
+  theme_bw()
+
+
+```
+
+```{r}
+# ✅ Chunk 7 – Evaluate model on test set
+
+# Predict on hold-out test data
+predict_te_ridge <- predict(ridge, newdata = autism_te)
+
+# Compute metrics
+rsq_te  <- cor(autism_te$score, predict_te_ridge, use = "complete.obs")^2
+mae_te  <- mean(abs(autism_te$score - predict_te_ridge))
+rmse_te <- sqrt(mean((autism_te$score - predict_te_ridge)^2))
+
+cat("Ridge test R²:", round(rsq_te, 3),
+    "\nMAE:", round(mae_te, 3),
+    "\nRMSE:", round(rmse_te, 3), "\n")
+
+```
+
+```{r}
+# ✅ Chunk 8 – Save the trained model (optional)
+
+# Keep only ridge object and save environment
+rm(list = ls()[!ls() %in% c("ridge")])
+save.image("./ridge.RData")
+```
+
+## Model 2: Lasso Regression Model
 
 ```{r}
 
 ```
 
-## Model 3: Lasso Regression Model 
-
-```{r}
-
-```
-
-## Model 4: Elastic Net Model 
+## Model 3: Elastic Net Model
 
 ```{r}
 
