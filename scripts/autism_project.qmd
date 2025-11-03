@@ -416,6 +416,13 @@ dim(autism_final)
 names(autism_final)[1:20]
 ```
 
+```{r}
+### TRYING TO DROP Class.ASD because it messes up the data later 11.2.25 ###
+# Drop ASD-related columns before modeling
+autism_final <- autism_final %>%
+  select(-starts_with("Class.ASD"))
+```
+
 Week 5 readings (Hands on ML ch. 6)
 
 -   Ordinary Least Squares (OLS) assumptions for linear regression (Hands On Machine Learning with R, Ch. 4 & 6):
@@ -589,7 +596,7 @@ autism_te <- autism_final[-loc, ]
 library(recipes)
 
 blueprint <- recipe(score ~ ., data = autism_tr) %>%
-  step_rm(matches("^A(10|[1-9])_Score$"), Class.ASD_binary) %>%  # drop leak-prone vars
+  step_rm(matches("^A(10|[1-9])_Score$"), any_of("Class.ASD_binary")) %>%
   step_zv(all_numeric()) %>%
   step_nzv(all_numeric()) %>%
   step_normalize(all_numeric_predictors())
@@ -808,11 +815,15 @@ dim(autism_te)
 ```
 
 ```{r}
+library(recipes)
+
 blueprint <- recipe(score ~ ., data = autism_tr) %>%
-  step_rm(matches("^A(10|[1-9])_Score$"), Class.ASD_binary) %>%  # drop A1_Score…A10_Score + ASD_binary
+  # Safely remove columns only if they exist
+  step_rm(matches("^A(10|[1-9])_Score$"), any_of("Class.ASD_binary")) %>%
   step_zv(all_numeric()) %>%
   step_nzv(all_numeric()) %>%
   step_normalize(all_numeric_predictors())
+
 ```
 
 ```{r}
@@ -961,6 +972,77 @@ comp_rounded <- comp %>%
   dplyr::mutate(across(where(is.numeric), round, 3))
 
 comp_rounded
+```
+
+```{r}
+library(dplyr)
+library(tibble)
+library(ggplot2)
+library(patchwork)   # install.packages("patchwork") if needed
+
+# --- Ridge coefficients ---
+coefs_ridge <- as.matrix(coef(ridge$finalModel, s = ridge$bestTune$lambda))
+coef_df_ridge <- tibble(term = rownames(coefs_ridge),
+                        beta = as.numeric(coefs_ridge)) %>%
+  filter(term != "(Intercept)") %>%
+  mutate(model = "Ridge")
+
+# --- LASSO coefficients ---
+coefs_lasso <- as.matrix(coef(lasso$finalModel, s = lasso$bestTune$lambda))
+coef_df_lasso <- tibble(term = rownames(coefs_lasso),
+                        beta = as.numeric(coefs_lasso)) %>%
+  filter(term != "(Intercept)") %>%
+  mutate(model = "LASSO")
+
+# --- Combine both models ---
+coef_both <- bind_rows(coef_df_ridge, coef_df_lasso) %>%
+  mutate(abs_beta = abs(beta))
+
+# --- Top 15 features by |β| overall ---
+top_terms <- coef_both %>%
+  group_by(term) %>%
+  summarize(max_abs = max(abs_beta)) %>%
+  arrange(desc(max_abs)) %>%
+  slice_head(n = 15) %>%
+  pull(term)
+
+coef_top <- coef_both %>% filter(term %in% top_terms)
+
+# --- Plot ---
+ggplot(coef_top, aes(x = reorder(term, abs_beta), y = beta, fill = model)) +
+  geom_col(position = "dodge") +
+  coord_flip() +
+  labs(
+    title = "Ridge vs LASSO: Top 15 Predictor Coefficients",
+    x = "Predictor",
+    y = "Coefficient (signed)"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "top")
+
+```
+
+```{r}
+table(autism$ethnicity, useNA = "ifany")
+```
+
+```{r}
+table(autism$contry_of_res)
+prop.table(table(autism$contry_of_res)) * 100
+```
+
+```{r}
+library(dplyr)
+
+country_counts <- autism %>%
+  count(contry_of_res, name = "n") %>%
+  arrange(desc(n))
+
+print(country_counts)  # show in Console
+
+# save as CSV
+write.csv(country_counts, "country_counts.csv", row.names = FALSE)
+
 ```
 
 ```{r}
