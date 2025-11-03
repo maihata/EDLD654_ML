@@ -770,6 +770,49 @@ ggplot(coef_df, aes(x = reorder(term, abs_beta), y = beta)) +
   theme_minimal()
 ```
 
+```{r}
+### 11.3.25. ### 
+# ✅ Which variables did LASSO keep vs drop? (caret + glmnet)
+# ✅ List predictors dropped by LASSO (works with caret)
+best_lambda <- lasso$bestTune$lambda
+
+# Directly use coef() on the glmnet model inside caret
+co <- coef(lasso$finalModel, s = best_lambda)
+
+# Extract dropped predictors
+dropped <- rownames(as.matrix(co))[as.numeric(co) == 0]
+dropped <- dropped[dropped != "(Intercept)"]
+
+cat("Dropped predictors (", length(dropped), "):\n", sep = "")
+print(dropped)
+
+```
+
+```{r}
+### You can similarly check kept predictors with:###
+kept <- rownames(as.matrix(co))[as.numeric(co) != 0]
+kept <- kept[kept != "(Intercept)"]
+print(kept)
+
+```
+
+```{r}
+# ✅ Inspect age polynomial features in training data
+library(dplyr)
+
+# Find all polynomial columns
+age_poly_vars <- grep("^age_poly_", names(autism_tr), value = TRUE)
+
+cat("Polynomial age features found:\n")
+print(age_poly_vars)
+
+# Peek at their distributions
+autism_tr %>%
+  select(all_of(age_poly_vars)) %>%
+  summary()
+
+```
+
 1.  LASSO behaves differently by design
 
     1.  Ridge (α=0) shrinks all coefficients but **keeps** them non-zero.
