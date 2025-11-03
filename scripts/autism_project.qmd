@@ -3,6 +3,11 @@ title: "autism_project"
 author: "Maiko Hata"
 format: html
 editor: visual
+execute:
+  echo: true        
+  eval: true        
+  output: true      
+  show: true        
 ---
 
 ```{r}
