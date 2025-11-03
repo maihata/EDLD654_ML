@@ -527,16 +527,15 @@ length(coef(lm_model))
 ```
 
 ```{r}
-baseline_metrics <- data.frame(
-  Model = "Mean Only",
-  R2 = R2_base,
-  MAE = MAE_base,
-  RMSE = RMSE_base
-)
-baseline_metrics
-```
+# Baseline mean-only predictions
+mean_pred <- mean(autism_tr$score)
+pred_base <- rep(mean_pred, nrow(autism_te))
 
-```{coef(lm_model)}
+# Compute metrics
+R2_base   <- cor(pred_base, autism_te$score)^2
+MAE_base  <- mean(abs(pred_base - autism_te$score))
+RMSE_base <- sqrt(mean((pred_base - autism_te$score)^2))
+
 ```
 
 ### Why this happened
@@ -624,8 +623,49 @@ rmse_te <- sqrt(mean((autism_te$score - predict_te_ridge)^2))
 cat("Ridge test R²:", round(rsq_te, 3),
     "\nMAE:", round(mae_te, 3),
     "\nRMSE:", round(rmse_te, 3), "\n")
+```
 
+```{r}
+vip(ridge, num_features = 10, geom = "point") + theme_bw()
+```
 
+```{r}
+library(dplyr)
+library(tibble)
+library(ggplot2)
+
+coefs <- as.matrix(coef(ridge$finalModel, s = ridge$bestTune$lambda))
+coef_df <- tibble(term = rownames(coefs), beta = as.numeric(coefs)) %>%
+  filter(term != "(Intercept)") %>%
+  mutate(abs_beta = abs(beta)) %>%
+  arrange(desc(abs_beta)) %>%
+  slice_head(n = 15)
+
+ggplot(coef_df, aes(x = reorder(term, abs_beta), y = beta)) +
+  geom_col() +
+  coord_flip() +
+  labs(title = "Top 15 predictors by |β| (ridge)",
+       x = "Predictor", y = "Coefficient (signed)") +
+  theme_minimal()
+
+```
+
+```{r}
+library(dplyr)
+
+# Safety checks (optional but helpful)
+stopifnot(exists("R2_base"), exists("MAE_base"), exists("RMSE_base"))
+stopifnot(exists("rsq_te"),  exists("mae_te"),  exists("rmse_te"))
+
+# Build comparison table
+comp <- bind_rows(
+  data.frame(Model = "Mean Only", R2 = R2_base, MAE = MAE_base, RMSE = RMSE_base),
+  data.frame(Model = "Ridge",     R2 = rsq_te,  MAE = mae_te,  RMSE = rmse_te)
+)
+
+# Round numeric columns
+comp_rounded <- comp %>% mutate(across(where(is.numeric), ~ round(.x, 3)))
+comp_rounded
 
 ```
 
@@ -644,19 +684,254 @@ print(comp, digits = 3)
 ## Model 2: Lasso Regression Model
 
 ```{r}
+set.seed(20251102)
+autism_tr
+autism_te
+```
 
+```{r}
+# ✅ LASSO using same recipe and CV folds
+grid <- data.frame(alpha = 1, lambda = seq(0.01, 3, 0.01))
+
+lasso <- caret::train(
+  blueprint,
+  data      = autism_tr,
+  method    = "glmnet",
+  trControl = cv,
+  tuneGrid  = grid
+)
+```
+
+```{r}
+plot(lasso)           # CV curve
+lasso$bestTune        # chosen lambda
+lasso$results[1:6, ]  # peek at results
+```
+
+```{r}
+pred_te_lasso <- predict(lasso, newdata = autism_te)
+
+rsq_te_lasso  <- cor(autism_te$score, pred_te_lasso, use = "complete.obs")^2
+mae_te_lasso  <- mean(abs(autism_te$score - pred_te_lasso))
+rmse_te_lasso <- sqrt(mean((autism_te$score - pred_te_lasso)^2))
+
+cat("LASSO test R²:", round(rsq_te_lasso, 3),
+    "\nMAE:", round(mae_te_lasso, 3),
+    "\nRMSE:", round(rmse_te_lasso, 3), "\n")
+```
+
+```{r}
+
+coefs <- as.matrix(coef(lasso$finalModel, s = lasso$bestTune$lambda))
+coef_df <- tibble(term = rownames(coefs), beta = as.numeric(coefs)) %>%
+  filter(term != "(Intercept)") %>%
+  mutate(abs_beta = abs(beta)) %>%
+  arrange(desc(abs_beta)) %>%
+  slice_head(n = 15)
+
+ggplot(coef_df, aes(x = reorder(term, abs_beta), y = beta)) +
+  geom_col() +
+  coord_flip() +
+  labs(title = "Top 15 predictors by |β| (LASSO)",
+       x = "Predictor", y = "Coefficient (signed)") +
+  theme_minimal()
+```
+
+1.  LASSO behaves differently by design
+
+    1.  Ridge (α=0) shrinks all coefficients but **keeps** them non-zero.
+
+    2.  LASSO (α=1) shrinks many to **exactly zero** and often picks **one variable from a correlated group** as the proxy.\
+
+        That’s why your LASSO plot shows one bar (e.g., Class.ASD_NO) dominating while ridge spreads weight across several.
+
+2.  Different λ chosen
+
+    1.  `ridge$bestTune$lambda` and `lasso$bestTune$lambda` are usually different.
+
+    2.  A larger λ with LASSO ⇒ more zeros ⇒ one/few big bars.
+
+3.  Dummy coding & reference levels
+
+    1.  Factors become dummies. With LASSO, often only **one level’s dummy** survives; ridge can assign small weights to several levels
+
+    If `Class.ASD_binary` wasn’t removed (or was removed in ridge but not in lasso), that can also explain differences.
+
+```{r}
+comp <- rbind(
+  data.frame(Model = "Mean Only", R2 = R2_base, MAE = MAE_base, RMSE = RMSE_base),
+  data.frame(Model = "Ridge",     R2 = rsq_te,  MAE = mae_te,  RMSE = rmse_te),
+  data.frame(Model = "Lasso",     R2 = rsq_te_lasso, MAE = mae_te_lasso, RMSE = rmse_te_lasso)
+)
+
+comp_rounded <- comp %>% mutate(across(where(is.numeric), round, 3))
+comp_rounded
 ```
 
 ## Model 3: Elastic Net Model
 
 ```{r}
+set.seed(20251102)  # reproducibility
+
+loc        <- sample(seq_len(nrow(autism_final)), round(nrow(autism_final) * 0.9))
+autism_tr  <- autism_final[loc, ]
+autism_te  <- autism_final[-loc, ]
+
+dim(autism_tr)
+dim(autism_te)
+```
+
+```{r}
+blueprint <- recipe(score ~ ., data = autism_tr) %>%
+  step_rm(matches("^A(10|[1-9])_Score$"), Class.ASD_binary) %>%  # drop A1_Score…A10_Score + ASD_binary
+  step_zv(all_numeric()) %>%
+  step_nzv(all_numeric()) %>%
+  step_normalize(all_numeric_predictors())
+```
+
+```{r}
+# Randomly shuffle the training set
+autism_tr <- autism_tr[sample(nrow(autism_tr)), ]
+
+# 10 folds of ~equal size
+folds <- cut(seq(1, nrow(autism_tr)), breaks = 10, labels = FALSE)
+
+# Indices list for caret
+my.indices <- vector("list", 10)
+for (i in 1:10) {
+  my.indices[[i]] <- which(folds != i)
+}
+
+cv <- trainControl(method = "cv", index = my.indices)
+
+caret::getModelInfo()$glmnet$parameters
+```
+
+```{r}
+grid <- expand.grid(
+  alpha  = seq(0, 1, 0.01),     # ridge → lasso
+  lambda = seq(0.001, 0.5, 0.005)
+)
+grid
+```
+
+```{r}
+Sys.time()
+
+elastic <- caret::train(
+  blueprint,
+  data      = autism_tr,
+  method    = "glmnet",
+  trControl = cv,
+  tuneGrid  = grid
+)
+
+Sys.time()
+```
+
+```{r}
+plot(elastic)
+
+elastic$bestTune        # chosen alpha & lambda
+head(elastic$results)   # peek first rows
+# Example: elastic$results[422, ]  # if you want to inspect a specific row
+
+```
+
+```{r}
+options(scipen = 99)
+
+coefs <- coef(elastic$finalModel, elastic$bestTune$lambda)
+coefs
+
+# Count exact zeros
+coefs.zero <- coefs[which(coefs[, 1] == 0), ]
+length(coefs.zero)
+
+# Rank by absolute magnitude (exclude intercept)
+ind <- order(abs(coefs), decreasing = TRUE)
+head(as.matrix(coefs[ind[-1], ]), 10)
+
+```
+
+```{r}
+require(vip)
+
+vip(elastic, num_features = 10, geom = "point") +
+  theme_bw()
+
+```
+
+```{r}
+predict_te_elastic <- predict(elastic, autism_te)
+predict_te_elastic
+
+rsq_te  <- cor(autism_te$score, predict_te_elastic, use = "complete.obs")^2
+rsq_te
+
+mae_te  <- mean(abs(autism_te$score - predict_te_elastic))
+mae_te
+
+rmse_te <- sqrt(mean((autism_te$score - predict_te_elastic)^2))
+rmse_te
+
+```
+
+```{r}
+library(dplyr); library(tibble); library(ggplot2)
+
+coefs_en <- as.matrix(coef(elastic$finalModel, s = elastic$bestTune$lambda))
+coef_df_en <- tibble(term = rownames(coefs_en), beta = as.numeric(coefs_en)) %>%
+  filter(term != "(Intercept)") %>%
+  mutate(abs_beta = abs(beta)) %>%
+  arrange(desc(abs_beta)) %>%
+  slice_head(n = 15)
+
+ggplot(coef_df_en, aes(x = reorder(term, abs_beta), y = beta)) +
+  geom_col() + coord_flip() +
+  labs(
+    title = paste0("Top 15 predictors by |β| (Elastic Net, α=",
+                   round(elastic$bestTune$alpha, 2), ", λ=",
+                   round(elastic$bestTune$lambda, 3), ")"),
+    x = "Predictor", y = "Coefficient (signed)"
+  ) +
+  theme_minimal()
+```
+
+```{r}
+# Rename your Elastic Net metrics to the expected names
+rsq_te_enet  <- rsq_te
+mae_te_enet  <- mae_te
+rmse_te_enet <- rmse_te
+```
+
+```{}
+```
+
+```{r}
+comp <- rbind(
+  data.frame(Model = "Mean Only",  R2 = R2_base, MAE = MAE_base, RMSE = RMSE_base),
+  data.frame(Model = "Ridge",      R2 = rsq_te,  MAE = mae_te,  RMSE = rmse_te),
+  data.frame(Model = "Lasso",      R2 = rsq_te_lasso, MAE = mae_te_lasso, RMSE = rmse_te_lasso),
+  data.frame(Model = "ElasticNet", R2 = rsq_te_enet,  MAE = mae_te_enet,  RMSE = rmse_te_enet)
+)
+
+comp_rounded <- comp %>%
+  dplyr::mutate(across(where(is.numeric), round, 3))
+
+comp_rounded
+```
+
+```{r}
+cat("Elastic Net R²:", round(rsq_te_enet, 3),
+    "\nMAE:", round(mae_te_enet, 3),
+    "\nRMSE:", round(rmse_te_enet, 3), "\n")
 
 ```
 
 ## Specific setting for model fitting
 
 ```{r}
-
 ```
 
 ## Evaluating model performance
