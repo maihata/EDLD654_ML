@@ -494,14 +494,11 @@ cat("Test R²:", round(R2, 3),
 ```
 
 ```{r}
-library(dplyr)
-
-# Keep score + all predictors except the A1_Score..A10_Score items
 autism_tr_m <- autism_tr %>%
-  select(score, -matches("^A(10|[1-9])_Score$"))
+  select(score, -matches("^A(10|[1-9])_Score$"), -starts_with("Class.ASD"))
 
 autism_te_m <- autism_te %>%
-  select(score, -matches("^A(10|[1-9])_Score$"))
+  select(score, -matches("^A(10|[1-9])_Score$"), -starts_with("Class.ASD"))
 
 lm_model <- lm(score ~ ., data = autism_tr_m)
 
@@ -513,6 +510,30 @@ RMSE  <- sqrt(mean((pred - autism_te_m$score)^2))
 cat("Test R²:", round(R2, 3),
     "\nTest MAE:", round(MAE, 3),
     "\nTest RMSE:", round(RMSE, 3), "\n")
+
+```
+
+```{r}
+### PUT THIS BACK IF IT DOESN't WORK to drop the A1-A10 AND ASD.Class_NO 
+# library(dplyr)
+# 
+# # Keep score + all predictors except the A1_Score..A10_Score items
+# autism_tr_m <- autism_tr %>%
+#   select(score, -matches("^A(10|[1-9])_Score$"))
+# 
+# autism_te_m <- autism_te %>%
+#   select(score, -matches("^A(10|[1-9])_Score$"))
+# 
+# lm_model <- lm(score ~ ., data = autism_tr_m)
+# 
+# pred  <- predict(lm_model, newdata = autism_te_m)
+# R2    <- cor(pred, autism_te_m$score)^2
+# MAE   <- mean(abs(pred - autism_te_m$score))
+# RMSE  <- sqrt(mean((pred - autism_te_m$score)^2))
+# 
+# cat("Test R²:", round(R2, 3),
+#     "\nTest MAE:", round(MAE, 3),
+#     "\nTest RMSE:", round(RMSE, 3), "\n")
 
 ```
 
@@ -854,12 +875,30 @@ head(as.matrix(coefs[ind[-1], ]), 10)
 
 ```
 
-```{r}
-require(vip)
+### What it shows
 
+-   **X-axis (λ):** how strong the penalty is (bigger = stronger shrinkage).
+
+    **Color (α):** mixing parameter (0 = ridge, 1 = lasso).
+
+    **Y-axis (RMSE):** smaller is better — you’ll see the “valley” where performance was best
+
+```{r}
+elastic$results %>%
+  ggplot(aes(x = lambda, y = RMSE, color = factor(alpha), group = alpha)) +
+  geom_line(linewidth = 0.8) +
+  scale_x_log10() +
+  labs(title = "Elastic Net Cross-Validation Performance",
+       x = expression(lambda),
+       y = "RMSE (10-fold CV)",
+       color = expression(alpha)) +
+  theme_minimal()
+
+```
+
+```{r}
 vip(elastic, num_features = 10, geom = "point") +
   theme_bw()
-
 ```
 
 ```{r}
@@ -905,9 +944,6 @@ mae_te_enet  <- mae_te
 rmse_te_enet <- rmse_te
 ```
 
-```{}
-```
-
 ```{r}
 comp <- rbind(
   data.frame(Model = "Mean Only",  R2 = R2_base, MAE = MAE_base, RMSE = RMSE_base),
@@ -935,6 +971,76 @@ cat("Elastic Net R²:", round(rsq_te_enet, 3),
 ```
 
 ## Evaluating model performance
+
+```{r}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+comp <- tibble::tibble(
+  Model = c("Mean Only", "Ridge", "LASSO", "Elastic Net"),
+  R2    = c(R2_base,     rsq_te,   rsq_te_lasso, rsq_te_enet),
+  MAE   = c(MAE_base,    mae_te,   mae_te_lasso, mae_te_enet),
+  RMSE  = c(RMSE_base,   rmse_te,  rmse_te_lasso, rmse_te_enet)
+)
+
+comp_long <- comp %>%
+  mutate(Model = factor(Model, levels = c("Mean Only", "Ridge", "LASSO", "Elastic Net"))) %>%
+  pivot_longer(cols = c(R2, MAE, RMSE), names_to = "Metric", values_to = "Value")
+
+ggplot(comp_long, aes(x = Model, y = Value)) +
+  geom_col() +
+  facet_wrap(~ Metric, scales = "free_y") +
+  labs(title = "Model comparison: Baseline vs Ridge vs LASSO vs Elastic Net",
+       x = NULL, y = NULL) +
+  theme_minimal()
+
+```
+
+```{r}
+# Requires 'elastic' from caret::train with glmnet
+library(ggplot2)
+library(dplyr)
+
+best <- elastic$bestTune
+
+elastic$results %>%
+  ggplot(aes(x = lambda, y = RMSE, color = factor(alpha), group = alpha)) +
+  geom_line(linewidth = 0.8) +
+  geom_point(data = best, aes(x = lambda, y = RMSE),
+             color = "black", size = 3, shape = 21, fill = "yellow") +
+  scale_x_log10() +
+  labs(title = paste0("Elastic Net CV — best α = ", best$alpha,
+                      ", λ = ", round(best$lambda, 3)),
+       x = expression(lambda), y = "RMSE (10-fold CV)",
+       color = expression(alpha)) +
+  theme_minimal()
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
 
 ```{r}
 
