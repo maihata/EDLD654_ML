@@ -187,6 +187,8 @@
       margin-right: 0; 
     }
   </style>
+  <script src="FP_files/libs/kePrint-0.0.1/kePrint.js"></script>
+  <link href="FP_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 </head>
 <body class="quarto-light">
   <div class="reveal">
@@ -950,99 +952,121 @@ Middle Eastern         others         Others       Pasifika    South Asian
 </div>
 
 <img data-src="FP_files/figure-revealjs/unnamed-chunk-96-1.png" width="960" class="r-stretch"></section>
-<section id="model-fit---final-model-selection" class="slide level2">
-<h2>Model fit - Final model selection</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href=""></a>comp <span class="ot">&lt;-</span> <span class="fu">rbind</span>(</span>
-<span id="cb38-2"><a href=""></a>  <span class="fu">data.frame</span>(<span class="at">Model =</span> <span class="st">"Mean Only"</span>,  <span class="at">R2 =</span> R2_base, <span class="at">MAE =</span> MAE_base, <span class="at">RMSE =</span> RMSE_base),</span>
-<span id="cb38-3"><a href=""></a>  <span class="fu">data.frame</span>(<span class="at">Model =</span> <span class="st">"Ridge"</span>,      <span class="at">R2 =</span> rsq_te,  <span class="at">MAE =</span> mae_te,  <span class="at">RMSE =</span> rmse_te),</span>
-<span id="cb38-4"><a href=""></a>  <span class="fu">data.frame</span>(<span class="at">Model =</span> <span class="st">"Lasso"</span>,      <span class="at">R2 =</span> rsq_te_lasso, <span class="at">MAE =</span> mae_te_lasso, <span class="at">RMSE =</span> rmse_te_lasso),</span>
-<span id="cb38-5"><a href=""></a>  <span class="fu">data.frame</span>(<span class="at">Model =</span> <span class="st">"ElasticNet"</span>, <span class="at">R2 =</span> rsq_te_enet,  <span class="at">MAE =</span> mae_te_enet,  <span class="at">RMSE =</span> rmse_te_enet)</span>
-<span id="cb38-6"><a href=""></a>)</span>
-<span id="cb38-7"><a href=""></a></span>
-<span id="cb38-8"><a href=""></a>comp_rounded <span class="ot">&lt;-</span> comp <span class="sc">%&gt;%</span></span>
-<span id="cb38-9"><a href=""></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), round, <span class="dv">3</span>))</span>
-<span id="cb38-10"><a href=""></a></span>
-<span id="cb38-11"><a href=""></a>comp_rounded</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>       Model    R2   MAE  RMSE
-1  Mean Only    NA 2.264 2.607
-2      Ridge 0.297 1.895 2.244
-3      Lasso 0.281 1.880 2.241
-4 ElasticNet 0.297 1.895 2.244</code></pre>
-</div>
-</div>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href=""></a><span class="fu">ggplot</span>(comp_long, <span class="fu">aes</span>(<span class="at">x =</span> Metric, <span class="at">y =</span> Value, <span class="at">fill =</span> Model)) <span class="sc">+</span></span>
-<span id="cb40-2"><a href=""></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
-<span id="cb40-3"><a href=""></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Model Performance by Regularization"</span>,</span>
-<span id="cb40-4"><a href=""></a>       <span class="at">x =</span> <span class="st">"Metric"</span>, <span class="at">y =</span> <span class="st">"Value"</span>) <span class="sc">+</span></span>
-<span id="cb40-5"><a href=""></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb40-6"><a href=""></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="FP_files/figure-revealjs/unnamed-chunk-98-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href=""></a>coefs <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(<span class="fu">coef</span>(lasso<span class="sc">$</span>finalModel, <span class="at">s =</span> lasso<span class="sc">$</span>bestTune<span class="sc">$</span>lambda))</span>
-<span id="cb41-2"><a href=""></a>coef_df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">term =</span> <span class="fu">rownames</span>(coefs), <span class="at">beta =</span> <span class="fu">as.numeric</span>(coefs)) <span class="sc">%&gt;%</span></span>
-<span id="cb41-3"><a href=""></a>  <span class="fu">filter</span>(term <span class="sc">!=</span> <span class="st">"(Intercept)"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb41-4"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">abs_beta =</span> <span class="fu">abs</span>(beta)) <span class="sc">%&gt;%</span></span>
-<span id="cb41-5"><a href=""></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(abs_beta)) <span class="sc">%&gt;%</span></span>
-<span id="cb41-6"><a href=""></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">15</span>)</span>
-<span id="cb41-7"><a href=""></a></span>
-<span id="cb41-8"><a href=""></a><span class="fu">ggplot</span>(coef_df, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(term, abs_beta), <span class="at">y =</span> beta)) <span class="sc">+</span></span>
-<span id="cb41-9"><a href=""></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
-<span id="cb41-10"><a href=""></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
-<span id="cb41-11"><a href=""></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Top 15 predictors by |β| (LASSO)"</span>,</span>
-<span id="cb41-12"><a href=""></a>       <span class="at">x =</span> <span class="st">"Predictor"</span>, <span class="at">y =</span> <span class="st">"Coefficient (signed)"</span>) <span class="sc">+</span></span>
-<span id="cb41-13"><a href=""></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="FP_files/figure-revealjs/unnamed-chunk-99-1.png" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
+<section id="model-fit---final-model" class="slide level2">
+<h2>Model fit - Final model</h2>
+<ul>
+<li>Model efficiency &amp; effectiveness</li>
+</ul>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href=""></a><span class="fu">library</span>(knitr)</span>
+<span id="cb38-2"><a href=""></a><span class="fu">library</span>(kableExtra)</span>
+<span id="cb38-3"><a href=""></a></span>
+<span id="cb38-4"><a href=""></a>comp_rounded <span class="sc">%&gt;%</span></span>
+<span id="cb38-5"><a href=""></a>  <span class="fu">kable</span>(</span>
+<span id="cb38-6"><a href=""></a>    <span class="at">caption =</span> <span class="st">"Model Efficiency &amp; Effectiveness"</span>,</span>
+<span id="cb38-7"><a href=""></a>    <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Model"</span>, <span class="st">"R²"</span>, <span class="st">"MAE"</span>, <span class="st">"RMSE"</span>),</span>
+<span id="cb38-8"><a href=""></a>    <span class="at">align =</span> <span class="st">"lccc"</span>,</span>
+<span id="cb38-9"><a href=""></a>    <span class="at">booktabs =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb38-10"><a href=""></a>    <span class="at">digits =</span> <span class="dv">3</span></span>
+<span id="cb38-11"><a href=""></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb38-12"><a href=""></a>  <span class="fu">kable_styling</span>(</span>
+<span id="cb38-13"><a href=""></a>    <span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>),</span>
+<span id="cb38-14"><a href=""></a>    <span class="at">full_width =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb38-15"><a href=""></a>    <span class="at">position =</span> <span class="st">"center"</span>,</span>
+<span id="cb38-16"><a href=""></a>    <span class="at">font_size =</span> <span class="dv">16</span></span>
+<span id="cb38-17"><a href=""></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb38-18"><a href=""></a>  <span class="fu">row_spec</span>(<span class="dv">0</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>, <span class="at">background =</span> <span class="st">"#f0f0f0"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<table class="table table-striped table-hover table-condensed caption-top" data-quarto-postprocess="true" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>Model Efficiency &amp; Effectiveness</caption>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; background-color: rgba(240, 240, 240, 255) !important;">Model</th>
+<th data-quarto-table-cell-role="th" style="text-align: center; font-weight: bold; background-color: rgba(240, 240, 240, 255) !important;">R²</th>
+<th data-quarto-table-cell-role="th" style="text-align: center; font-weight: bold; background-color: rgba(240, 240, 240, 255) !important;">MAE</th>
+<th data-quarto-table-cell-role="th" style="text-align: center; font-weight: bold; background-color: rgba(240, 240, 240, 255) !important;">RMSE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Mean Only</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">2.264</td>
+<td style="text-align: center;">2.607</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ridge</td>
+<td style="text-align: center;">0.297</td>
+<td style="text-align: center;">1.895</td>
+<td style="text-align: center;">2.244</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Lasso</td>
+<td style="text-align: center;">0.281</td>
+<td style="text-align: center;">1.880</td>
+<td style="text-align: center;">2.241</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ElasticNet</td>
+<td style="text-align: center;">0.297</td>
+<td style="text-align: center;">1.895</td>
+<td style="text-align: center;">2.244</td>
+</tr>
+</tbody>
+</table>
 </section>
+<section id="model-fit---final-model-1" class="slide level2">
+<h2>Model fit - Final model</h2>
+<ul>
+<li>Model efficiency &amp; effectiveness</li>
+</ul>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href=""></a><span class="fu">ggplot</span>(comp_long, <span class="fu">aes</span>(<span class="at">x =</span> Metric, <span class="at">y =</span> Value, <span class="at">fill =</span> Model)) <span class="sc">+</span></span>
+<span id="cb39-2"><a href=""></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
+<span id="cb39-3"><a href=""></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Model Performance by Regularization"</span>,</span>
+<span id="cb39-4"><a href=""></a>       <span class="at">x =</span> <span class="st">"Metric"</span>, <span class="at">y =</span> <span class="st">"Value"</span>) <span class="sc">+</span></span>
+<span id="cb39-5"><a href=""></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb39-6"><a href=""></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="FP_files/figure-revealjs/unnamed-chunk-98-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="model-fit---final-model-2" class="slide level2">
+<h2>Model fit - Final model</h2>
+<ul>
+<li>Lasso is the winner 🥇</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href=""></a>coefs <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(<span class="fu">coef</span>(lasso<span class="sc">$</span>finalModel, <span class="at">s =</span> lasso<span class="sc">$</span>bestTune<span class="sc">$</span>lambda))</span>
+<span id="cb40-2"><a href=""></a>coef_df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">term =</span> <span class="fu">rownames</span>(coefs), <span class="at">beta =</span> <span class="fu">as.numeric</span>(coefs)) <span class="sc">%&gt;%</span></span>
+<span id="cb40-3"><a href=""></a>  <span class="fu">filter</span>(term <span class="sc">!=</span> <span class="st">"(Intercept)"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb40-4"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">abs_beta =</span> <span class="fu">abs</span>(beta)) <span class="sc">%&gt;%</span></span>
+<span id="cb40-5"><a href=""></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(abs_beta)) <span class="sc">%&gt;%</span></span>
+<span id="cb40-6"><a href=""></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">15</span>)</span>
+<span id="cb40-7"><a href=""></a></span>
+<span id="cb40-8"><a href=""></a><span class="fu">ggplot</span>(coef_df, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(term, abs_beta), <span class="at">y =</span> beta)) <span class="sc">+</span></span>
+<span id="cb40-9"><a href=""></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb40-10"><a href=""></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb40-11"><a href=""></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Top 15 predictors by |β| (LASSO)"</span>,</span>
+<span id="cb40-12"><a href=""></a>       <span class="at">x =</span> <span class="st">"Predictor"</span>, <span class="at">y =</span> <span class="st">"Coefficient (signed)"</span>) <span class="sc">+</span></span>
+<span id="cb40-13"><a href=""></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="FP_files/figure-revealjs/unnamed-chunk-99-1.png" width="960" class="r-stretch"></section>
 <section id="model-fit---cut-off-point" class="slide level2">
 <h2>Model fit - Cut off point</h2>
 </section>
 <section id="model-fit---other-considerations" class="slide level2">
 <h2>Model fit - Other considerations</h2>
-<p>dsljdak What got dropped?</p>
+<ul>
+<li>What got dropped?</li>
+</ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href=""></a><span class="do">### 11.3.25. </span><span class="al">###</span><span class="do"> </span></span>
-<span id="cb42-2"><a href=""></a><span class="co"># ✅ Which variables did LASSO keep vs drop? (caret + glmnet)</span></span>
-<span id="cb42-3"><a href=""></a><span class="co"># ✅ List predictors dropped by LASSO (works with caret)</span></span>
-<span id="cb42-4"><a href=""></a>best_lambda <span class="ot">&lt;-</span> lasso<span class="sc">$</span>bestTune<span class="sc">$</span>lambda</span>
-<span id="cb42-5"><a href=""></a></span>
-<span id="cb42-6"><a href=""></a><span class="co"># Directly use coef() on the glmnet model inside caret</span></span>
-<span id="cb42-7"><a href=""></a>co <span class="ot">&lt;-</span> <span class="fu">coef</span>(lasso<span class="sc">$</span>finalModel, <span class="at">s =</span> best_lambda)</span>
-<span id="cb42-8"><a href=""></a></span>
-<span id="cb42-9"><a href=""></a><span class="co"># Extract dropped predictors</span></span>
-<span id="cb42-10"><a href=""></a>dropped <span class="ot">&lt;-</span> <span class="fu">rownames</span>(<span class="fu">as.matrix</span>(co))[<span class="fu">as.numeric</span>(co) <span class="sc">==</span> <span class="dv">0</span>]</span>
-<span id="cb42-11"><a href=""></a>dropped <span class="ot">&lt;-</span> dropped[dropped <span class="sc">!=</span> <span class="st">"(Intercept)"</span>]</span>
-<span id="cb42-12"><a href=""></a></span>
-<span id="cb42-13"><a href=""></a><span class="fu">cat</span>(<span class="st">"Dropped predictors ("</span>, <span class="fu">length</span>(dropped), <span class="st">"):</span><span class="sc">\n</span><span class="st">"</span>, <span class="at">sep =</span> <span class="st">""</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Dropped predictors (4):</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href=""></a><span class="fu">print</span>(dropped)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "age_poly_2"    "jundice_yes"   "austim_yes"    "relation_Self"</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href=""></a><span class="do">### You can similarly check kept predictors with:</span><span class="al">###</span></span>
-<span id="cb46-2"><a href=""></a>kept <span class="ot">&lt;-</span> <span class="fu">rownames</span>(<span class="fu">as.matrix</span>(co))[<span class="fu">as.numeric</span>(co) <span class="sc">!=</span> <span class="dv">0</span>]</span>
-<span id="cb46-3"><a href=""></a>kept <span class="ot">&lt;-</span> kept[kept <span class="sc">!=</span> <span class="st">"(Intercept)"</span>]</span>
-<span id="cb46-4"><a href=""></a><span class="fu">print</span>(kept)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] "gender_binary"                      "jundice_binary"                    
  [3] "age_poly_1"                         "age_poly_3"                        
@@ -1069,14 +1093,12 @@ Middle Eastern         others         Others       Pasifika    South Asian
 <section id="conclusion" class="slide level2">
 <h2>Conclusion</h2>
 <p>“… all model building efforts are constrained by the existing data” (p.&nbsp;61, Kuhn &amp; Johnson, 2016).</p>
-<p>“People often think of quantitative methodologies as neutral, objective, and scientific” (p.&nbsp;1, Castillo &amp; Strunk, 2025).</p>
 
-<img data-src="images/muffinorchihuahua.jpg" class="quarto-figure quarto-figure-center r-stretch" style="width:70.0%"></section>
+<img data-src="images/muffinorchihuahua.jpg" class="quarto-figure quarto-figure-center r-stretch" style="width:75.0%"></section>
 <section id="references" class="slide level2">
 <h2>References:</h2>
 <ul>
 <li>Allison, C., Auyeung, B., &amp; Baron-Cohen, S. (2012). Toward brief “Red Flags” for Autism screening: The short Autism Spectrum Quotient and the short Quantitative Checklist in 1,000 cases and 3,000 controls. <em>Journal of the American Academy of Child &amp; Adolescent Psychiatry</em>, <em>51</em>(2), 202-212.e7.</li>
-<li>Castillow, W. &amp; Strunk, K. K. (2025). <em>How to QuantCrit: Applying Critical Race Theory to quantitative data in education.</em> Routledge.</li>
 <li>Growcoot, M. (2023, August 3). <em>Asian MIT student asks AI for a pro headshot, gets turned White.</em> PetaPixel. <a href="https://petapixel.com/2023/08/03/asian-mit-student-asks-ai-for-a-pro-headshot-gets-turned-white/" class="uri">https://petapixel.com/2023/08/03/asian-mit-student-asks-ai-for-a-pro-headshot-gets-turned-white/</a></li>
 <li>Kuhn, M. and Johnson, K. (2014). <em>Applied Predictive Modeling in R</em>. Springer.</li>
 <li>Vogt, P. W. &amp; Johnson, R. Burke. (2016). <em>The Sage dictionary of statistics &amp; methodology.</em> Sage.</li>
@@ -1090,7 +1112,7 @@ Middle Eastern         others         Others       Pasifika    South Asian
 </div>
 
 
-<img data-src="images/Thank-You-in-Different-Languages.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
+<img data-src="images/Thank-You-in-Different-Languages.png" class="quarto-figure quarto-figure-center r-stretch" style="width:50.0%"></section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">
