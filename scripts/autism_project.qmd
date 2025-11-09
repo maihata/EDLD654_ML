@@ -465,14 +465,12 @@ Step 2: Train/Test split
 "In order to obtain a realistic measure of model performance, we will split the data into two subsamples: training and test datasets. Due to the relatively small sample size, I will use a 90-10 split (typically a 80-20 or 70-30 split is used). The smaller test dataset will be used as a final hold-out set, and training dataset will be used to build the model."
 
 ```{r}
-# set.seed(20251102)
-# 
-#  # shouln <- nrow(autism_final)
-# loc <- sample(seq_len(n), size = round(0.9 * n))
-# autism_tr <- autism_final[loc, ]
-# autism_te <- autism_final[-loc, ]
-# 
-# length(intersect(rownames(autism_tr), rownames(autism_te))) d now be 0
+set.seed(20251102)
+
+# shouln <- nrow(autism_final)
+loc <- sample(seq_len(n), size = round(0.9 * n))
+autism_tr <- autism_final[loc, ]
+autism_te <- autism_final[-loc, ]
 
 ```
 
@@ -496,54 +494,79 @@ nrow(autism_tr) + nrow(autism_te) == n            # should be TRUE
 ```
 
 ```{r}
+# 1) Rebuild features: drop A1–A10 and Class.ASD* but KEEP everything else
+library(dplyr)
+
+X_tr <- autism_tr %>%
+  select(-matches("^A(10|[1-9])_Score$"), -starts_with("Class.ASD")) %>%
+  select(-score)
+
+X_te <- autism_te %>%
+  select(-matches("^A(10|[1-9])_Score$"), -starts_with("Class.ASD")) %>%
+  select(-score)
+
+# If that still leaves zero predictors (ncol == 0), try a fallback that keeps numeric vars
+if (ncol(X_tr) == 0) {
+  X_tr <- autism_tr %>% select(where(is.numeric), -score)
+  X_te <- autism_te %>% select(where(is.numeric), -score)
+}
+
+# Bind back the outcome as first column
+autism_tr_m <- bind_cols(score = autism_tr$score, X_tr)
+autism_te_m <- bind_cols(score = autism_te$score, X_te)
+
+# 2) Sanity check: must have at least one predictor
+stopifnot(ncol(autism_tr_m) > 1, ncol(autism_te_m) > 1)
+
+# 3) Clean names and types for caret
+colnames(autism_tr_m) <- make.names(colnames(autism_tr_m))
+colnames(autism_te_m) <- make.names(colnames(autism_te_m))
+
+autism_tr_m[] <- lapply(autism_tr_m, function(x) if (is.character(x)) as.factor(x) else x)
+autism_te_m[] <- lapply(autism_te_m, function(x) if (is.character(x)) as.factor(x) else x)
+
+# 4) 10-fold CV with caret (GLM Gaussian = OLS)
+library(caret)
 set.seed(20251102)
+cv10 <- trainControl(method = "cv", number = 10)
 
-n   <- nrow(autism_final)
-loc <- sample(seq_len(n), size = round(0.9 * n))  # train indices
+glm_cv <- caret::train(
+  score ~ .,
+  data      = autism_tr_m,
+  method    = "glm",
+  family    = gaussian(),
+  trControl = cv10
+)
 
-autism_tr <- autism_final[loc, ]
-autism_te <- autism_final[-loc, ]
+glm_cv$results  # averaged CV metrics
 
-# True disjointness check:
-length(intersect(loc, setdiff(seq_len(n), loc)))  # should be 0
+# Evaluate on the held-out test split
+pred_cv <- predict(glm_cv, newdata = autism_te_m)
+R2_cv   <- cor(pred_cv, autism_te_m$score)^2
+MAE_cv  <- mean(abs(pred_cv - autism_te_m$score))
+RMSE_cv <- sqrt(mean((pred_cv - autism_te_m$score)^2))
 
-```
+cat("Held-out Test (caret GLM, 10-fold CV)\n",
+    "R²:", round(R2_cv, 3),
+    " MAE:", round(MAE_cv, 3),
+    " RMSE:", round(RMSE_cv, 3), "\n")
 
-```{r}
-lm_model <- lm(score ~ ., data = autism_tr)
-```
-
-```{r}
-# BECAUSE THE A1_Score so forth were included, it predicted PERFECTLY OF COURSE that makes sense SO LATER I DROPPED THE A1_Score so forth, and also ASD.Class_Binary later
-pred  <- predict(lm_model, newdata = autism_te)
-
-R2    <- cor(pred, autism_te$score)^2
-MAE   <- mean(abs(pred - autism_te$score))
-RMSE  <- sqrt(mean((pred - autism_te$score)^2))  # ← missing ) added here
-
-cat("Test R²:", round(R2, 3),
-    "\nTest MAE:", round(MAE, 3),
-    "\nTest RMSE:", round(RMSE, 3), "\n")
 
 ```
 
 ```{r}
-autism_tr_m <- autism_tr %>%
-  select(score, -matches("^A(10|[1-9])_Score$"), -starts_with("Class.ASD"))
-
-autism_te_m <- autism_te %>%
-  select(score, -matches("^A(10|[1-9])_Score$"), -starts_with("Class.ASD"))
-
+# Plain OLS on training split (comparison with caret CV)
 lm_model <- lm(score ~ ., data = autism_tr_m)
 
-pred  <- predict(lm_model, newdata = autism_te_m)
-R2    <- cor(pred, autism_te_m$score)^2
-MAE   <- mean(abs(pred - autism_te_m$score))
-RMSE  <- sqrt(mean((pred - autism_te_m$score)^2))
+pred_lm <- predict(lm_model, newdata = autism_te_m)
+R2_lm   <- cor(pred_lm, autism_te_m$score)^2
+MAE_lm  <- mean(abs(pred_lm - autism_te_m$score))
+RMSE_lm <- sqrt(mean((pred_lm - autism_te_m$score)^2))
 
-cat("Test R²:", round(R2, 3),
-    "\nTest MAE:", round(MAE, 3),
-    "\nTest RMSE:", round(RMSE, 3), "\n")
+cat("Held-out Test (plain lm)\n",
+    "R²:", round(R2_lm, 3),
+    " MAE:", round(MAE_lm, 3),
+    " RMSE:", round(RMSE_lm, 3), "\n")
 
 ```
 
@@ -572,13 +595,16 @@ cat("Test R²:", round(R2, 3),
 ```
 
 ```{r}
-summary(pred)
-sum(is.na(pred))
+summary(pred_cv); sum(is.na(pred_cv))
+# Optional also check the plain lm:
+# summary(pred_lm); sum(is.na(pred_lm))
 
 ```
 
 ```{r}
-length(coef(lm_model))
+length(coef(lm_model))                  # plain lm
+length(coef(glm_cv$finalModel))         # caret GLM (final model)
+
 ```
 
 ```{r}

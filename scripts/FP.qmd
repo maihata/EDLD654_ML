@@ -77,7 +77,11 @@ From [Kaggle](https://www.kaggle.com/datasets/umeradnaan/autism-screening)
 ![](images/Autism_Spectrum_dataset.png){fig-align="center" width="60%"}
 :::
 
-## Cleaning up missing data
+## AQ-10 screener
+
+Allison et al. (2012) evaluated shortened 10-item versions of the Autism Spectrum Quotient (AQ-10) as quick “red flag” screening tools for Autism. Using data from over 1,000 Autistic individuals and 3,000 controls, the short forms showed high sensitivity (accurately identifying most people with Autism) and high specificity (correctly excluding those without) across age groups.
+
+![](images/AQ_10.png){fig-alt="AQ-10 screener image" fig-align="center" width="70%"}
 
 ```{r}
 #| include: false
@@ -217,7 +221,7 @@ ggplot(autism, aes(x = Class.ASD, fill = Class.ASD)) +
 
 ## Autism Screener user age
 
--   Someone was 383 years old.
+-   Someone was 383 years old 👵🏼
 
 ```{r}
 #| include: false
@@ -342,7 +346,7 @@ summary(autism[num_vars])
 ```
 
 ```{r}
-#| include: true
+#| echo: true
 ggplot(autism, aes(x = ethnicity)) +
   geom_bar(fill = "steelblue") +
   geom_text(aes(label = after_stat(count)),
@@ -469,122 +473,157 @@ dup_rows <- autism_final |>
 dup_rows
 ```
 
-## Modeling
+## Modeling assumptions
 
--   Ordinary Least Squares (OLS) assumptions for linear regression (Hands On Machine Learning with R, Ch. 4 & 6):
+Before building the models, it's important to review the Ordinary Least Squares (OLS) assumptions for linear regression (Ch. 4 & 6, Boehmke, & Greenwell, 2019):
 
-    -   Linear relationship
+1.  **Linearity**: There should be a roughly linear relationship between predictors and outcome variables.
 
-    -   There are more observations (n) than features/variables (p)
+2.  **Sample size**: The number of observations (n) should be larger than that of the predictors (p).
 
-    -   No or little multicollinearity (when independent variables are highly correlated to each other in multiple regression, p. 269, Vogt & Johnson, 2016 - *the Sage dictionary of statistics & methodology*).
+3.  **Multicollinearity**: The independent variables not be highly correlated to each other (p. 269, Vogt & Johnson, 2016).
 
-## Model 1: No Linear Regression without Regularization
+## Modeling assumptions
+
+... and yet, I initially included all 10 screener questions (A1_Score\~A10_Score) and "Class.ASD" in the model, overlooking that "result" which is the total of A1\~A10 was already my outcome variable, and "Class.ASD" was simply coded “YES” for scores of 6 or higher.
 
 ```{r}
-# ✅ Minimal, robust 90/10 split
-#| include: false
+colnames(autism)
+```
+
+## Model 1: Linear Regression without Regularization
+
+```{r}
+# ✅ Robust 90/10 split (self-contained)
 set.seed(20251102)
 
 stopifnot(exists("autism_final"), is.data.frame(autism_final))
 
-n <- nrow(autism_final)              # <-- you forgot to (re)define n
-stopifnot(is.numeric(n), n > 1)
+n <- nrow(autism_final)
+stopifnot(is.finite(n), n >= 2)
 
-idx <- sample.int(n, size = floor(0.9 * n))  # safer than seq_len + sample
+idx <- sample.int(n, size = floor(0.9 * n))
 autism_tr <- autism_final[idx, , drop = FALSE]
 autism_te <- autism_final[-idx, , drop = FALSE]
 
-# disjointness checks
-length(intersect(idx, setdiff(seq_len(n), idx)))  # should be 0
-nrow(autism_tr) + nrow(autism_te) == n            # should be TRUE
+# (optional sanity)
+# anyDuplicated(idx)
+# length(idx); nrow(autism_tr); nrow(autism_te)
+
 ```
 
 ```{r}
 #| include: false
+
+# Build modeling frames from the split data:
+# - keep score as outcome
+# - drop A1–A10 question items from predictors
+# - (Class.ASD* were already dropped from autism_final earlier, but
+# keeping the line below is harmless if nothing matches)
+
+X_tr <- autism_tr %>%
+select(-matches("^A(10|[1-9])_Score$")) %>%
+select(-score)
+
+X_te <- autism_te %>%
+select(-matches("^A(10|[1-9])_Score$")) %>%
+select(-score)
+
+# Fallback if nothing left: keep numeric predictors (besides score)
+
+if (ncol(X_tr) == 0) {
+X_tr <- autism_tr %>% select(where(is.numeric), -score)
+X_te <- autism_te %>% select(where(is.numeric), -score)
+}
+
+# Bind outcome first
+
+autism_tr_m <- bind_cols(score = autism_tr$score, X_tr)
+autism_te_m <- bind_cols(score = autism_te$score, X_te)
+
+# Safety
+
+stopifnot(ncol(autism_tr_m) > 1, ncol(autism_te_m) > 1)
+
+# Clean names & character→factor for modeling
+
+colnames(autism_tr_m) <- make.names(colnames(autism_tr_m))
+colnames(autism_te_m) <- make.names(colnames(autism_te_m))
+autism_tr_m[] <- lapply(autism_tr_m, function(x) if (is.character(x)) as.factor(x) else x)
+autism_te_m[] <- lapply(autism_te_m, function(x) if (is.character(x)) as.factor(x) else x)
+
+```
+
+```{r}
+# Plain OLS on training split (comparison with caret CV)
+lm_model <- lm(score ~ ., data = autism_tr_m)
+
+pred_lm <- predict(lm_model, newdata = autism_te_m)
+R2_lm   <- cor(pred_lm, autism_te_m$score)^2
+MAE_lm  <- mean(abs(pred_lm - autism_te_m$score))
+RMSE_lm <- sqrt(mean((pred_lm - autism_te_m$score)^2))
+
+cat("Held-out Test (plain lm)\n",
+    "R²:", round(R2_lm, 3),
+    " MAE:", round(MAE_lm, 3),
+    " RMSE:", round(RMSE_lm, 3), "\n")
+
+```
+
+```{r}
+#| label: fit-caret-cv
+#| dependson: build-ml-frames
+#| include: false
+library(caret)
 set.seed(20251102)
+cv10 <- trainControl(method = "cv", number = 10)
 
-n   <- nrow(autism_final)
-loc <- sample(seq_len(n), size = round(0.9 * n))  # train indices
+glm_cv <- caret::train(
+score ~ ., data = autism_tr_m,
+method = "glm", family = gaussian(), trControl = cv10
+)
 
-autism_tr <- autism_final[loc, ]
-autism_te <- autism_final[-loc, ]
+pred_cv <- predict(glm_cv, newdata = autism_te_m)
+R2_cv   <- cor(pred_cv, autism_te_m$score)^2
+MAE_cv  <- mean(abs(pred_cv - autism_te_m$score))
+RMSE_cv <- sqrt(mean((pred_cv - autism_te_m$score)^2))
 
-# True disjointness check:
-length(intersect(loc, setdiff(seq_len(n), loc)))  # should be 0
 ```
+
+```{r}
+#| label: coef-counts
+#| dependson: [fit-lm, fit-caret-cv]
+length(coef(lm_model))              # plain lm
+length(coef(glm_cv$finalModel))     # caret GLM (final)
+
+```
+
 
 ```{r}
 #| echo: false
-lm_model <- lm(score ~ ., data = autism_tr)
-```
+# Baseline mean-only predictions
+mean_pred <- mean(autism_tr$score)
+pred_base <- rep(mean_pred, nrow(autism_te))
 
-```{r}
-# BECAUSE THE A1_Score so forth were included, it predicted PERFECTLY OF COURSE that makes sense SO LATER I DROPPED THE A1_Score so forth, and also ASD.Class_Binary later
-#| echo: false
-pred  <- predict(lm_model, newdata = autism_te)
-
-R2    <- cor(pred, autism_te$score)^2
-MAE   <- mean(abs(pred - autism_te$score))
-RMSE  <- sqrt(mean((pred - autism_te$score)^2))  # ← missing ) added here
-
-cat("Test R²:", round(R2, 3),
-    "\nTest MAE:", round(MAE, 3),
-    "\nTest RMSE:", round(RMSE, 3), "\n")
-
-```
-
-```{r}
-#| echo: false
-autism_tr_m <- autism_tr %>%
-  select(score, -matches("^A(10|[1-9])_Score$"), -starts_with("Class.ASD"))
-
-autism_te_m <- autism_te %>%
-  select(score, -matches("^A(10|[1-9])_Score$"), -starts_with("Class.ASD"))
-
-lm_model <- lm(score ~ ., data = autism_tr_m)
-
-pred  <- predict(lm_model, newdata = autism_te_m)
-R2    <- cor(pred, autism_te_m$score)^2
-MAE   <- mean(abs(pred - autism_te_m$score))
-RMSE  <- sqrt(mean((pred - autism_te_m$score)^2))
-
-cat("Test R²:", round(R2, 3),
-    "\nTest MAE:", round(MAE, 3),
-    "\nTest RMSE:", round(RMSE, 3), "\n")
-```
-
-```{r}
-#| include: false
-autism_tr_m <- autism_tr %>%
-  select(score, -matches("^A(10|[1-9])_Score$"), -starts_with("Class.ASD"))
-
-autism_te_m <- autism_te %>%
-  select(score, -matches("^A(10|[1-9])_Score$"), -starts_with("Class.ASD"))
-
-lm_model <- lm(score ~ ., data = autism_tr_m)
-
-pred  <- predict(lm_model, newdata = autism_te_m)
-R2    <- cor(pred, autism_te_m$score)^2
-MAE   <- mean(abs(pred - autism_te_m$score))
-RMSE  <- sqrt(mean((pred - autism_te_m$score)^2))
-
-cat("Test R²:", round(R2, 3),
-    "\nTest MAE:", round(MAE, 3),
-    "\nTest RMSE:", round(RMSE, 3), "\n")
+# Compute metrics
+R2_base   <- cor(pred_base, autism_te$score)^2
+MAE_base  <- mean(abs(pred_base - autism_te$score))
+RMSE_base <- sqrt(mean((pred_base - autism_te$score)^2))
 
 ```
 
 ```{r}
 #| echo: true
+summary(pred_cv);  sum(is.na(pred_cv))
 
-summary(pred)
-sum(is.na(pred))
+# Optional also check the plain lm:
+# summary(pred_lm); sum(is.na(pred_lm))
+
 ```
 
 ```{r}
 # Baseline mean-only predictions
-#| include: false
+#| echo: true
 
 mean_pred <- mean(autism_tr$score)
 pred_base <- rep(mean_pred, nrow(autism_te))
@@ -672,9 +711,11 @@ library(vip)
 vip(ridge, num_features = 10, geom = "point") + theme_bw()
 ```
 
+## Model 2: Ridge Regression Model
+
 ```{r}
 # ✅ Chunk 6 – Visualize feature importance
-#| include: true
+#| echo: true
 
 predict_te_ridge <- predict(ridge, newdata = autism_te)
 
@@ -779,8 +820,10 @@ lasso$bestTune        # chosen lambda
 lasso$results[1:6, ]  # peek at results
 ```
 
+## Model 3: Lasso Regression Model
+
 ```{r}
-#| include: false
+#| echo: true
 
 pred_te_lasso <- predict(lasso, newdata = autism_te)
 
@@ -837,7 +880,6 @@ dim(autism_te)
 ```
 
 ```{r}
-library(recipes)
 #| include: false
 
 blueprint <- recipe(score ~ ., data = autism_tr) %>%
@@ -869,14 +911,6 @@ caret::getModelInfo()$glmnet$parameters
 ```
 
 ```{r}
-
-```
-
-## Specific setting for model fitting
-
--   ???
-
-```{r}
 #| include: false
 
 grid <- expand.grid(
@@ -902,8 +936,10 @@ elastic <- caret::train(
 Sys.time()
 ```
 
+## Model 4: Elastic net model
+
 ```{r}
-#| include: false
+#| echo: true
 
 plot(elastic)
 
@@ -1141,7 +1177,7 @@ elastic$results %>%
   theme_minimal()
 ```
 
-## Model fit - Final model 
+## Model fit - Final model
 
 -   Model efficiency & effectiveness
 
@@ -1170,7 +1206,7 @@ comp_rounded %>%
 
 ```
 
-## Model fit - Final model 
+## Model fit - Final model
 
 -   Model efficiency & effectiveness
 
@@ -1187,7 +1223,7 @@ ggplot(comp_long, aes(x = Metric, y = Value, fill = Model)) +
 
 ```
 
-## Model fit - Final model 
+## Model fit - Final model
 
 -   Lasso is the winner 🥇
 
@@ -1265,6 +1301,7 @@ print(kept)
 ## References:
 
 -   Allison, C., Auyeung, B., & Baron-Cohen, S. (2012). Toward brief “Red Flags” for Autism screening: The short Autism Spectrum Quotient and the short Quantitative Checklist in 1,000 cases and 3,000 controls. *Journal of the American Academy of Child & Adolescent Psychiatry*, *51*(2), 202-212.e7.
+-   Boehmke, B. & Greenwell, B. (2019). *Hands on Machine Learning with R*. Taylor & Francis.
 -   Growcoot, M. (2023, August 3). *Asian MIT student asks AI for a pro headshot, gets turned White.* PetaPixel. <https://petapixel.com/2023/08/03/asian-mit-student-asks-ai-for-a-pro-headshot-gets-turned-white/>
 -   Kuhn, M. and Johnson, K. (2014). *Applied Predictive Modeling in R*. Springer.
 -   Vogt, P. W. & Johnson, R. Burke. (2016). *The Sage dictionary of statistics & methodology.* Sage.

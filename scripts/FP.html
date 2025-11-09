@@ -333,7 +333,7 @@ relation             -            -              -</code></pre>
 <section id="autism-screener-user-age" class="slide level2">
 <h2>Autism Screener user age</h2>
 <ul>
-<li>Someone was 383 years old.</li>
+<li>Someone was 383 years old 👵🏼</li>
 </ul>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href=""></a><span class="fu">ggplot</span>(autism, <span class="fu">aes</span>(<span class="at">x =</span> age)) <span class="sc">+</span></span>
@@ -377,16 +377,28 @@ relation             -            -              -</code></pre>
 </div>
 </div>
 </section>
-<section id="modeling" class="slide level2">
-<h2>Modeling</h2>
-<ul>
-<li><p>Ordinary Least Squares (OLS) assumptions for linear regression (Hands On Machine Learning with R, Ch. 4 &amp; 6):</p>
-<ul>
-<li><p>Linear relationship</p></li>
-<li><p>There are more observations (n) than features/variables (p)</p></li>
-<li><p>No or little multicollinearity (when independent variables are highly correlated to each other in multiple regression, p.&nbsp;269, Vogt &amp; Johnson, 2016 - <em>the Sage dictionary of statistics &amp; methodology</em>).</p></li>
-</ul></li>
-</ul>
+<section id="modeling-assumptions" class="slide level2">
+<h2>Modeling assumptions</h2>
+<p>Before building the models, we need to revisit the Ordinary Least Squares (OLS) assumptions for linear regression (Hands On Machine Learning with R, Ch. 4 &amp; 6):</p>
+<ol type="1">
+<li><p><strong>Linearity</strong>: There should be a roughly linear relationship between predictors and outcome variables.</p></li>
+<li><p><strong>Sample size</strong>: The number of observations (<em>n</em>) should be larger than that of predictors/features (p).</p></li>
+<li><p><strong>Multicollinearity</strong>: Independent variables should not be highly correlated to each other (p.&nbsp;269, Vogt &amp; Johnson, 2016).</p></li>
+</ol>
+</section>
+<section id="modeling-assumptions-1" class="slide level2">
+<h2>Modeling assumptions</h2>
+<p>… and yet, I initially included all ten screener items (A1_Score~A10_Score) and “Class.ASD” in the model, overlooking that “result” which is the total of A1~A10 was already my outcome variable, and “Class.ASD” was simply coded “YES” for scores of six or higher.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "A1_Score"         "A2_Score"         "A3_Score"         "A4_Score"        
+ [5] "A5_Score"         "A6_Score"         "A7_Score"         "A8_Score"        
+ [9] "A9_Score"         "A10_Score"        "age"              "gender"          
+[13] "ethnicity"        "jundice"          "austim"           "contry_of_res"   
+[17] "used_app_before"  "result"           "age_desc"         "relation"        
+[21] "Class.ASD"        "gender_binary"    "jundice_binary"   "Class.ASD_binary"</code></pre>
+</div>
+</div>
 </section>
 <section id="model-1-no-linear-regression-without-regularization" class="slide level2">
 <h2>Model 1: No Linear Regression without Regularization</h2>
@@ -413,12 +425,12 @@ Test RMSE: 2.607 </code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href=""></a><span class="fu">summary</span>(pred)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href=""></a><span class="fu">summary</span>(pred)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
   4.873   4.873   4.873   4.873   4.873   4.873 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href=""></a><span class="fu">sum</span>(<span class="fu">is.na</span>(pred))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href=""></a><span class="fu">sum</span>(<span class="fu">is.na</span>(pred))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0</code></pre>
 </div>
@@ -430,7 +442,7 @@ Test RMSE: 2.607 </code></pre>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="FP_files/figure-revealjs/unnamed-chunk-61-1.png" width="960"></p>
+<p><img data-src="FP_files/figure-revealjs/unnamed-chunk-62-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -746,11 +758,14 @@ Test RMSE: 2.607 </code></pre>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="FP_files/figure-revealjs/unnamed-chunk-63-1.png" width="960"></p>
+<p><img data-src="FP_files/figure-revealjs/unnamed-chunk-64-1.png" width="960"></p>
 </figure>
 </div>
 </div>
 </div>
+</section>
+<section id="model-2-ridge-regression-model-1" class="slide level2">
+<h2>Model 2: Ridge Regression Model</h2>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>Ridge test R²: 0.298 
@@ -758,16 +773,8 @@ MAE: 1.906
 RMSE: 2.252 </code></pre>
 </div>
 </div>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="FP_files/figure-revealjs/unnamed-chunk-65-1.png" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell">
+
+<img data-src="FP_files/figure-revealjs/unnamed-chunk-66-1.png" width="960" class="r-stretch"><div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>      Model    R2   MAE  RMSE
 1 Mean Only    NA 2.264 2.607
@@ -785,14 +792,14 @@ RMSE: 2.252 </code></pre>
 <section id="model-3-lasso-regression-model" class="slide level2">
 <h2>Model 3: Lasso Regression Model</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href=""></a><span class="fu">plot</span>(lasso)           <span class="co"># CV curve</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href=""></a><span class="fu">plot</span>(lasso)           <span class="co"># CV curve</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href=""></a>lasso<span class="sc">$</span>bestTune        <span class="co"># chosen lambda</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href=""></a>lasso<span class="sc">$</span>bestTune        <span class="co"># chosen lambda</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  alpha lambda
 1     1   0.01</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href=""></a>lasso<span class="sc">$</span>results[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>, ]  <span class="co"># peek at results</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href=""></a>lasso<span class="sc">$</span>results[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>, ]  <span class="co"># peek at results</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  alpha lambda     RMSE  Rsquared      MAE    RMSESD RsquaredSD     MAESD
 1     1   0.01 2.308377 0.1528134 1.878060 0.1301582 0.09417437 0.1434507
@@ -803,7 +810,26 @@ RMSE: 2.252 </code></pre>
 6     1   0.06 2.316498 0.1471891 1.886724 0.1248315 0.09075420 0.1456272</code></pre>
 </div>
 </div>
-<img data-src="FP_files/figure-revealjs/unnamed-chunk-72-1.png" width="960" class="r-stretch"><div class="cell">
+<img data-src="FP_files/figure-revealjs/unnamed-chunk-73-1.png" width="960" class="r-stretch"></section>
+<section id="model-3-lasso-regression-model-1" class="slide level2">
+<h2>Model 3: Lasso Regression Model</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href=""></a>pred_te_lasso <span class="ot">&lt;-</span> <span class="fu">predict</span>(lasso, <span class="at">newdata =</span> autism_te)</span>
+<span id="cb31-2"><a href=""></a></span>
+<span id="cb31-3"><a href=""></a>rsq_te_lasso  <span class="ot">&lt;-</span> <span class="fu">cor</span>(autism_te<span class="sc">$</span>score, pred_te_lasso, <span class="at">use =</span> <span class="st">"complete.obs"</span>)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb31-4"><a href=""></a>mae_te_lasso  <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">abs</span>(autism_te<span class="sc">$</span>score <span class="sc">-</span> pred_te_lasso))</span>
+<span id="cb31-5"><a href=""></a>rmse_te_lasso <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>((autism_te<span class="sc">$</span>score <span class="sc">-</span> pred_te_lasso)<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb31-6"><a href=""></a></span>
+<span id="cb31-7"><a href=""></a><span class="fu">cat</span>(<span class="st">"LASSO test R²:"</span>, <span class="fu">round</span>(rsq_te_lasso, <span class="dv">3</span>),</span>
+<span id="cb31-8"><a href=""></a>    <span class="st">"</span><span class="sc">\n</span><span class="st">MAE:"</span>, <span class="fu">round</span>(mae_te_lasso, <span class="dv">3</span>),</span>
+<span id="cb31-9"><a href=""></a>    <span class="st">"</span><span class="sc">\n</span><span class="st">RMSE:"</span>, <span class="fu">round</span>(rmse_te_lasso, <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>LASSO test R²: 0.281 
+MAE: 1.88 
+RMSE: 2.241 </code></pre>
+</div>
+</div>
+<div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>Polynomial age features found:</code></pre>
 </div>
@@ -831,27 +857,58 @@ RMSE: 2.252 </code></pre>
 </div>
 </div>
 </section>
-<section id="specific-setting-for-model-fitting" class="slide level2">
-<h2>Specific setting for model fitting</h2>
-<ul>
-<li>???</li>
-</ul>
-
-<img data-src="FP_files/figure-revealjs/unnamed-chunk-87-1.png" width="960" class="r-stretch"></section>
+<section id="model-4-elastic-net-model-1" class="slide level2">
+<h2>Model 4: Elastic net model</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href=""></a><span class="fu">plot</span>(elastic)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="FP_files/figure-revealjs/unnamed-chunk-82-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href=""></a>elastic<span class="sc">$</span>bestTune        <span class="co"># chosen alpha &amp; lambda</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    alpha lambda
+100     0  0.496</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href=""></a><span class="fu">head</span>(elastic<span class="sc">$</span>results)   <span class="co"># peek first rows</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  alpha lambda     RMSE  Rsquared      MAE    RMSESD RsquaredSD     MAESD
+1     0  0.001 2.307317 0.1539464 1.876607 0.1294763 0.09566782 0.1427815
+2     0  0.006 2.307317 0.1539464 1.876607 0.1294763 0.09566782 0.1427815
+3     0  0.011 2.307317 0.1539464 1.876607 0.1294763 0.09566782 0.1427815
+4     0  0.016 2.307317 0.1539464 1.876607 0.1294763 0.09566782 0.1427815
+5     0  0.021 2.307317 0.1539464 1.876607 0.1294763 0.09566782 0.1427815
+6     0  0.026 2.307317 0.1539464 1.876607 0.1294763 0.09566782 0.1427815</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href=""></a><span class="co"># Example: elastic$results[422, ]  # if you want to inspect a specific row</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="FP_files/figure-revealjs/unnamed-chunk-87-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
 <section id="evaluating-model-performance" class="slide level2">
 <h2>Evaluating model performance</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href=""></a>comp <span class="ot">&lt;-</span> <span class="fu">rbind</span>(</span>
-<span id="cb34-2"><a href=""></a>  <span class="fu">data.frame</span>(<span class="at">Model =</span> <span class="st">"Mean Only"</span>,  <span class="at">R2 =</span> R2_base, <span class="at">MAE =</span> MAE_base, <span class="at">RMSE =</span> RMSE_base),</span>
-<span id="cb34-3"><a href=""></a>  <span class="fu">data.frame</span>(<span class="at">Model =</span> <span class="st">"Ridge"</span>,      <span class="at">R2 =</span> rsq_te,  <span class="at">MAE =</span> mae_te,  <span class="at">RMSE =</span> rmse_te),</span>
-<span id="cb34-4"><a href=""></a>  <span class="fu">data.frame</span>(<span class="at">Model =</span> <span class="st">"Lasso"</span>,      <span class="at">R2 =</span> rsq_te_lasso, <span class="at">MAE =</span> mae_te_lasso, <span class="at">RMSE =</span> rmse_te_lasso),</span>
-<span id="cb34-5"><a href=""></a>  <span class="fu">data.frame</span>(<span class="at">Model =</span> <span class="st">"ElasticNet"</span>, <span class="at">R2 =</span> rsq_te_enet,  <span class="at">MAE =</span> mae_te_enet,  <span class="at">RMSE =</span> rmse_te_enet)</span>
-<span id="cb34-6"><a href=""></a>)</span>
-<span id="cb34-7"><a href=""></a></span>
-<span id="cb34-8"><a href=""></a>comp_rounded <span class="ot">&lt;-</span> comp <span class="sc">%&gt;%</span></span>
-<span id="cb34-9"><a href=""></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), round, <span class="dv">3</span>))</span>
-<span id="cb34-10"><a href=""></a></span>
-<span id="cb34-11"><a href=""></a>comp_rounded</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href=""></a>comp <span class="ot">&lt;-</span> <span class="fu">rbind</span>(</span>
+<span id="cb43-2"><a href=""></a>  <span class="fu">data.frame</span>(<span class="at">Model =</span> <span class="st">"Mean Only"</span>,  <span class="at">R2 =</span> R2_base, <span class="at">MAE =</span> MAE_base, <span class="at">RMSE =</span> RMSE_base),</span>
+<span id="cb43-3"><a href=""></a>  <span class="fu">data.frame</span>(<span class="at">Model =</span> <span class="st">"Ridge"</span>,      <span class="at">R2 =</span> rsq_te,  <span class="at">MAE =</span> mae_te,  <span class="at">RMSE =</span> rmse_te),</span>
+<span id="cb43-4"><a href=""></a>  <span class="fu">data.frame</span>(<span class="at">Model =</span> <span class="st">"Lasso"</span>,      <span class="at">R2 =</span> rsq_te_lasso, <span class="at">MAE =</span> mae_te_lasso, <span class="at">RMSE =</span> rmse_te_lasso),</span>
+<span id="cb43-5"><a href=""></a>  <span class="fu">data.frame</span>(<span class="at">Model =</span> <span class="st">"ElasticNet"</span>, <span class="at">R2 =</span> rsq_te_enet,  <span class="at">MAE =</span> mae_te_enet,  <span class="at">RMSE =</span> rmse_te_enet)</span>
+<span id="cb43-6"><a href=""></a>)</span>
+<span id="cb43-7"><a href=""></a></span>
+<span id="cb43-8"><a href=""></a>comp_rounded <span class="ot">&lt;-</span> comp <span class="sc">%&gt;%</span></span>
+<span id="cb43-9"><a href=""></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), round, <span class="dv">3</span>))</span>
+<span id="cb43-10"><a href=""></a></span>
+<span id="cb43-11"><a href=""></a>comp_rounded</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       Model    R2   MAE  RMSE
 1  Mean Only    NA 2.264 2.607
@@ -957,24 +1014,24 @@ Middle Eastern         others         Others       Pasifika    South Asian
 <ul>
 <li>Model efficiency &amp; effectiveness</li>
 </ul>
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href=""></a><span class="fu">library</span>(knitr)</span>
-<span id="cb38-2"><a href=""></a><span class="fu">library</span>(kableExtra)</span>
-<span id="cb38-3"><a href=""></a></span>
-<span id="cb38-4"><a href=""></a>comp_rounded <span class="sc">%&gt;%</span></span>
-<span id="cb38-5"><a href=""></a>  <span class="fu">kable</span>(</span>
-<span id="cb38-6"><a href=""></a>    <span class="at">caption =</span> <span class="st">"Model Efficiency &amp; Effectiveness"</span>,</span>
-<span id="cb38-7"><a href=""></a>    <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Model"</span>, <span class="st">"R²"</span>, <span class="st">"MAE"</span>, <span class="st">"RMSE"</span>),</span>
-<span id="cb38-8"><a href=""></a>    <span class="at">align =</span> <span class="st">"lccc"</span>,</span>
-<span id="cb38-9"><a href=""></a>    <span class="at">booktabs =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb38-10"><a href=""></a>    <span class="at">digits =</span> <span class="dv">3</span></span>
-<span id="cb38-11"><a href=""></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb38-12"><a href=""></a>  <span class="fu">kable_styling</span>(</span>
-<span id="cb38-13"><a href=""></a>    <span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>),</span>
-<span id="cb38-14"><a href=""></a>    <span class="at">full_width =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb38-15"><a href=""></a>    <span class="at">position =</span> <span class="st">"center"</span>,</span>
-<span id="cb38-16"><a href=""></a>    <span class="at">font_size =</span> <span class="dv">16</span></span>
-<span id="cb38-17"><a href=""></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb38-18"><a href=""></a>  <span class="fu">row_spec</span>(<span class="dv">0</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>, <span class="at">background =</span> <span class="st">"#f0f0f0"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href=""></a><span class="fu">library</span>(knitr)</span>
+<span id="cb47-2"><a href=""></a><span class="fu">library</span>(kableExtra)</span>
+<span id="cb47-3"><a href=""></a></span>
+<span id="cb47-4"><a href=""></a>comp_rounded <span class="sc">%&gt;%</span></span>
+<span id="cb47-5"><a href=""></a>  <span class="fu">kable</span>(</span>
+<span id="cb47-6"><a href=""></a>    <span class="at">caption =</span> <span class="st">"Model Efficiency &amp; Effectiveness"</span>,</span>
+<span id="cb47-7"><a href=""></a>    <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Model"</span>, <span class="st">"R²"</span>, <span class="st">"MAE"</span>, <span class="st">"RMSE"</span>),</span>
+<span id="cb47-8"><a href=""></a>    <span class="at">align =</span> <span class="st">"lccc"</span>,</span>
+<span id="cb47-9"><a href=""></a>    <span class="at">booktabs =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb47-10"><a href=""></a>    <span class="at">digits =</span> <span class="dv">3</span></span>
+<span id="cb47-11"><a href=""></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb47-12"><a href=""></a>  <span class="fu">kable_styling</span>(</span>
+<span id="cb47-13"><a href=""></a>    <span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>),</span>
+<span id="cb47-14"><a href=""></a>    <span class="at">full_width =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb47-15"><a href=""></a>    <span class="at">position =</span> <span class="st">"center"</span>,</span>
+<span id="cb47-16"><a href=""></a>    <span class="at">font_size =</span> <span class="dv">16</span></span>
+<span id="cb47-17"><a href=""></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb47-18"><a href=""></a>  <span class="fu">row_spec</span>(<span class="dv">0</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>, <span class="at">background =</span> <span class="st">"#f0f0f0"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <table class="table table-striped table-hover table-condensed caption-top" data-quarto-postprocess="true" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;">
 <caption>Model Efficiency &amp; Effectiveness</caption>
 <thead>
@@ -1019,12 +1076,12 @@ Middle Eastern         others         Others       Pasifika    South Asian
 <li>Model efficiency &amp; effectiveness</li>
 </ul>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href=""></a><span class="fu">ggplot</span>(comp_long, <span class="fu">aes</span>(<span class="at">x =</span> Metric, <span class="at">y =</span> Value, <span class="at">fill =</span> Model)) <span class="sc">+</span></span>
-<span id="cb39-2"><a href=""></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
-<span id="cb39-3"><a href=""></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Model Performance by Regularization"</span>,</span>
-<span id="cb39-4"><a href=""></a>       <span class="at">x =</span> <span class="st">"Metric"</span>, <span class="at">y =</span> <span class="st">"Value"</span>) <span class="sc">+</span></span>
-<span id="cb39-5"><a href=""></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb39-6"><a href=""></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href=""></a><span class="fu">ggplot</span>(comp_long, <span class="fu">aes</span>(<span class="at">x =</span> Metric, <span class="at">y =</span> Value, <span class="at">fill =</span> Model)) <span class="sc">+</span></span>
+<span id="cb48-2"><a href=""></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
+<span id="cb48-3"><a href=""></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Model Performance by Regularization"</span>,</span>
+<span id="cb48-4"><a href=""></a>       <span class="at">x =</span> <span class="st">"Metric"</span>, <span class="at">y =</span> <span class="st">"Value"</span>) <span class="sc">+</span></span>
+<span id="cb48-5"><a href=""></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb48-6"><a href=""></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
 <img data-src="FP_files/figure-revealjs/unnamed-chunk-98-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
@@ -1034,19 +1091,19 @@ Middle Eastern         others         Others       Pasifika    South Asian
 <li>Lasso is the winner 🥇</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href=""></a>coefs <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(<span class="fu">coef</span>(lasso<span class="sc">$</span>finalModel, <span class="at">s =</span> lasso<span class="sc">$</span>bestTune<span class="sc">$</span>lambda))</span>
-<span id="cb40-2"><a href=""></a>coef_df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">term =</span> <span class="fu">rownames</span>(coefs), <span class="at">beta =</span> <span class="fu">as.numeric</span>(coefs)) <span class="sc">%&gt;%</span></span>
-<span id="cb40-3"><a href=""></a>  <span class="fu">filter</span>(term <span class="sc">!=</span> <span class="st">"(Intercept)"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb40-4"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">abs_beta =</span> <span class="fu">abs</span>(beta)) <span class="sc">%&gt;%</span></span>
-<span id="cb40-5"><a href=""></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(abs_beta)) <span class="sc">%&gt;%</span></span>
-<span id="cb40-6"><a href=""></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">15</span>)</span>
-<span id="cb40-7"><a href=""></a></span>
-<span id="cb40-8"><a href=""></a><span class="fu">ggplot</span>(coef_df, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(term, abs_beta), <span class="at">y =</span> beta)) <span class="sc">+</span></span>
-<span id="cb40-9"><a href=""></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
-<span id="cb40-10"><a href=""></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
-<span id="cb40-11"><a href=""></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Top 15 predictors by |β| (LASSO)"</span>,</span>
-<span id="cb40-12"><a href=""></a>       <span class="at">x =</span> <span class="st">"Predictor"</span>, <span class="at">y =</span> <span class="st">"Coefficient (signed)"</span>) <span class="sc">+</span></span>
-<span id="cb40-13"><a href=""></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href=""></a>coefs <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(<span class="fu">coef</span>(lasso<span class="sc">$</span>finalModel, <span class="at">s =</span> lasso<span class="sc">$</span>bestTune<span class="sc">$</span>lambda))</span>
+<span id="cb49-2"><a href=""></a>coef_df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">term =</span> <span class="fu">rownames</span>(coefs), <span class="at">beta =</span> <span class="fu">as.numeric</span>(coefs)) <span class="sc">%&gt;%</span></span>
+<span id="cb49-3"><a href=""></a>  <span class="fu">filter</span>(term <span class="sc">!=</span> <span class="st">"(Intercept)"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb49-4"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">abs_beta =</span> <span class="fu">abs</span>(beta)) <span class="sc">%&gt;%</span></span>
+<span id="cb49-5"><a href=""></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(abs_beta)) <span class="sc">%&gt;%</span></span>
+<span id="cb49-6"><a href=""></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">15</span>)</span>
+<span id="cb49-7"><a href=""></a></span>
+<span id="cb49-8"><a href=""></a><span class="fu">ggplot</span>(coef_df, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(term, abs_beta), <span class="at">y =</span> beta)) <span class="sc">+</span></span>
+<span id="cb49-9"><a href=""></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb49-10"><a href=""></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb49-11"><a href=""></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Top 15 predictors by |β| (LASSO)"</span>,</span>
+<span id="cb49-12"><a href=""></a>       <span class="at">x =</span> <span class="st">"Predictor"</span>, <span class="at">y =</span> <span class="st">"Coefficient (signed)"</span>) <span class="sc">+</span></span>
+<span id="cb49-13"><a href=""></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
 <img data-src="FP_files/figure-revealjs/unnamed-chunk-99-1.png" width="960" class="r-stretch"></section>
