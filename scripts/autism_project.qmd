@@ -118,6 +118,8 @@ autism <- autism %>%
 ```
 
 ```{r}
+### 11.8.25. THIS IS DIFFERENT FROM FP.qmd ### 
+
 autism %>% count(contry_of_res, sort = TRUE)
 ```
 
@@ -463,14 +465,34 @@ Step 2: Train/Test split
 "In order to obtain a realistic measure of model performance, we will split the data into two subsamples: training and test datasets. Due to the relatively small sample size, I will use a 90-10 split (typically a 80-20 or 70-30 split is used). The smaller test dataset will be used as a final hold-out set, and training dataset will be used to build the model."
 
 ```{r}
+# set.seed(20251102)
+# 
+#  # shouln <- nrow(autism_final)
+# loc <- sample(seq_len(n), size = round(0.9 * n))
+# autism_tr <- autism_final[loc, ]
+# autism_te <- autism_final[-loc, ]
+# 
+# length(intersect(rownames(autism_tr), rownames(autism_te))) d now be 0
+
+```
+
+```{r}
+# ✅ Minimal, robust 90/10 split
 set.seed(20251102)
 
-n <- nrow(autism_final)
-loc <- sample(seq_len(n), size = round(0.9 * n))
-autism_tr <- autism_final[loc, ]
-autism_te <- autism_final[-loc, ]
+stopifnot(exists("autism_final"), is.data.frame(autism_final))
 
-length(intersect(rownames(autism_tr), rownames(autism_te)))  # should now be 0
+n <- nrow(autism_final)              # <-- you forgot to (re)define n
+stopifnot(is.numeric(n), n > 1)
+
+idx <- sample.int(n, size = floor(0.9 * n))  # safer than seq_len + sample
+autism_tr <- autism_final[idx, , drop = FALSE]
+autism_te <- autism_final[-idx, , drop = FALSE]
+
+# disjointness checks
+length(intersect(idx, setdiff(seq_len(n), idx)))  # should be 0
+nrow(autism_tr) + nrow(autism_te) == n            # should be TRUE
+
 ```
 
 ```{r}
