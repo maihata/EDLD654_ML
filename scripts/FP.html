@@ -187,8 +187,6 @@
       margin-right: 0; 
     }
   </style>
-  <script src="FP_files/libs/kePrint-0.0.1/kePrint.js"></script>
-  <link href="FP_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 </head>
 <body class="quarto-light">
   <div class="reveal">
@@ -240,8 +238,16 @@ Maiko Hata
 </div>
 </div>
 </section>
+<section id="aq-10-screener" class="slide level2">
+<h2>AQ-10 screener</h2>
+<p>Allison et al.&nbsp;(2012) evaluated shortened 10-item versions of the Autism Spectrum Quotient (AQ-10) as quick “red flag” screening tools for Autism. Using data from over 1,000 Autistic individuals and 3,000 controls, the short forms showed high sensitivity (accurately identifying most people with Autism) and high specificity (correctly excluding those without) across age groups.</p>
+
+<img data-src="images/AQ_10.png" class="quarto-figure quarto-figure-center r-stretch" style="width:70.0%" alt="AQ-10 screener image"></section>
 <section id="cleaning-up-missing-data" class="slide level2">
 <h2>Cleaning up missing data</h2>
+<ul>
+<li>using <code>ff_glimpse(autism)</code></li>
+</ul>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="fu">ff_glimpse</span>(autism[, <span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -298,7 +304,7 @@ relation             -            -              -</code></pre>
 <section id="cleaning-up-missing-data-1" class="slide level2">
 <h2>Cleaning up missing data</h2>
 <ul>
-<li>Because the dataset had “?” for missing data, I calculated the percentage of “?” values in the Ethnicity column.</li>
+<li>Since the dataset used “?” for missing values, I calculated how often “?” appeared across columns to check for missing data patterns.</li>
 </ul>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a><span class="fu">sum</span>(autism<span class="sc">$</span>ethnicity <span class="sc">==</span> <span class="st">"?"</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -359,36 +365,38 @@ relation             -            -              -</code></pre>
 <span id="cb11-7"><a href=""></a>       <span class="at">y =</span> <span class="st">"Count"</span>) <span class="sc">+</span></span>
 <span id="cb11-8"><a href=""></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
 <span id="cb11-9"><a href=""></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="FP_files/figure-revealjs/unnamed-chunk-23-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
-</figure>
+
 </div>
-</div>
-</div>
+<img data-src="FP_files/figure-revealjs/unnamed-chunk-23-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="autism-screener-user-raceethnicity" class="slide level2">
+<h2>Autism Screener user race/ethnicity</h2>
 <div class="cell">
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="FP_files/figure-revealjs/unnamed-chunk-32-1.png" width="960"></p>
-</figure>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a><span class="fu">ggplot</span>(autism, <span class="fu">aes</span>(<span class="at">x =</span> ethnicity)) <span class="sc">+</span></span>
+<span id="cb12-2"><a href=""></a>  <span class="fu">geom_bar</span>(<span class="at">fill =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
+<span id="cb12-3"><a href=""></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">after_stat</span>(count)),</span>
+<span id="cb12-4"><a href=""></a>            <span class="at">stat =</span> <span class="st">"count"</span>,</span>
+<span id="cb12-5"><a href=""></a>            <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="at">size =</span> <span class="fl">3.5</span>) <span class="sc">+</span></span>
+<span id="cb12-6"><a href=""></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Race/Ethnicity"</span>,</span>
+<span id="cb12-7"><a href=""></a>       <span class="at">x =</span> <span class="st">"Race/Ethnicity"</span>,</span>
+<span id="cb12-8"><a href=""></a>       <span class="at">y =</span> <span class="st">"Count"</span>) <span class="sc">+</span></span>
+<span id="cb12-9"><a href=""></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb12-10"><a href=""></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb12-11"><a href=""></a>        <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
 </div>
-</div>
-</div>
-</section>
+<img data-src="FP_files/figure-revealjs/unnamed-chunk-32-1.png" width="960" class="r-stretch"></section>
 <section id="modeling-assumptions" class="slide level2">
 <h2>Modeling assumptions</h2>
-<p>Before building the models, we need to revisit the Ordinary Least Squares (OLS) assumptions for linear regression (Hands On Machine Learning with R, Ch. 4 &amp; 6):</p>
+<p>Before building the models, it’s important to review the Ordinary Least Squares (OLS) assumptions for linear regression (Ch. 4 &amp; 6, Boehmke, &amp; Greenwell, 2019):</p>
 <ol type="1">
 <li><p><strong>Linearity</strong>: There should be a roughly linear relationship between predictors and outcome variables.</p></li>
-<li><p><strong>Sample size</strong>: The number of observations (<em>n</em>) should be larger than that of predictors/features (p).</p></li>
-<li><p><strong>Multicollinearity</strong>: Independent variables should not be highly correlated to each other (p.&nbsp;269, Vogt &amp; Johnson, 2016).</p></li>
+<li><p><strong>Sample size</strong>: The number of observations (n) should be larger than that of the predictors (p).</p></li>
+<li><p><strong>Multicollinearity</strong>: The independent variables not be highly correlated to each other (p.&nbsp;269, Vogt &amp; Johnson, 2016).</p></li>
 </ol>
 </section>
 <section id="modeling-assumptions-1" class="slide level2">
 <h2>Modeling assumptions</h2>
-<p>… and yet, I initially included all ten screener items (A1_Score~A10_Score) and “Class.ASD” in the model, overlooking that “result” which is the total of A1~A10 was already my outcome variable, and “Class.ASD” was simply coded “YES” for scores of six or higher.</p>
+<p>… and yet, I initially included all 10 screener questions (A1_Score~A10_Score) and “Class.ASD” in the model, overlooking that “result” which is the total of A1~A10 was already my outcome variable, and “Class.ASD” was simply coded “YES” for scores of 6 or higher.</p>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] "A1_Score"         "A2_Score"         "A3_Score"         "A4_Score"        
@@ -400,713 +408,297 @@ relation             -            -              -</code></pre>
 </div>
 </div>
 </section>
-<section id="model-1-no-linear-regression-without-regularization" class="slide level2">
-<h2>Model 1: No Linear Regression without Regularization</h2>
+<section id="model-1-ridge-regression-model" class="slide level2">
+<h2>Model 1: Ridge Regression Model</h2>
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] TRUE</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>Test R²: 1 
-Test MAE: 0 
-Test RMSE: 0 </code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>Test R²: NA 
-Test MAE: 2.264 
-Test RMSE: 2.607 </code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href=""></a><span class="fu">summary</span>(pred)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  4.873   4.873   4.873   4.873   4.873   4.873 </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href=""></a><span class="fu">sum</span>(<span class="fu">is.na</span>(pred))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0</code></pre>
-</div>
-</div>
-</section>
-<section id="model-2-ridge-regression-model" class="slide level2">
-<h2>Model 2: Ridge Regression Model</h2>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="FP_files/figure-revealjs/unnamed-chunk-62-1.png" width="960"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>    alpha lambda     RMSE  Rsquared      MAE    RMSESD RsquaredSD     MAESD
-1       0   0.01 2.307317 0.1539464 1.876607 0.1294763 0.09566782 0.1427815
-2       0   0.02 2.307317 0.1539464 1.876607 0.1294763 0.09566782 0.1427815
-3       0   0.03 2.307317 0.1539464 1.876607 0.1294763 0.09566782 0.1427815
-4       0   0.04 2.307317 0.1539464 1.876607 0.1294763 0.09566782 0.1427815
-5       0   0.05 2.307317 0.1539464 1.876607 0.1294763 0.09566782 0.1427815
-6       0   0.06 2.307317 0.1539464 1.876607 0.1294763 0.09566782 0.1427815
-7       0   0.07 2.307295 0.1539602 1.876584 0.1294382 0.09567173 0.1427515
-8       0   0.08 2.307286 0.1539858 1.876672 0.1289880 0.09563039 0.1423503
-9       0   0.09 2.307227 0.1539862 1.876785 0.1285670 0.09556155 0.1419843
-10      0   0.10 2.307167 0.1539819 1.876867 0.1281958 0.09548856 0.1416686
-11      0   0.11 2.307112 0.1539736 1.876927 0.1278626 0.09541365 0.1413918
-12      0   0.12 2.307058 0.1539633 1.876967 0.1275558 0.09533548 0.1411408
-13      0   0.13 2.307010 0.1539492 1.877010 0.1272810 0.09525664 0.1409378
-14      0   0.14 2.306962 0.1539358 1.877048 0.1270371 0.09518122 0.1407834
-15      0   0.15 2.306910 0.1539238 1.877069 0.1268167 0.09510414 0.1406508
-16      0   0.16 2.306860 0.1539109 1.877078 0.1266134 0.09502518 0.1405326
-17      0   0.17 2.306816 0.1538947 1.877094 0.1264305 0.09494667 0.1404339
-18      0   0.18 2.306770 0.1538809 1.877101 0.1262703 0.09487408 0.1403574
-19      0   0.19 2.306722 0.1538683 1.877098 0.1261235 0.09480077 0.1402926
-20      0   0.20 2.306676 0.1538552 1.877087 0.1259914 0.09472566 0.1402399
-21      0   0.21 2.306626 0.1538451 1.877067 0.1258704 0.09465341 0.1401966
-22      0   0.22 2.306585 0.1538306 1.877049 0.1257621 0.09457990 0.1401630
-23      0   0.23 2.306537 0.1538206 1.877019 0.1256680 0.09451064 0.1401446
-24      0   0.24 2.306496 0.1538075 1.876989 0.1255842 0.09444131 0.1401348
-25      0   0.25 2.306451 0.1537980 1.876950 0.1255096 0.09437459 0.1401328
-26      0   0.26 2.306407 0.1537878 1.876910 0.1254475 0.09430742 0.1401403
-27      0   0.27 2.306366 0.1537773 1.876874 0.1253897 0.09424087 0.1401433
-28      0   0.28 2.306322 0.1537693 1.876833 0.1253410 0.09417727 0.1401525
-29      0   0.29 2.306284 0.1537590 1.876793 0.1252968 0.09411235 0.1401649
-30      0   0.30 2.306241 0.1537520 1.876746 0.1252619 0.09405146 0.1401872
-31      0   0.31 2.306201 0.1537446 1.876699 0.1252370 0.09399147 0.1402178
-32      0   0.32 2.306166 0.1537351 1.876654 0.1252151 0.09393068 0.1402508
-33      0   0.33 2.306125 0.1537298 1.876618 0.1252017 0.09387551 0.1402813
-34      0   0.34 2.306087 0.1537241 1.876594 0.1251940 0.09381974 0.1403082
-35      0   0.35 2.306052 0.1537169 1.876570 0.1251881 0.09376297 0.1403365
-36      0   0.36 2.306016 0.1537111 1.876542 0.1251881 0.09370843 0.1403717
-37      0   0.37 2.305982 0.1537052 1.876514 0.1251932 0.09365452 0.1404103
-38      0   0.38 2.305952 0.1536978 1.876487 0.1252012 0.09360007 0.1404514
-39      0   0.39 2.305922 0.1536910 1.876460 0.1252122 0.09354817 0.1404991
-40      0   0.40 2.305887 0.1536882 1.876429 0.1252300 0.09350110 0.1405562
-41      0   0.41 2.305856 0.1536843 1.876401 0.1252518 0.09345253 0.1406165
-42      0   0.42 2.305828 0.1536795 1.876372 0.1252746 0.09340335 0.1406775
-43      0   0.43 2.305799 0.1536754 1.876340 0.1253020 0.09335629 0.1407440
-44      0   0.44 2.305768 0.1536730 1.876307 0.1253344 0.09331118 0.1408144
-45      0   0.45 2.305741 0.1536696 1.876274 0.1253698 0.09326518 0.1408872
-46      0   0.46 2.305716 0.1536655 1.876248 0.1254061 0.09321872 0.1409695
-47      0   0.47 2.305692 0.1536617 1.876224 0.1254448 0.09317439 0.1410592
-48      0   0.48 2.305665 0.1536598 1.876201 0.1254871 0.09313239 0.1411571
-49      0   0.49 2.305642 0.1536568 1.876182 0.1255321 0.09309015 0.1412575
-50      0   0.50 2.305623 0.1536528 1.876178 0.1255784 0.09304758 0.1413524
-51      0   0.51 2.305605 0.1536481 1.876190 0.1256255 0.09300502 0.1414393
-52      0   0.52 2.305585 0.1536459 1.876199 0.1256783 0.09296812 0.1415302
-53      0   0.53 2.305564 0.1536445 1.876207 0.1257335 0.09293196 0.1416228
-54      0   0.54 2.305546 0.1536425 1.876216 0.1257899 0.09289452 0.1417164
-55      0   0.55 2.305530 0.1536401 1.876227 0.1258469 0.09285671 0.1418096
-56      0   0.56 2.305516 0.1536368 1.876249 0.1259047 0.09281891 0.1419034
-57      0   0.57 2.305500 0.1536352 1.876271 0.1259672 0.09278454 0.1419955
-58      0   0.58 2.305484 0.1536342 1.876297 0.1260312 0.09275080 0.1420855
-59      0   0.59 2.305470 0.1536326 1.876329 0.1260966 0.09271639 0.1421735
-60      0   0.60 2.305458 0.1536307 1.876362 0.1261627 0.09268161 0.1422625
-61      0   0.61 2.305447 0.1536283 1.876394 0.1262295 0.09264660 0.1423521
-62      0   0.62 2.305437 0.1536261 1.876424 0.1262981 0.09261407 0.1424442
-63      0   0.63 2.305425 0.1536257 1.876461 0.1263696 0.09258372 0.1425441
-64      0   0.64 2.305415 0.1536250 1.876502 0.1264414 0.09255345 0.1426396
-65      0   0.65 2.305408 0.1536236 1.876544 0.1265144 0.09252290 0.1427368
-66      0   0.66 2.305402 0.1536218 1.876587 0.1265879 0.09249211 0.1428345
-67      0   0.67 2.305398 0.1536196 1.876629 0.1266620 0.09246119 0.1429329
-68      0   0.68 2.305395 0.1536174 1.876670 0.1267378 0.09243292 0.1430333
-69      0   0.69 2.305390 0.1536165 1.876707 0.1268165 0.09240679 0.1431368
-70      0   0.70 2.305385 0.1536156 1.876745 0.1268955 0.09238086 0.1432410
-71      0   0.71 2.305383 0.1536146 1.876783 0.1269749 0.09235398 0.1433456
-72      0   0.72 2.305381 0.1536133 1.876826 0.1270547 0.09232677 0.1434573
-73      0   0.73 2.305381 0.1536117 1.876869 0.1271349 0.09229934 0.1435697
-74      0   0.74 2.305383 0.1536095 1.876912 0.1272157 0.09227210 0.1436827
-75      0   0.75 2.305383 0.1536085 1.876951 0.1272996 0.09224794 0.1437994
-76      0   0.76 2.305384 0.1536079 1.876989 0.1273847 0.09222438 0.1439171
-77      0   0.77 2.305385 0.1536072 1.877028 0.1274697 0.09220083 0.1440349
-78      0   0.78 2.305389 0.1536063 1.877066 0.1275551 0.09217663 0.1441536
-79      0   0.79 2.305393 0.1536052 1.877105 0.1276409 0.09215224 0.1442728
-80      0   0.80 2.305399 0.1536038 1.877144 0.1277272 0.09212766 0.1443925
-81      0   0.81 2.305406 0.1536017 1.877183 0.1278140 0.09210323 0.1445130
-82      0   0.82 2.305412 0.1536003 1.877219 0.1279023 0.09208161 0.1446349
-83      0   0.83 2.305418 0.1535996 1.877253 0.1279926 0.09206102 0.1447590
-84      0   0.84 2.305425 0.1535989 1.877289 0.1280817 0.09204074 0.1448818
-85      0   0.85 2.305434 0.1535981 1.877325 0.1281710 0.09202010 0.1450051
-86      0   0.86 2.305444 0.1535971 1.877361 0.1282605 0.09199908 0.1451289
-87      0   0.87 2.305455 0.1535959 1.877397 0.1283504 0.09197791 0.1452530
-88      0   0.88 2.305467 0.1535944 1.877434 0.1284407 0.09195658 0.1453776
-89      0   0.89 2.305481 0.1535924 1.877471 0.1285314 0.09193544 0.1455029
-90      0   0.90 2.305494 0.1535910 1.877504 0.1286233 0.09191711 0.1456293
-91      0   0.91 2.305506 0.1535900 1.877536 0.1287169 0.09189945 0.1457575
-92      0   0.92 2.305519 0.1535892 1.877569 0.1288103 0.09188208 0.1458858
-93      0   0.93 2.305533 0.1535881 1.877601 0.1289038 0.09186447 0.1460143
-94      0   0.94 2.305549 0.1535870 1.877634 0.1289971 0.09184638 0.1461430
-95      0   0.95 2.305565 0.1535857 1.877667 0.1290907 0.09182815 0.1462721
-96      0   0.96 2.305582 0.1535842 1.877701 0.1291847 0.09180978 0.1464015
-97      0   0.97 2.305600 0.1535824 1.877734 0.1292790 0.09179129 0.1465312
-98      0   0.98 2.305620 0.1535801 1.877767 0.1293733 0.09177353 0.1466611
-99      0   0.99 2.305638 0.1535788 1.877796 0.1294697 0.09175843 0.1467929
-100     0   1.00 2.305656 0.1535776 1.877825 0.1295669 0.09174346 0.1469253
-101     0   1.01 2.305675 0.1535764 1.877861 0.1296629 0.09172877 0.1470535
-102     0   1.02 2.305695 0.1535750 1.877897 0.1297589 0.09171389 0.1471812
-103     0   1.03 2.305716 0.1535736 1.877937 0.1298546 0.09169855 0.1473075
-104     0   1.04 2.305739 0.1535720 1.877981 0.1299507 0.09168310 0.1474309
-105     0   1.05 2.305762 0.1535703 1.878031 0.1300471 0.09166752 0.1475451
-106     0   1.06 2.305786 0.1535683 1.878083 0.1301437 0.09165182 0.1476572
-107     0   1.07 2.305812 0.1535659 1.878139 0.1302407 0.09163627 0.1477680
-108     0   1.08 2.305836 0.1535638 1.878194 0.1303380 0.09162249 0.1478788
-109     0   1.09 2.305860 0.1535621 1.878246 0.1304369 0.09160990 0.1479920
-110     0   1.10 2.305885 0.1535606 1.878304 0.1305360 0.09159757 0.1481061
-111     0   1.11 2.305911 0.1535590 1.878365 0.1306340 0.09158538 0.1482179
-112     0   1.12 2.305937 0.1535573 1.878428 0.1307319 0.09157289 0.1483296
-113     0   1.13 2.305964 0.1535556 1.878490 0.1308295 0.09155980 0.1484409
-114     0   1.14 2.305992 0.1535538 1.878553 0.1309273 0.09154661 0.1485526
-115     0   1.15 2.306021 0.1535518 1.878615 0.1310254 0.09153332 0.1486645
-116     0   1.16 2.306050 0.1535497 1.878678 0.1311238 0.09151992 0.1487768
-117     0   1.17 2.306081 0.1535473 1.878740 0.1312223 0.09150651 0.1488894
-118     0   1.18 2.306112 0.1535446 1.878803 0.1313206 0.09149367 0.1490019
-119     0   1.19 2.306141 0.1535425 1.878862 0.1314205 0.09148303 0.1491162
-120     0   1.20 2.306171 0.1535404 1.878920 0.1315208 0.09147245 0.1492311
-121     0   1.21 2.306201 0.1535386 1.878979 0.1316207 0.09146225 0.1493460
-122     0   1.22 2.306233 0.1535366 1.879037 0.1317197 0.09145206 0.1494606
-123     0   1.23 2.306265 0.1535348 1.879096 0.1318183 0.09144164 0.1495752
-124     0   1.24 2.306297 0.1535333 1.879155 0.1319168 0.09143079 0.1496894
-125     0   1.25 2.306331 0.1535316 1.879219 0.1320155 0.09141985 0.1498045
-126     0   1.26 2.306364 0.1535298 1.879283 0.1321144 0.09140883 0.1499199
-127     0   1.27 2.306399 0.1535278 1.879347 0.1322136 0.09139771 0.1500356
-128     0   1.28 2.306434 0.1535257 1.879412 0.1323129 0.09138651 0.1501516
-129     0   1.29 2.306471 0.1535232 1.879484 0.1324125 0.09137549 0.1502682
-130     0   1.30 2.306506 0.1535209 1.879556 0.1325116 0.09136597 0.1503863
-131     0   1.31 2.306541 0.1535190 1.879626 0.1326120 0.09135737 0.1505061
-132     0   1.32 2.306576 0.1535171 1.879695 0.1327128 0.09134885 0.1506262
-133     0   1.33 2.306611 0.1535153 1.879765 0.1328124 0.09134064 0.1507458
-134     0   1.34 2.306648 0.1535132 1.879835 0.1329115 0.09133242 0.1508654
-135     0   1.35 2.306686 0.1535110 1.879905 0.1330103 0.09132381 0.1509849
-136     0   1.36 2.306724 0.1535087 1.879975 0.1331087 0.09131480 0.1511039
-137     0   1.37 2.306763 0.1535063 1.880050 0.1332074 0.09130572 0.1512206
-138     0   1.38 2.306802 0.1535037 1.880126 0.1333062 0.09129657 0.1513368
-139     0   1.39 2.306842 0.1535010 1.880203 0.1334052 0.09128733 0.1514533
-140     0   1.40 2.306883 0.1534982 1.880279 0.1335044 0.09127802 0.1515700
-141     0   1.41 2.306925 0.1534952 1.880359 0.1336038 0.09126873 0.1516917
-142     0   1.42 2.306967 0.1534920 1.880439 0.1337029 0.09125982 0.1518145
-143     0   1.43 2.307008 0.1534892 1.880517 0.1338029 0.09125274 0.1519379
-144     0   1.44 2.307048 0.1534865 1.880593 0.1339034 0.09124586 0.1520622
-145     0   1.45 2.307089 0.1534840 1.880669 0.1340045 0.09123920 0.1521869
-146     0   1.46 2.307131 0.1534815 1.880745 0.1341037 0.09123288 0.1523108
-147     0   1.47 2.307173 0.1534789 1.880821 0.1342029 0.09122653 0.1524347
-148     0   1.48 2.307216 0.1534763 1.880901 0.1343014 0.09121998 0.1525527
-149     0   1.49 2.307260 0.1534740 1.880982 0.1343995 0.09121298 0.1526685
-150     0   1.50 2.307304 0.1534716 1.881065 0.1344977 0.09120591 0.1527816
-151     0   1.51 2.307348 0.1534691 1.881151 0.1345961 0.09119877 0.1528903
-152     0   1.52 2.307393 0.1534665 1.881237 0.1346946 0.09119157 0.1529993
-153     0   1.53 2.307439 0.1534637 1.881322 0.1347933 0.09118429 0.1531084
-154     0   1.54 2.307485 0.1534609 1.881417 0.1348922 0.09117695 0.1532145
-155     0   1.55 2.307532 0.1534578 1.881513 0.1349912 0.09116969 0.1533221
-156     0   1.56 2.307579 0.1534546 1.881610 0.1350894 0.09116285 0.1534304
-157     0   1.57 2.307624 0.1534518 1.881704 0.1351884 0.09115757 0.1535403
-158     0   1.58 2.307670 0.1534489 1.881797 0.1352877 0.09115233 0.1536507
-159     0   1.59 2.307715 0.1534461 1.881891 0.1353873 0.09114715 0.1537614
-160     0   1.60 2.307762 0.1534432 1.881984 0.1354854 0.09114219 0.1538722
-161     0   1.61 2.307809 0.1534402 1.882077 0.1355829 0.09113724 0.1539824
-162     0   1.62 2.307857 0.1534370 1.882174 0.1356801 0.09113225 0.1540879
-163     0   1.63 2.307905 0.1534340 1.882270 0.1357764 0.09112669 0.1541918
-164     0   1.64 2.307954 0.1534310 1.882366 0.1358727 0.09112103 0.1542955
-165     0   1.65 2.308003 0.1534278 1.882462 0.1359692 0.09111532 0.1543995
-166     0   1.66 2.308053 0.1534245 1.882559 0.1360658 0.09110955 0.1545035
-167     0   1.67 2.308104 0.1534211 1.882655 0.1361625 0.09110371 0.1546077
-168     0   1.68 2.308154 0.1534177 1.882751 0.1362593 0.09109783 0.1547120
-169     0   1.69 2.308206 0.1534141 1.882848 0.1363562 0.09109188 0.1548164
-170     0   1.70 2.308258 0.1534103 1.882948 0.1364533 0.09108598 0.1549216
-171     0   1.71 2.308310 0.1534064 1.883050 0.1365500 0.09108032 0.1550267
-172     0   1.72 2.308361 0.1534028 1.883150 0.1366466 0.09107604 0.1551313
-173     0   1.73 2.308411 0.1533993 1.883248 0.1367437 0.09107203 0.1552368
-174     0   1.74 2.308462 0.1533957 1.883350 0.1368411 0.09106799 0.1553403
-175     0   1.75 2.308512 0.1533923 1.883453 0.1369384 0.09106424 0.1554438
-176     0   1.76 2.308564 0.1533887 1.883555 0.1370337 0.09106065 0.1555474
-177     0   1.77 2.308617 0.1533850 1.883657 0.1371291 0.09105702 0.1556511
-178     0   1.78 2.308670 0.1533813 1.883759 0.1372240 0.09105328 0.1557544
-179     0   1.79 2.308722 0.1533781 1.883860 0.1373187 0.09104885 0.1558563
-180     0   1.80 2.308776 0.1533748 1.883962 0.1374135 0.09104437 0.1559583
-181     0   1.81 2.308829 0.1533714 1.884067 0.1375084 0.09103984 0.1560646
-182     0   1.82 2.308883 0.1533680 1.884173 0.1376034 0.09103526 0.1561721
-183     0   1.83 2.308938 0.1533644 1.884279 0.1376985 0.09103064 0.1562797
-184     0   1.84 2.308992 0.1533607 1.884385 0.1377937 0.09102596 0.1563874
-185     0   1.85 2.309048 0.1533570 1.884491 0.1378890 0.09102123 0.1564952
-186     0   1.86 2.309104 0.1533532 1.884597 0.1379844 0.09101646 0.1566032
-187     0   1.87 2.309160 0.1533491 1.884704 0.1380798 0.09101177 0.1567114
-188     0   1.88 2.309217 0.1533451 1.884809 0.1381743 0.09100751 0.1568183
-189     0   1.89 2.309270 0.1533414 1.884911 0.1382695 0.09100452 0.1569259
-190     0   1.90 2.309325 0.1533377 1.885013 0.1383648 0.09100148 0.1570338
-191     0   1.91 2.309379 0.1533339 1.885114 0.1384603 0.09099843 0.1571419
-192     0   1.92 2.309434 0.1533302 1.885215 0.1385557 0.09099565 0.1572503
-193     0   1.93 2.309490 0.1533264 1.885316 0.1386490 0.09099307 0.1573585
-194     0   1.94 2.309547 0.1533225 1.885417 0.1387424 0.09099044 0.1574668
-195     0   1.95 2.309604 0.1533185 1.885519 0.1388356 0.09098779 0.1575756
-196     0   1.96 2.309660 0.1533149 1.885622 0.1389279 0.09098459 0.1576834
-197     0   1.97 2.309717 0.1533112 1.885725 0.1390203 0.09098118 0.1577907
-198     0   1.98 2.309774 0.1533075 1.885828 0.1391128 0.09097774 0.1578982
-199     0   1.99 2.309832 0.1533037 1.885933 0.1392054 0.09097425 0.1580012
-200     0   2.00 2.309890 0.1532998 1.886041 0.1392981 0.09097072 0.1581020
-201     0   2.01 2.309949 0.1532958 1.886151 0.1393908 0.09096715 0.1581978
-202     0   2.02 2.310008 0.1532918 1.886265 0.1394836 0.09096353 0.1582886
-203     0   2.03 2.310067 0.1532877 1.886379 0.1395765 0.09095987 0.1583791
-204     0   2.04 2.310127 0.1532835 1.886493 0.1396695 0.09095617 0.1584696
-205     0   2.05 2.310187 0.1532791 1.886608 0.1397625 0.09095251 0.1585576
-206     0   2.06 2.310248 0.1532748 1.886727 0.1398550 0.09094905 0.1586391
-207     0   2.07 2.310306 0.1532708 1.886843 0.1399469 0.09094668 0.1587196
-208     0   2.08 2.310364 0.1532668 1.886958 0.1400393 0.09094457 0.1588010
-209     0   2.09 2.310422 0.1532628 1.887073 0.1401318 0.09094242 0.1588824
-210     0   2.10 2.310480 0.1532589 1.887187 0.1402245 0.09094037 0.1589640
-211     0   2.11 2.310539 0.1532550 1.887301 0.1403162 0.09093854 0.1590457
-212     0   2.12 2.310598 0.1532509 1.887415 0.1404065 0.09093682 0.1591275
-213     0   2.13 2.310659 0.1532468 1.887529 0.1404969 0.09093506 0.1592093
-214     0   2.14 2.310719 0.1532426 1.887642 0.1405870 0.09093328 0.1592908
-215     0   2.15 2.310779 0.1532388 1.887755 0.1406765 0.09093094 0.1593716
-216     0   2.16 2.310839 0.1532351 1.887866 0.1407660 0.09092836 0.1594525
-217     0   2.17 2.310900 0.1532313 1.887978 0.1408557 0.09092574 0.1595334
-218     0   2.18 2.310961 0.1532275 1.888090 0.1409454 0.09092309 0.1596143
-219     0   2.19 2.311022 0.1532236 1.888202 0.1410351 0.09092040 0.1596953
-220     0   2.20 2.311083 0.1532196 1.888314 0.1411250 0.09091767 0.1597764
-221     0   2.21 2.311145 0.1532156 1.888426 0.1412149 0.09091491 0.1598575
-222     0   2.22 2.311208 0.1532115 1.888537 0.1413049 0.09091211 0.1599387
-223     0   2.23 2.311270 0.1532073 1.888649 0.1413949 0.09090927 0.1600199
-224     0   2.24 2.311333 0.1532031 1.888761 0.1414850 0.09090640 0.1601012
-225     0   2.25 2.311397 0.1531987 1.888873 0.1415751 0.09090354 0.1601826
-226     0   2.26 2.311461 0.1531944 1.888984 0.1416648 0.09090082 0.1602634
-227     0   2.27 2.311522 0.1531900 1.889094 0.1417538 0.09089892 0.1603432
-228     0   2.28 2.311583 0.1531856 1.889201 0.1418434 0.09089731 0.1604238
-229     0   2.29 2.311645 0.1531812 1.889309 0.1419330 0.09089567 0.1605044
-230     0   2.30 2.311706 0.1531767 1.889423 0.1420228 0.09089401 0.1605848
-231     0   2.31 2.311767 0.1531723 1.889540 0.1421129 0.09089248 0.1606602
-232     0   2.32 2.311830 0.1531677 1.889659 0.1422005 0.09089118 0.1607346
-233     0   2.33 2.311894 0.1531631 1.889780 0.1422880 0.09088987 0.1608084
-234     0   2.34 2.311957 0.1531584 1.889900 0.1423756 0.09088853 0.1608822
-235     0   2.35 2.312021 0.1531536 1.890020 0.1424627 0.09088717 0.1609555
-236     0   2.36 2.312084 0.1531491 1.890139 0.1425490 0.09088524 0.1610280
-237     0   2.37 2.312148 0.1531446 1.890257 0.1426353 0.09088318 0.1611006
-238     0   2.38 2.312212 0.1531401 1.890375 0.1427217 0.09088108 0.1611733
-239     0   2.39 2.312276 0.1531354 1.890493 0.1428081 0.09087896 0.1612460
-240     0   2.40 2.312341 0.1531307 1.890611 0.1428945 0.09087680 0.1613188
-241     0   2.41 2.312406 0.1531260 1.890729 0.1429811 0.09087461 0.1613916
-242     0   2.42 2.312471 0.1531212 1.890847 0.1430676 0.09087238 0.1614645
-243     0   2.43 2.312537 0.1531163 1.890965 0.1431543 0.09087013 0.1615375
-244     0   2.44 2.312602 0.1531113 1.891083 0.1432409 0.09086784 0.1616104
-245     0   2.45 2.312669 0.1531063 1.891201 0.1433277 0.09086552 0.1616835
-246     0   2.46 2.312735 0.1531013 1.891319 0.1434145 0.09086317 0.1617566
-247     0   2.47 2.312802 0.1530961 1.891437 0.1435013 0.09086080 0.1618297
-248     0   2.48 2.312869 0.1530910 1.891555 0.1435877 0.09085855 0.1619023
-249     0   2.49 2.312934 0.1530861 1.891670 0.1436730 0.09085712 0.1619736
-250     0   2.50 2.312998 0.1530813 1.891784 0.1437589 0.09085613 0.1620458
-251     0   2.51 2.313062 0.1530764 1.891897 0.1438449 0.09085510 0.1621181
-252     0   2.52 2.313126 0.1530714 1.892010 0.1439309 0.09085406 0.1621905
-253     0   2.53 2.313190 0.1530667 1.892123 0.1440172 0.09085320 0.1622630
-254     0   2.54 2.313255 0.1530620 1.892236 0.1441026 0.09085253 0.1623355
-255     0   2.55 2.313320 0.1530571 1.892349 0.1441865 0.09085201 0.1624078
-256     0   2.56 2.313387 0.1530522 1.892462 0.1442703 0.09085146 0.1624802
-257     0   2.57 2.313453 0.1530472 1.892574 0.1443542 0.09085089 0.1625526
-258     0   2.58 2.313519 0.1530422 1.892686 0.1444374 0.09085032 0.1626241
-259     0   2.59 2.313585 0.1530377 1.892797 0.1445201 0.09084909 0.1626952
-260     0   2.60 2.313651 0.1530331 1.892907 0.1446029 0.09084777 0.1627664
-261     0   2.61 2.313717 0.1530285 1.893018 0.1446857 0.09084643 0.1628376
-262     0   2.62 2.313783 0.1530239 1.893128 0.1447685 0.09084505 0.1629089
-263     0   2.63 2.313850 0.1530191 1.893238 0.1448514 0.09084365 0.1629802
-264     0   2.64 2.313917 0.1530144 1.893348 0.1449344 0.09084223 0.1630516
-265     0   2.65 2.313984 0.1530096 1.893459 0.1450173 0.09084078 0.1631230
-266     0   2.66 2.314052 0.1530047 1.893569 0.1451004 0.09083930 0.1631944
-267     0   2.67 2.314120 0.1529998 1.893679 0.1451834 0.09083779 0.1632659
-268     0   2.68 2.314188 0.1529948 1.893790 0.1452665 0.09083625 0.1633374
-269     0   2.69 2.314256 0.1529898 1.893900 0.1453496 0.09083469 0.1634090
-270     0   2.70 2.314325 0.1529847 1.894010 0.1454328 0.09083310 0.1634806
-271     0   2.71 2.314394 0.1529795 1.894121 0.1455160 0.09083146 0.1635522
-272     0   2.72 2.314463 0.1529744 1.894231 0.1455991 0.09082984 0.1636237
-273     0   2.73 2.314530 0.1529694 1.894339 0.1456805 0.09082885 0.1636933
-274     0   2.74 2.314596 0.1529645 1.894445 0.1457625 0.09082837 0.1637636
-275     0   2.75 2.314662 0.1529595 1.894551 0.1458446 0.09082786 0.1638341
-276     0   2.76 2.314728 0.1529545 1.894657 0.1459267 0.09082732 0.1639047
-277     0   2.77 2.314795 0.1529494 1.894762 0.1460088 0.09082678 0.1639753
-278     0   2.78 2.314861 0.1529445 1.894867 0.1460913 0.09082642 0.1640462
-279     0   2.79 2.314928 0.1529395 1.894973 0.1461721 0.09082623 0.1641168
-280     0   2.80 2.314996 0.1529344 1.895078 0.1462520 0.09082610 0.1641873
-281     0   2.81 2.315064 0.1529293 1.895183 0.1463319 0.09082595 0.1642578
-282     0   2.82 2.315132 0.1529240 1.895289 0.1464119 0.09082578 0.1643283
-283     0   2.83 2.315201 0.1529188 1.895393 0.1464914 0.09082559 0.1643983
-284     0   2.84 2.315268 0.1529138 1.895497 0.1465703 0.09082486 0.1644676
-285     0   2.85 2.315336 0.1529089 1.895600 0.1466494 0.09082394 0.1645370
-286     0   2.86 2.315404 0.1529040 1.895703 0.1467284 0.09082298 0.1646063
-287     0   2.87 2.315473 0.1528990 1.895810 0.1468075 0.09082201 0.1646742
-288     0   2.88 2.315541 0.1528939 1.895916 0.1468866 0.09082101 0.1647421
-289     0   2.89 2.315610 0.1528888 1.896022 0.1469658 0.09082000 0.1648100
-290     0   2.90 2.315679 0.1528837 1.896129 0.1470449 0.09081895 0.1648780
-291     0   2.91 2.315748 0.1528785 1.896235 0.1471242 0.09081789 0.1649460
-292     0   2.92 2.315818 0.1528732 1.896342 0.1472034 0.09081680 0.1650141
-293     0   2.93 2.315888 0.1528680 1.896448 0.1472827 0.09081569 0.1650822
-294     0   2.94 2.315958 0.1528626 1.896554 0.1473620 0.09081455 0.1651504
-295     0   2.95 2.316028 0.1528573 1.896661 0.1474413 0.09081339 0.1652185
-296     0   2.96 2.316099 0.1528518 1.896767 0.1475207 0.09081221 0.1652868
-297     0   2.97 2.316169 0.1528464 1.896873 0.1476001 0.09081096 0.1653550
-298     0   2.98 2.316240 0.1528409 1.896980 0.1476795 0.09080968 0.1654232
-299     0   2.99 2.316311 0.1528355 1.897085 0.1477578 0.09080867 0.1654903
-300     0   3.00 2.316379 0.1528303 1.897188 0.1478355 0.09080823 0.1655566</code></pre>
-</div>
+
 <div class="cell-output cell-output-stdout">
 <pre><code>   alpha lambda
 73     0   0.73</code></pre>
 </div>
 </div>
+<img data-src="FP_files/figure-revealjs/unnamed-chunk-61-1.png" width="960" class="r-stretch"></section>
+<section id="model-1-ridge-regression-model-1" class="slide level2">
+<h2>Model 1: Ridge Regression Model</h2>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href=""></a>pred_ridge <span class="ot">&lt;-</span> <span class="fu">predict</span>(ridge, <span class="at">newdata =</span> autism_te_r)</span>
+<span id="cb15-2"><a href=""></a></span>
+<span id="cb15-3"><a href=""></a>R2_ridge   <span class="ot">&lt;-</span> <span class="fu">cor</span>(pred_ridge, autism_te_r<span class="sc">$</span>score, <span class="at">use =</span> <span class="st">"complete.obs"</span>)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb15-4"><a href=""></a>MAE_ridge  <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">abs</span>(autism_te_r<span class="sc">$</span>score <span class="sc">-</span> pred_ridge))</span>
+<span id="cb15-5"><a href=""></a>RMSE_ridge <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>((autism_te_r<span class="sc">$</span>score <span class="sc">-</span> pred_ridge)<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb15-6"><a href=""></a></span>
+<span id="cb15-7"><a href=""></a><span class="fu">cat</span>(<span class="st">"Held-out Test (Ridge, 10-fold CV)</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb15-8"><a href=""></a>    <span class="st">"R²:"</span>, <span class="fu">round</span>(R2_ridge, <span class="dv">3</span>),</span>
+<span id="cb15-9"><a href=""></a>    <span class="st">" MAE:"</span>, <span class="fu">round</span>(MAE_ridge, <span class="dv">3</span>),</span>
+<span id="cb15-10"><a href=""></a>    <span class="st">" RMSE:"</span>, <span class="fu">round</span>(RMSE_ridge, <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Held-out Test (Ridge, 10-fold CV)
+ R²: 0.313  MAE: 1.896  RMSE: 2.239 </code></pre>
+</div>
+</div>
+
+<img data-src="FP_files/figure-revealjs/ridge-coefs-1.png" width="960" class="r-stretch"><div class="cell">
 <div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="FP_files/figure-revealjs/unnamed-chunk-64-1.png" width="960"></p>
-</figure>
+<table class="caption-top">
+<caption>Held-out test metrics</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Model</th>
+<th style="text-align: right;">R2</th>
+<th style="text-align: right;">MAE</th>
+<th style="text-align: right;">RMSE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Baseline (mean-only)</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">2.263</td>
+<td style="text-align: right;">2.601</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ridge (10-CV, keep_screen=FALSE)</td>
+<td style="text-align: right;">0.313</td>
+<td style="text-align: right;">1.896</td>
+<td style="text-align: right;">2.239</td>
+</tr>
+</tbody>
+</table>
 </div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>                             Model    R2   MAE  RMSE
+1             Baseline (mean-only)    NA 2.263 2.601
+2 Ridge (10-CV, keep_screen=FALSE) 0.313 1.896 2.239</code></pre>
 </div>
 </div>
 </section>
-<section id="model-2-ridge-regression-model-1" class="slide level2">
-<h2>Model 2: Ridge Regression Model</h2>
+<section id="model-2-lasso-regression-model" class="slide level2">
+<h2>Model 2: Lasso Regression Model</h2>
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>Ridge test R²: 0.298 
-MAE: 1.906 
-RMSE: 2.252 </code></pre>
-</div>
-</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href=""></a><span class="fu">plot</span>(lasso)        </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
-<img data-src="FP_files/figure-revealjs/unnamed-chunk-66-1.png" width="960" class="r-stretch"><div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>      Model    R2   MAE  RMSE
-1 Mean Only    NA 2.264 2.607
-2     Ridge 0.298 1.906 2.252</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>      Model    R2   MAE  RMSE
-1 Mean Only    NA 2.264 2.607
-2     Ridge 0.298 1.906 2.252</code></pre>
-</div>
-</div>
-</section>
-<section id="model-3-lasso-regression-model" class="slide level2">
-<h2>Model 3: Lasso Regression Model</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href=""></a><span class="fu">plot</span>(lasso)           <span class="co"># CV curve</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href=""></a>lasso<span class="sc">$</span>bestTune        <span class="co"># chosen lambda</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href=""></a>lasso<span class="sc">$</span>bestTune        </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  alpha lambda
 1     1   0.01</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href=""></a>lasso<span class="sc">$</span>results[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>, ]  <span class="co"># peek at results</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>  alpha lambda     RMSE  Rsquared      MAE    RMSESD RsquaredSD     MAESD
-1     1   0.01 2.308377 0.1528134 1.878060 0.1301582 0.09417437 0.1434507
-2     1   0.02 2.312414 0.1499900 1.883425 0.1251691 0.09267481 0.1404040
-3     1   0.03 2.314256 0.1487290 1.885196 0.1230484 0.09235776 0.1406033
-4     1   0.04 2.314506 0.1484241 1.885213 0.1223836 0.09193044 0.1419984
-5     1   0.05 2.315609 0.1477329 1.886029 0.1233650 0.09146214 0.1441532
-6     1   0.06 2.316498 0.1471891 1.886724 0.1248315 0.09075420 0.1456272</code></pre>
 </div>
-</div>
-<img data-src="FP_files/figure-revealjs/unnamed-chunk-73-1.png" width="960" class="r-stretch"></section>
-<section id="model-3-lasso-regression-model-1" class="slide level2">
-<h2>Model 3: Lasso Regression Model</h2>
+<img data-src="FP_files/figure-revealjs/unnamed-chunk-69-1.png" width="960" class="r-stretch"></section>
+<section id="model-2-lasso-regression-model-1" class="slide level2">
+<h2>Model 2: Lasso Regression Model</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href=""></a>pred_te_lasso <span class="ot">&lt;-</span> <span class="fu">predict</span>(lasso, <span class="at">newdata =</span> autism_te)</span>
-<span id="cb31-2"><a href=""></a></span>
-<span id="cb31-3"><a href=""></a>rsq_te_lasso  <span class="ot">&lt;-</span> <span class="fu">cor</span>(autism_te<span class="sc">$</span>score, pred_te_lasso, <span class="at">use =</span> <span class="st">"complete.obs"</span>)<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb31-4"><a href=""></a>mae_te_lasso  <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">abs</span>(autism_te<span class="sc">$</span>score <span class="sc">-</span> pred_te_lasso))</span>
-<span id="cb31-5"><a href=""></a>rmse_te_lasso <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>((autism_te<span class="sc">$</span>score <span class="sc">-</span> pred_te_lasso)<span class="sc">^</span><span class="dv">2</span>))</span>
-<span id="cb31-6"><a href=""></a></span>
-<span id="cb31-7"><a href=""></a><span class="fu">cat</span>(<span class="st">"LASSO test R²:"</span>, <span class="fu">round</span>(rsq_te_lasso, <span class="dv">3</span>),</span>
-<span id="cb31-8"><a href=""></a>    <span class="st">"</span><span class="sc">\n</span><span class="st">MAE:"</span>, <span class="fu">round</span>(mae_te_lasso, <span class="dv">3</span>),</span>
-<span id="cb31-9"><a href=""></a>    <span class="st">"</span><span class="sc">\n</span><span class="st">RMSE:"</span>, <span class="fu">round</span>(rmse_te_lasso, <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href=""></a>pred_lasso <span class="ot">&lt;-</span> <span class="fu">predict</span>(lasso, <span class="at">newdata =</span> autism_te_r)</span>
+<span id="cb21-2"><a href=""></a></span>
+<span id="cb21-3"><a href=""></a>R2_lasso   <span class="ot">&lt;-</span> <span class="fu">cor</span>(pred_lasso, autism_te_r<span class="sc">$</span>score, <span class="at">use =</span> <span class="st">"complete.obs"</span>)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb21-4"><a href=""></a>MAE_lasso  <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">abs</span>(autism_te_r<span class="sc">$</span>score <span class="sc">-</span> pred_lasso))</span>
+<span id="cb21-5"><a href=""></a>RMSE_lasso <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>((autism_te_r<span class="sc">$</span>score <span class="sc">-</span> pred_lasso)<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb21-6"><a href=""></a></span>
+<span id="cb21-7"><a href=""></a><span class="fu">cat</span>(<span class="st">"Held-out Test (Lasso, 10-fold CV)</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb21-8"><a href=""></a>    <span class="st">"R²:"</span>, <span class="fu">round</span>(R2_lasso, <span class="dv">3</span>),</span>
+<span id="cb21-9"><a href=""></a>    <span class="st">" MAE:"</span>, <span class="fu">round</span>(MAE_lasso, <span class="dv">3</span>),</span>
+<span id="cb21-10"><a href=""></a>    <span class="st">" RMSE:"</span>, <span class="fu">round</span>(RMSE_lasso, <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>LASSO test R²: 0.281 
-MAE: 1.88 
-RMSE: 2.241 </code></pre>
+<pre><code>Held-out Test (Lasso, 10-fold CV)
+ R²: 0.317  MAE: 1.877  RMSE: 2.22 </code></pre>
 </div>
 </div>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>Polynomial age features found:</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "age_poly_1" "age_poly_2" "age_poly_3"</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>   age_poly_1         age_poly_2        age_poly_3      
- Min.   :-1.25562   Min.   :-0.9756   Min.   :-0.75546  
- 1st Qu.:-0.84374   1st Qu.:-0.7500   1st Qu.:-0.64282  
- Median :-0.22592   Median :-0.3227   Median :-0.37282  
- Mean   :-0.03075   Mean   :-0.0354   Mean   :-0.03929  
- 3rd Qu.: 0.49488   3rd Qu.: 0.3109   3rd Qu.: 0.13548  
- Max.   : 3.58399   Max.   : 4.6734   Max.   : 5.90845  </code></pre>
+
+<img data-src="FP_files/figure-revealjs/lasso-coefs-1.png" width="960" class="r-stretch"><div class="cell">
+<div class="cell-output-display">
+<table class="caption-top">
+<caption>Held-out test metrics: Baseline vs Ridge vs Lasso</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Model</th>
+<th style="text-align: right;">R2</th>
+<th style="text-align: right;">MAE</th>
+<th style="text-align: right;">RMSE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Baseline (mean-only)</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">2.263</td>
+<td style="text-align: right;">2.601</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ridge (10-CV, keep_screen=FALSE)</td>
+<td style="text-align: right;">0.313</td>
+<td style="text-align: right;">1.896</td>
+<td style="text-align: right;">2.239</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Lasso (10-CV, keep_screen=FALSE)</td>
+<td style="text-align: right;">0.317</td>
+<td style="text-align: right;">1.877</td>
+<td style="text-align: right;">2.220</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </section>
 <section id="model-4-elastic-net-model" class="slide level2">
 <h2>Model 4: Elastic Net Model</h2>
 <div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="FP_files/figure-revealjs/elastic-cvplot-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
 <div class="cell-output cell-output-stdout">
-<pre><code>  parameter   class                    label
-1     alpha numeric        Mixing Percentage
-2    lambda numeric Regularization Parameter</code></pre>
+<pre><code>Held-out Test (Elastic Net, 10-fold CV)
+ R²: 0.313  MAE: 1.896  RMSE: 2.239 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="FP_files/figure-revealjs/elastic-vip-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="FP_files/figure-revealjs/elastic-coefs-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top">
+<caption>Held-out test metrics: Baseline vs Ridge vs Lasso vs Elastic Net (sorted by R²)</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Model</th>
+<th style="text-align: right;">R2</th>
+<th style="text-align: right;">MAE</th>
+<th style="text-align: right;">RMSE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Lasso (10-CV, keep_screen=FALSE)</td>
+<td style="text-align: right;">0.317</td>
+<td style="text-align: right;">1.877</td>
+<td style="text-align: right;">2.220</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ridge (10-CV, keep_screen=FALSE)</td>
+<td style="text-align: right;">0.313</td>
+<td style="text-align: right;">1.896</td>
+<td style="text-align: right;">2.239</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Elastic Net (10-CV, keep_screen=FALSE)</td>
+<td style="text-align: right;">0.313</td>
+<td style="text-align: right;">1.896</td>
+<td style="text-align: right;">2.239</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Baseline (mean-only)</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">2.263</td>
+<td style="text-align: right;">2.601</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </section>
 <section id="model-4-elastic-net-model-1" class="slide level2">
 <h2>Model 4: Elastic net model</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href=""></a><span class="fu">plot</span>(elastic)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="FP_files/figure-revealjs/unnamed-chunk-82-1.png" width="960"></p>
-</figure>
-</div>
-</div>
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href=""></a>elastic<span class="sc">$</span>bestTune        <span class="co"># chosen alpha &amp; lambda</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href=""></a><span class="fu">plot</span>(elastic)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href=""></a>elastic<span class="sc">$</span>bestTune        </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>    alpha lambda
-100     0  0.496</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href=""></a><span class="fu">head</span>(elastic<span class="sc">$</span>results)   <span class="co"># peek first rows</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>  alpha lambda     RMSE  Rsquared      MAE    RMSESD RsquaredSD     MAESD
-1     0  0.001 2.307317 0.1539464 1.876607 0.1294763 0.09566782 0.1427815
-2     0  0.006 2.307317 0.1539464 1.876607 0.1294763 0.09566782 0.1427815
-3     0  0.011 2.307317 0.1539464 1.876607 0.1294763 0.09566782 0.1427815
-4     0  0.016 2.307317 0.1539464 1.876607 0.1294763 0.09566782 0.1427815
-5     0  0.021 2.307317 0.1539464 1.876607 0.1294763 0.09566782 0.1427815
-6     0  0.026 2.307317 0.1539464 1.876607 0.1294763 0.09566782 0.1427815</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href=""></a><span class="co"># Example: elastic$results[422, ]  # if you want to inspect a specific row</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="FP_files/figure-revealjs/unnamed-chunk-87-1.png" width="960"></p>
-</figure>
+<pre><code>   alpha    lambda
+27     0 0.1215474</code></pre>
 </div>
 </div>
-</div>
-</section>
+<img data-src="FP_files/figure-revealjs/unnamed-chunk-79-1.png" width="960" class="r-stretch"></section>
 <section id="evaluating-model-performance" class="slide level2">
 <h2>Evaluating model performance</h2>
+<ul>
+<li>Among all models, Lasso regression showed the best performance (R2 = 0.317) than Ridge and Elastic Net did. All three models did significantly better than the mean-only baseline did.</li>
+</ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href=""></a>comp <span class="ot">&lt;-</span> <span class="fu">rbind</span>(</span>
-<span id="cb43-2"><a href=""></a>  <span class="fu">data.frame</span>(<span class="at">Model =</span> <span class="st">"Mean Only"</span>,  <span class="at">R2 =</span> R2_base, <span class="at">MAE =</span> MAE_base, <span class="at">RMSE =</span> RMSE_base),</span>
-<span id="cb43-3"><a href=""></a>  <span class="fu">data.frame</span>(<span class="at">Model =</span> <span class="st">"Ridge"</span>,      <span class="at">R2 =</span> rsq_te,  <span class="at">MAE =</span> mae_te,  <span class="at">RMSE =</span> rmse_te),</span>
-<span id="cb43-4"><a href=""></a>  <span class="fu">data.frame</span>(<span class="at">Model =</span> <span class="st">"Lasso"</span>,      <span class="at">R2 =</span> rsq_te_lasso, <span class="at">MAE =</span> mae_te_lasso, <span class="at">RMSE =</span> rmse_te_lasso),</span>
-<span id="cb43-5"><a href=""></a>  <span class="fu">data.frame</span>(<span class="at">Model =</span> <span class="st">"ElasticNet"</span>, <span class="at">R2 =</span> rsq_te_enet,  <span class="at">MAE =</span> mae_te_enet,  <span class="at">RMSE =</span> rmse_te_enet)</span>
-<span id="cb43-6"><a href=""></a>)</span>
-<span id="cb43-7"><a href=""></a></span>
-<span id="cb43-8"><a href=""></a>comp_rounded <span class="ot">&lt;-</span> comp <span class="sc">%&gt;%</span></span>
-<span id="cb43-9"><a href=""></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), round, <span class="dv">3</span>))</span>
-<span id="cb43-10"><a href=""></a></span>
-<span id="cb43-11"><a href=""></a>comp_rounded</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>       Model    R2   MAE  RMSE
-1  Mean Only    NA 2.264 2.607
-2      Ridge 0.297 1.895 2.244
-3      Lasso 0.281 1.880 2.241
-4 ElasticNet 0.297 1.895 2.244</code></pre>
+<div class="cell-output-display">
+<table class="caption-top">
+<caption>Held-out test metrics: Baseline vs Ridge vs Lasso vs Elastic Net (sorted by R²)</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Model</th>
+<th style="text-align: right;">R2</th>
+<th style="text-align: right;">MAE</th>
+<th style="text-align: right;">RMSE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Lasso (10-fold CV)</td>
+<td style="text-align: right;">0.317</td>
+<td style="text-align: right;">1.877</td>
+<td style="text-align: right;">2.220</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ridge (10-fold CV)</td>
+<td style="text-align: right;">0.313</td>
+<td style="text-align: right;">1.896</td>
+<td style="text-align: right;">2.239</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Elastic Net (10-fold CV)</td>
+<td style="text-align: right;">0.313</td>
+<td style="text-align: right;">1.896</td>
+<td style="text-align: right;">2.239</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Baseline (mean-only)</td>
+<td style="text-align: right;">-0.004</td>
+<td style="text-align: right;">2.263</td>
+<td style="text-align: right;">2.601</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </section>
-<section id="model-fit---model-performance" class="slide level2">
-<h2>Model fit - Model performance</h2>
-<p>When you click the <strong>Render</strong> button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:</p>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>
-             ?          Asian          Black       Hispanic         Latino 
-            93            123             43             13             20 
-Middle Eastern         others         Others       Pasifika    South Asian 
-            92              1             30             11             36 
-       Turkish White-European 
-             6            233 </code></pre>
-</div>
-</div>
-</section>
-<section id="whats-the-cut-off-for-large-enough-of-a-to-be-a-predictor" class="slide level2">
-<h2>What’s the cut off for “large enough of a #” to be a predictor…?</h2>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>          contry_of_res   n
-1         United States 113
-2  United Arab Emirates  82
-3                 India  81
-4           New Zealand  80
-5        United Kingdom  77
-6                Jordan  46
-7             Australia  27
-8                Canada  15
-9             Sri Lanka  14
-10          Afghanistan  13
-11               France  11
-12          Netherlands  10
-13               Brazil   9
-14               Mexico   8
-15                 Iran   7
-16               Russia   7
-17              Ireland   5
-18                Italy   5
-19             Malaysia   5
-20             Viet Nam   5
-21              Austria   4
-22              Germany   4
-23          Philippines   4
-24           Bangladesh   3
-25              Belgium   3
-26                Egypt   3
-27           Kazakhstan   3
-28             Pakistan   3
-29              Romania   3
-30         Saudi Arabia   3
-31                Spain   3
-32        AmericanSamoa   2
-33            Argentina   2
-34              Armenia   2
-35              Bahamas   2
-36             Ethiopia   2
-37              Iceland   2
-38         South Africa   2
-39               Sweden   2
-40              Ukraine   2
-41               Angola   1
-42                Aruba   1
-43           Azerbaijan   1
-44              Bolivia   1
-45              Burundi   1
-46                Chile   1
-47                China   1
-48           Costa Rica   1
-49               Cyprus   1
-50       Czech Republic   1
-51              Ecuador   1
-52              Finland   1
-53            Hong Kong   1
-54            Indonesia   1
-55                 Iraq   1
-56                Japan   1
-57              Lebanon   1
-58                Nepal   1
-59            Nicaragua   1
-60                Niger   1
-61                 Oman   1
-62             Portugal   1
-63               Serbia   1
-64         Sierra Leone   1
-65                Tonga   1
-66               Turkey   1
-67              Uruguay   1</code></pre>
-</div>
-</div>
-
-<img data-src="FP_files/figure-revealjs/unnamed-chunk-96-1.png" width="960" class="r-stretch"></section>
 <section id="model-fit---final-model" class="slide level2">
 <h2>Model fit - Final model</h2>
 <ul>
 <li>Model efficiency &amp; effectiveness</li>
 </ul>
-<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href=""></a><span class="fu">library</span>(knitr)</span>
-<span id="cb47-2"><a href=""></a><span class="fu">library</span>(kableExtra)</span>
-<span id="cb47-3"><a href=""></a></span>
-<span id="cb47-4"><a href=""></a>comp_rounded <span class="sc">%&gt;%</span></span>
-<span id="cb47-5"><a href=""></a>  <span class="fu">kable</span>(</span>
-<span id="cb47-6"><a href=""></a>    <span class="at">caption =</span> <span class="st">"Model Efficiency &amp; Effectiveness"</span>,</span>
-<span id="cb47-7"><a href=""></a>    <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Model"</span>, <span class="st">"R²"</span>, <span class="st">"MAE"</span>, <span class="st">"RMSE"</span>),</span>
-<span id="cb47-8"><a href=""></a>    <span class="at">align =</span> <span class="st">"lccc"</span>,</span>
-<span id="cb47-9"><a href=""></a>    <span class="at">booktabs =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb47-10"><a href=""></a>    <span class="at">digits =</span> <span class="dv">3</span></span>
-<span id="cb47-11"><a href=""></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb47-12"><a href=""></a>  <span class="fu">kable_styling</span>(</span>
-<span id="cb47-13"><a href=""></a>    <span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>),</span>
-<span id="cb47-14"><a href=""></a>    <span class="at">full_width =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb47-15"><a href=""></a>    <span class="at">position =</span> <span class="st">"center"</span>,</span>
-<span id="cb47-16"><a href=""></a>    <span class="at">font_size =</span> <span class="dv">16</span></span>
-<span id="cb47-17"><a href=""></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb47-18"><a href=""></a>  <span class="fu">row_spec</span>(<span class="dv">0</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>, <span class="at">background =</span> <span class="st">"#f0f0f0"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<table class="table table-striped table-hover table-condensed caption-top" data-quarto-postprocess="true" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;">
-<caption>Model Efficiency &amp; Effectiveness</caption>
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; background-color: rgba(240, 240, 240, 255) !important;">Model</th>
-<th data-quarto-table-cell-role="th" style="text-align: center; font-weight: bold; background-color: rgba(240, 240, 240, 255) !important;">R²</th>
-<th data-quarto-table-cell-role="th" style="text-align: center; font-weight: bold; background-color: rgba(240, 240, 240, 255) !important;">MAE</th>
-<th data-quarto-table-cell-role="th" style="text-align: center; font-weight: bold; background-color: rgba(240, 240, 240, 255) !important;">RMSE</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Mean Only</td>
-<td style="text-align: center;">NA</td>
-<td style="text-align: center;">2.264</td>
-<td style="text-align: center;">2.607</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Ridge</td>
-<td style="text-align: center;">0.297</td>
-<td style="text-align: center;">1.895</td>
-<td style="text-align: center;">2.244</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Lasso</td>
-<td style="text-align: center;">0.281</td>
-<td style="text-align: center;">1.880</td>
-<td style="text-align: center;">2.241</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">ElasticNet</td>
-<td style="text-align: center;">0.297</td>
-<td style="text-align: center;">1.895</td>
-<td style="text-align: center;">2.244</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="model-fit---final-model-1" class="slide level2">
-<h2>Model fit - Final model</h2>
-<ul>
-<li>Model efficiency &amp; effectiveness</li>
-</ul>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href=""></a><span class="fu">ggplot</span>(comp_long, <span class="fu">aes</span>(<span class="at">x =</span> Metric, <span class="at">y =</span> Value, <span class="at">fill =</span> Model)) <span class="sc">+</span></span>
-<span id="cb48-2"><a href=""></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
-<span id="cb48-3"><a href=""></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Model Performance by Regularization"</span>,</span>
-<span id="cb48-4"><a href=""></a>       <span class="at">x =</span> <span class="st">"Metric"</span>, <span class="at">y =</span> <span class="st">"Value"</span>) <span class="sc">+</span></span>
-<span id="cb48-5"><a href=""></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb48-6"><a href=""></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href=""></a><span class="fu">ggplot</span>(comp_long, <span class="fu">aes</span>(<span class="at">x =</span> Metric, <span class="at">y =</span> Value, <span class="at">fill =</span> Model)) <span class="sc">+</span></span>
+<span id="cb27-2"><a href=""></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
+<span id="cb27-3"><a href=""></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Model Performance by Regularization"</span>,</span>
+<span id="cb27-4"><a href=""></a>       <span class="at">x =</span> <span class="st">"Metric"</span>, <span class="at">y =</span> <span class="st">"Value"</span>) <span class="sc">+</span></span>
+<span id="cb27-5"><a href=""></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb27-6"><a href=""></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="FP_files/figure-revealjs/unnamed-chunk-98-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="model-fit---final-model-2" class="slide level2">
+<img data-src="FP_files/figure-revealjs/unnamed-chunk-89-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="model-fit---final-model-1" class="slide level2">
 <h2>Model fit - Final model</h2>
 <ul>
 <li>Lasso is the winner 🥇</li>
 </ul>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href=""></a>coefs <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(<span class="fu">coef</span>(lasso<span class="sc">$</span>finalModel, <span class="at">s =</span> lasso<span class="sc">$</span>bestTune<span class="sc">$</span>lambda))</span>
-<span id="cb49-2"><a href=""></a>coef_df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">term =</span> <span class="fu">rownames</span>(coefs), <span class="at">beta =</span> <span class="fu">as.numeric</span>(coefs)) <span class="sc">%&gt;%</span></span>
-<span id="cb49-3"><a href=""></a>  <span class="fu">filter</span>(term <span class="sc">!=</span> <span class="st">"(Intercept)"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb49-4"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">abs_beta =</span> <span class="fu">abs</span>(beta)) <span class="sc">%&gt;%</span></span>
-<span id="cb49-5"><a href=""></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(abs_beta)) <span class="sc">%&gt;%</span></span>
-<span id="cb49-6"><a href=""></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">15</span>)</span>
-<span id="cb49-7"><a href=""></a></span>
-<span id="cb49-8"><a href=""></a><span class="fu">ggplot</span>(coef_df, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(term, abs_beta), <span class="at">y =</span> beta)) <span class="sc">+</span></span>
-<span id="cb49-9"><a href=""></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
-<span id="cb49-10"><a href=""></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
-<span id="cb49-11"><a href=""></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Top 15 predictors by |β| (LASSO)"</span>,</span>
-<span id="cb49-12"><a href=""></a>       <span class="at">x =</span> <span class="st">"Predictor"</span>, <span class="at">y =</span> <span class="st">"Coefficient (signed)"</span>) <span class="sc">+</span></span>
-<span id="cb49-13"><a href=""></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
-</div>
-<img data-src="FP_files/figure-revealjs/unnamed-chunk-99-1.png" width="960" class="r-stretch"></section>
+<img data-src="FP_files/figure-revealjs/unnamed-chunk-90-1.png" width="960" class="r-stretch"></section>
 <section id="model-fit---cut-off-point" class="slide level2">
 <h2>Model fit - Cut off point</h2>
 </section>
@@ -1117,25 +709,97 @@ Middle Eastern         others         Others       Pasifika    South Asian
 </ul>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
-<pre><code>Dropped predictors (4):</code></pre>
+<pre><code>Dropped predictors (69):</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "age_poly_2"    "jundice_yes"   "austim_yes"    "relation_Self"</code></pre>
+<pre><code> [1] "age_poly_2"                          
+ [2] "gender_f"                            
+ [3] "gender_m"                            
+ [4] "ethnicity_Asian"                     
+ [5] "ethnicity_Hispanic"                  
+ [6] "ethnicity_others"                    
+ [7] "ethnicity_Turkish"                   
+ [8] "jundice_no"                          
+ [9] "jundice_yes"                         
+[10] "contry_of_res_Afghanistan"           
+[11] "contry_of_res_AmericanSamoa"         
+[12] "contry_of_res_Angola"                
+[13] "contry_of_res_Argentina"             
+[14] "contry_of_res_Armenia"               
+[15] "contry_of_res_Aruba"                 
+[16] "contry_of_res_Azerbaijan"            
+[17] "contry_of_res_Bahamas"               
+[18] "contry_of_res_Bangladesh"            
+[19] "contry_of_res_Belgium"               
+[20] "contry_of_res_Bolivia"               
+[21] "contry_of_res_Burundi"               
+[22] "contry_of_res_Chile"                 
+[23] "contry_of_res_China"                 
+[24] "contry_of_res_Costa.Rica"            
+[25] "contry_of_res_Cyprus"                
+[26] "contry_of_res_Czech.Republic"        
+[27] "contry_of_res_Ecuador"               
+[28] "contry_of_res_Egypt"                 
+[29] "contry_of_res_Ethiopia"              
+[30] "contry_of_res_Finland"               
+[31] "contry_of_res_France"                
+[32] "contry_of_res_Germany"               
+[33] "contry_of_res_Hong.Kong"             
+[34] "contry_of_res_Iceland"               
+[35] "contry_of_res_Indonesia"             
+[36] "contry_of_res_Iran"                  
+[37] "contry_of_res_Iraq"                  
+[38] "contry_of_res_Ireland"               
+[39] "contry_of_res_Italy"                 
+[40] "contry_of_res_Japan"                 
+[41] "contry_of_res_Kazakhstan"            
+[42] "contry_of_res_Lebanon"               
+[43] "contry_of_res_Malaysia"              
+[44] "contry_of_res_Nepal"                 
+[45] "contry_of_res_Netherlands"           
+[46] "contry_of_res_Nicaragua"             
+[47] "contry_of_res_Niger"                 
+[48] "contry_of_res_Oman"                  
+[49] "contry_of_res_Pakistan"              
+[50] "contry_of_res_Philippines"           
+[51] "contry_of_res_Portugal"              
+[52] "contry_of_res_Romania"               
+[53] "contry_of_res_Russia"                
+[54] "contry_of_res_Saudi.Arabia"          
+[55] "contry_of_res_Serbia"                
+[56] "contry_of_res_Sierra.Leone"          
+[57] "contry_of_res_Spain"                 
+[58] "contry_of_res_Sweden"                
+[59] "contry_of_res_Tonga"                 
+[60] "contry_of_res_Turkey"                
+[61] "contry_of_res_Ukraine"               
+[62] "contry_of_res_United.Kingdom"        
+[63] "contry_of_res_Uruguay"               
+[64] "contry_of_res_Viet.Nam"              
+[65] "used_app_before_no"                  
+[66] "used_app_before_yes"                 
+[67] "relation_X.Health.care.professional."
+[68] "relation_Others"                     
+[69] "relation_Parent"                     </code></pre>
 </div>
 </div>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] "gender_binary"                      "jundice_binary"                    
  [3] "age_poly_1"                         "age_poly_3"                        
- [5] "gender_f"                           "gender_m"                          
- [7] "ethnicity_X."                       "ethnicity_Asian"                   
- [9] "ethnicity_Black"                    "ethnicity_Middle.Eastern"          
+ [5] "ethnicity_X."                       "ethnicity_Black"                   
+ [7] "ethnicity_Latino"                   "ethnicity_Middle.Eastern"          
+ [9] "ethnicity_Others"                   "ethnicity_Pasifika"                
 [11] "ethnicity_South.Asian"              "ethnicity_White.European"          
-[13] "jundice_no"                         "austim_no"                         
-[15] "contry_of_res_India"                "contry_of_res_Jordan"              
-[17] "contry_of_res_New.Zealand"          "contry_of_res_United.Arab.Emirates"
-[19] "contry_of_res_United.Kingdom"       "contry_of_res_United.States"       
-[21] "relation_X."                        "relation_Parent"                   </code></pre>
+[13] "austim_no"                          "austim_yes"                        
+[15] "contry_of_res_Australia"            "contry_of_res_Austria"             
+[17] "contry_of_res_Brazil"               "contry_of_res_Canada"              
+[19] "contry_of_res_India"                "contry_of_res_Jordan"              
+[21] "contry_of_res_Mexico"               "contry_of_res_New.Zealand"         
+[23] "contry_of_res_South.Africa"         "contry_of_res_Sri.Lanka"           
+[25] "contry_of_res_United.Arab.Emirates" "contry_of_res_United.States"       
+[27] "relation_X."                        "relation_Relative"                 
+[29] "relation_Self"                     </code></pre>
 </div>
 </div>
 </section>
@@ -1156,6 +820,7 @@ Middle Eastern         others         Others       Pasifika    South Asian
 <h2>References:</h2>
 <ul>
 <li>Allison, C., Auyeung, B., &amp; Baron-Cohen, S. (2012). Toward brief “Red Flags” for Autism screening: The short Autism Spectrum Quotient and the short Quantitative Checklist in 1,000 cases and 3,000 controls. <em>Journal of the American Academy of Child &amp; Adolescent Psychiatry</em>, <em>51</em>(2), 202-212.e7.</li>
+<li>Boehmke, B. &amp; Greenwell, B. (2019). <em>Hands on Machine Learning with R</em>. Taylor &amp; Francis.</li>
 <li>Growcoot, M. (2023, August 3). <em>Asian MIT student asks AI for a pro headshot, gets turned White.</em> PetaPixel. <a href="https://petapixel.com/2023/08/03/asian-mit-student-asks-ai-for-a-pro-headshot-gets-turned-white/" class="uri">https://petapixel.com/2023/08/03/asian-mit-student-asks-ai-for-a-pro-headshot-gets-turned-white/</a></li>
 <li>Kuhn, M. and Johnson, K. (2014). <em>Applied Predictive Modeling in R</em>. Springer.</li>
 <li>Vogt, P. W. &amp; Johnson, R. Burke. (2016). <em>The Sage dictionary of statistics &amp; methodology.</em> Sage.</li>
