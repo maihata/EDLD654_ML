@@ -200,10 +200,7 @@
 <div class="quarto-title-author-name">
 Maiko Hata 
 </div>
-        <p class="quarto-title-affiliation">
-            University of Oregon
-          </p>
-    </div>
+</div>
 </div>
 
 </section>
@@ -354,7 +351,9 @@ relation             -            -              -</code></pre>
 <img data-src="FP_files/figure-revealjs/unnamed-chunk-22-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
 <section id="descriptive-statistics-1" class="slide level2">
 <h2>Descriptive statistics</h2>
-<p>Autism Screener user age with <code>filter(age &lt;= 100)</code></p>
+<ul>
+<li>Autism Screener user age with <code>filter(age &lt;= 100)</code></li>
+</ul>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href=""></a>autism <span class="ot">&lt;-</span> autism <span class="sc">%&gt;%</span> <span class="fu">filter</span>(age <span class="sc">&lt;=</span> <span class="dv">100</span>)</span>
 <span id="cb11-2"><a href=""></a></span>
@@ -368,9 +367,12 @@ relation             -            -              -</code></pre>
 
 </div>
 <img data-src="FP_files/figure-revealjs/unnamed-chunk-23-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="autism-screener-user-raceethnicity" class="slide level2">
-<h2>Autism Screener user race/ethnicity</h2>
-<div class="cell">
+<section id="descriptive-statistics-2" class="slide level2">
+<h2>Descriptive statistics</h2>
+<ul>
+<li>Autism Screener user race/ethnicity</li>
+</ul>
+<div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a><span class="fu">ggplot</span>(autism, <span class="fu">aes</span>(<span class="at">x =</span> ethnicity)) <span class="sc">+</span></span>
 <span id="cb12-2"><a href=""></a>  <span class="fu">geom_bar</span>(<span class="at">fill =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
 <span id="cb12-3"><a href=""></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">after_stat</span>(count)),</span>
@@ -384,7 +386,7 @@ relation             -            -              -</code></pre>
 <span id="cb12-11"><a href=""></a>        <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="FP_files/figure-revealjs/unnamed-chunk-32-1.png" width="960" class="r-stretch"></section>
+<img data-src="FP_files/figure-revealjs/unnamed-chunk-32-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
 <section id="modeling-assumptions" class="slide level2">
 <h2>Modeling assumptions</h2>
 <p>Before building the models, it’s important to review the Ordinary Least Squares (OLS) assumptions for linear regression (Ch. 4 &amp; 6, Boehmke, &amp; Greenwell, 2019):</p>
@@ -396,7 +398,10 @@ relation             -            -              -</code></pre>
 </section>
 <section id="modeling-assumptions-1" class="slide level2">
 <h2>Modeling assumptions</h2>
-<p>… and yet, I initially included all 10 screener questions (A1_Score~A10_Score) and “Class.ASD” in the model, overlooking that “result” which is the total of A1~A10 was already my outcome variable, and “Class.ASD” was simply coded “YES” for scores of 6 or higher.</p>
+<ul>
+<li><p>… and yet, I initially included all 10 screener questions (A1_Score~A10_Score) and “Class.ASD” in the model, overlooking that “result” which is the total of A1~A10 was already my outcome variable, and “Class.ASD” was simply coded “YES” for scores of 6 or higher.</p></li>
+<li><p>All three models used 10-fold cross-validation to reduce overfitting. This approach provided more reliable measure of generalizability.</p></li>
+</ul>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] "A1_Score"         "A2_Score"         "A3_Score"         "A4_Score"        
@@ -407,37 +412,28 @@ relation             -            -              -</code></pre>
 [21] "Class.ASD"        "gender_binary"    "jundice_binary"   "Class.ASD_binary"</code></pre>
 </div>
 </div>
-</section>
-<section id="model-1-ridge-regression-model" class="slide level2">
-<h2>Model 1: Ridge Regression Model</h2>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a><span class="fu">length</span>(<span class="fu">coef</span>(lm_cv<span class="sc">$</span>finalModel))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 99</code></pre>
+</div>
+</div>
+</section>
+<section id="model-1-ridge-regularization-model" class="slide level2">
+<h2>Model 1: Ridge Regularization model</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href=""></a><span class="fu">plot</span>(ridge)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href=""></a>ridge<span class="sc">$</span>bestTune</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   alpha lambda
-73     0   0.73</code></pre>
+49     0   0.49</code></pre>
 </div>
 </div>
 <img data-src="FP_files/figure-revealjs/unnamed-chunk-61-1.png" width="960" class="r-stretch"></section>
-<section id="model-1-ridge-regression-model-1" class="slide level2">
-<h2>Model 1: Ridge Regression Model</h2>
+<section id="model-1-ridge-regularization-model-1" class="slide level2">
+<h2>Model 1: Ridge Regularization model</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href=""></a>pred_ridge <span class="ot">&lt;-</span> <span class="fu">predict</span>(ridge, <span class="at">newdata =</span> autism_te_r)</span>
-<span id="cb15-2"><a href=""></a></span>
-<span id="cb15-3"><a href=""></a>R2_ridge   <span class="ot">&lt;-</span> <span class="fu">cor</span>(pred_ridge, autism_te_r<span class="sc">$</span>score, <span class="at">use =</span> <span class="st">"complete.obs"</span>)<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb15-4"><a href=""></a>MAE_ridge  <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">abs</span>(autism_te_r<span class="sc">$</span>score <span class="sc">-</span> pred_ridge))</span>
-<span id="cb15-5"><a href=""></a>RMSE_ridge <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>((autism_te_r<span class="sc">$</span>score <span class="sc">-</span> pred_ridge)<span class="sc">^</span><span class="dv">2</span>))</span>
-<span id="cb15-6"><a href=""></a></span>
-<span id="cb15-7"><a href=""></a><span class="fu">cat</span>(<span class="st">"Held-out Test (Ridge, 10-fold CV)</span><span class="sc">\n</span><span class="st">"</span>,</span>
-<span id="cb15-8"><a href=""></a>    <span class="st">"R²:"</span>, <span class="fu">round</span>(R2_ridge, <span class="dv">3</span>),</span>
-<span id="cb15-9"><a href=""></a>    <span class="st">" MAE:"</span>, <span class="fu">round</span>(MAE_ridge, <span class="dv">3</span>),</span>
-<span id="cb15-10"><a href=""></a>    <span class="st">" RMSE:"</span>, <span class="fu">round</span>(RMSE_ridge, <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Held-out Test (Ridge, 10-fold CV)
- R²: 0.313  MAE: 1.896  RMSE: 2.239 </code></pre>
-</div>
-</div>
-
-<img data-src="FP_files/figure-revealjs/ridge-coefs-1.png" width="960" class="r-stretch"><div class="cell">
 <div class="cell-output-display">
 <table class="caption-top">
 <caption>Held-out test metrics</caption>
@@ -458,54 +454,28 @@ relation             -            -              -</code></pre>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Ridge (10-CV, keep_screen=FALSE)</td>
-<td style="text-align: right;">0.313</td>
-<td style="text-align: right;">1.896</td>
-<td style="text-align: right;">2.239</td>
+<td style="text-align: right;">0.309</td>
+<td style="text-align: right;">1.886</td>
+<td style="text-align: right;">2.233</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>                             Model    R2   MAE  RMSE
-1             Baseline (mean-only)    NA 2.263 2.601
-2 Ridge (10-CV, keep_screen=FALSE) 0.313 1.896 2.239</code></pre>
-</div>
-</div>
 </section>
-<section id="model-2-lasso-regression-model" class="slide level2">
-<h2>Model 2: Lasso Regression Model</h2>
+<section id="model-2-lasso-regularization-model" class="slide level2">
+<h2>Model 2: Lasso Regularization model</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href=""></a><span class="fu">plot</span>(lasso)        </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href=""></a>lasso<span class="sc">$</span>bestTune        </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  alpha lambda
 1     1   0.01</code></pre>
 </div>
 </div>
-<img data-src="FP_files/figure-revealjs/unnamed-chunk-69-1.png" width="960" class="r-stretch"></section>
-<section id="model-2-lasso-regression-model-1" class="slide level2">
-<h2>Model 2: Lasso Regression Model</h2>
+<img data-src="FP_files/figure-revealjs/unnamed-chunk-66-1.png" width="960" class="r-stretch"></section>
+<section id="model-2-lasso-regularization-model-1" class="slide level2">
+<h2>Model 2: Lasso Regularization model</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href=""></a>pred_lasso <span class="ot">&lt;-</span> <span class="fu">predict</span>(lasso, <span class="at">newdata =</span> autism_te_r)</span>
-<span id="cb21-2"><a href=""></a></span>
-<span id="cb21-3"><a href=""></a>R2_lasso   <span class="ot">&lt;-</span> <span class="fu">cor</span>(pred_lasso, autism_te_r<span class="sc">$</span>score, <span class="at">use =</span> <span class="st">"complete.obs"</span>)<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb21-4"><a href=""></a>MAE_lasso  <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">abs</span>(autism_te_r<span class="sc">$</span>score <span class="sc">-</span> pred_lasso))</span>
-<span id="cb21-5"><a href=""></a>RMSE_lasso <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>((autism_te_r<span class="sc">$</span>score <span class="sc">-</span> pred_lasso)<span class="sc">^</span><span class="dv">2</span>))</span>
-<span id="cb21-6"><a href=""></a></span>
-<span id="cb21-7"><a href=""></a><span class="fu">cat</span>(<span class="st">"Held-out Test (Lasso, 10-fold CV)</span><span class="sc">\n</span><span class="st">"</span>,</span>
-<span id="cb21-8"><a href=""></a>    <span class="st">"R²:"</span>, <span class="fu">round</span>(R2_lasso, <span class="dv">3</span>),</span>
-<span id="cb21-9"><a href=""></a>    <span class="st">" MAE:"</span>, <span class="fu">round</span>(MAE_lasso, <span class="dv">3</span>),</span>
-<span id="cb21-10"><a href=""></a>    <span class="st">" RMSE:"</span>, <span class="fu">round</span>(RMSE_lasso, <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Held-out Test (Lasso, 10-fold CV)
- R²: 0.317  MAE: 1.877  RMSE: 2.22 </code></pre>
-</div>
-</div>
-
-<img data-src="FP_files/figure-revealjs/lasso-coefs-1.png" width="960" class="r-stretch"><div class="cell">
 <div class="cell-output-display">
 <table class="caption-top">
 <caption>Held-out test metrics: Baseline vs Ridge vs Lasso</caption>
@@ -526,115 +496,36 @@ relation             -            -              -</code></pre>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Ridge (10-CV, keep_screen=FALSE)</td>
-<td style="text-align: right;">0.313</td>
-<td style="text-align: right;">1.896</td>
-<td style="text-align: right;">2.239</td>
+<td style="text-align: right;">0.309</td>
+<td style="text-align: right;">1.886</td>
+<td style="text-align: right;">2.233</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Lasso (10-CV, keep_screen=FALSE)</td>
-<td style="text-align: right;">0.317</td>
-<td style="text-align: right;">1.877</td>
-<td style="text-align: right;">2.220</td>
+<td style="text-align: right;">0.281</td>
+<td style="text-align: right;">1.880</td>
+<td style="text-align: right;">2.241</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
 </section>
-<section id="model-4-elastic-net-model" class="slide level2">
-<h2>Model 4: Elastic Net Model</h2>
+<section id="model-3-elastic-net-regression-model" class="slide level2">
+<h2>Model 3: Elastic Net Regression model</h2>
 <div class="cell">
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="FP_files/figure-revealjs/elastic-cvplot-1.png" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>Held-out Test (Elastic Net, 10-fold CV)
- R²: 0.313  MAE: 1.896  RMSE: 2.239 </code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="FP_files/figure-revealjs/elastic-vip-1.png" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="FP_files/figure-revealjs/elastic-coefs-1.png" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="cell-output-display">
-<table class="caption-top">
-<caption>Held-out test metrics: Baseline vs Ridge vs Lasso vs Elastic Net (sorted by R²)</caption>
-<thead>
-<tr class="header">
-<th style="text-align: left;">Model</th>
-<th style="text-align: right;">R2</th>
-<th style="text-align: right;">MAE</th>
-<th style="text-align: right;">RMSE</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Lasso (10-CV, keep_screen=FALSE)</td>
-<td style="text-align: right;">0.317</td>
-<td style="text-align: right;">1.877</td>
-<td style="text-align: right;">2.220</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Ridge (10-CV, keep_screen=FALSE)</td>
-<td style="text-align: right;">0.313</td>
-<td style="text-align: right;">1.896</td>
-<td style="text-align: right;">2.239</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Elastic Net (10-CV, keep_screen=FALSE)</td>
-<td style="text-align: right;">0.313</td>
-<td style="text-align: right;">1.896</td>
-<td style="text-align: right;">2.239</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Baseline (mean-only)</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">2.263</td>
-<td style="text-align: right;">2.601</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</section>
-<section id="model-4-elastic-net-model-1" class="slide level2">
-<h2>Model 4: Elastic net model</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href=""></a><span class="fu">plot</span>(elastic)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href=""></a><span class="fu">plot</span>(elastic)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href=""></a>elastic<span class="sc">$</span>bestTune        </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href=""></a>elastic<span class="sc">$</span>bestTune        </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>   alpha    lambda
-27     0 0.1215474</code></pre>
+<pre><code>   alpha     lambda
+26     0 0.09249147</code></pre>
 </div>
 </div>
-<img data-src="FP_files/figure-revealjs/unnamed-chunk-79-1.png" width="960" class="r-stretch"></section>
+<img data-src="FP_files/figure-revealjs/unnamed-chunk-75-1.png" width="960" class="r-stretch"></section>
 <section id="evaluating-model-performance" class="slide level2">
 <h2>Evaluating model performance</h2>
-<ul>
-<li>Among all models, Lasso regression showed the best performance (R2 = 0.317) than Ridge and Elastic Net did. All three models did significantly better than the mean-only baseline did.</li>
-</ul>
+<p>Among all models, Ridge and Elastic Net regression showed the best performance (R2 = 0.309). LASSO regression performed slightly worse (R2= 0.281), but all three models performed substantially better than the mean-only baseline (R2 = –0.004).</p>
 <div class="cell">
 <div class="cell-output-display">
 <table class="caption-top">
@@ -649,22 +540,22 @@ relation             -            -              -</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Lasso (10-fold CV)</td>
-<td style="text-align: right;">0.317</td>
-<td style="text-align: right;">1.877</td>
-<td style="text-align: right;">2.220</td>
+<td style="text-align: left;">Ridge (10-fold CV)</td>
+<td style="text-align: right;">0.309</td>
+<td style="text-align: right;">1.886</td>
+<td style="text-align: right;">2.233</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Ridge (10-fold CV)</td>
-<td style="text-align: right;">0.313</td>
-<td style="text-align: right;">1.896</td>
-<td style="text-align: right;">2.239</td>
+<td style="text-align: left;">Elastic Net (10-fold CV)</td>
+<td style="text-align: right;">0.309</td>
+<td style="text-align: right;">1.886</td>
+<td style="text-align: right;">2.234</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Elastic Net (10-fold CV)</td>
-<td style="text-align: right;">0.313</td>
-<td style="text-align: right;">1.896</td>
-<td style="text-align: right;">2.239</td>
+<td style="text-align: left;">Lasso (10-fold CV)</td>
+<td style="text-align: right;">0.281</td>
+<td style="text-align: right;">1.880</td>
+<td style="text-align: right;">2.241</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Baseline (mean-only)</td>
@@ -683,158 +574,72 @@ relation             -            -              -</code></pre>
 <li>Model efficiency &amp; effectiveness</li>
 </ul>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href=""></a><span class="fu">ggplot</span>(comp_long, <span class="fu">aes</span>(<span class="at">x =</span> Metric, <span class="at">y =</span> Value, <span class="at">fill =</span> Model)) <span class="sc">+</span></span>
-<span id="cb27-2"><a href=""></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
-<span id="cb27-3"><a href=""></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Model Performance by Regularization"</span>,</span>
-<span id="cb27-4"><a href=""></a>       <span class="at">x =</span> <span class="st">"Metric"</span>, <span class="at">y =</span> <span class="st">"Value"</span>) <span class="sc">+</span></span>
-<span id="cb27-5"><a href=""></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb27-6"><a href=""></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href=""></a><span class="fu">ggplot</span>(comp_long, <span class="fu">aes</span>(<span class="at">x =</span> Metric, <span class="at">y =</span> Value, <span class="at">fill =</span> Model)) <span class="sc">+</span></span>
+<span id="cb23-2"><a href=""></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
+<span id="cb23-3"><a href=""></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Model Performance by Regularization"</span>,</span>
+<span id="cb23-4"><a href=""></a>       <span class="at">x =</span> <span class="st">"Metric"</span>, <span class="at">y =</span> <span class="st">"Value"</span>) <span class="sc">+</span></span>
+<span id="cb23-5"><a href=""></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb23-6"><a href=""></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="FP_files/figure-revealjs/unnamed-chunk-89-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<img data-src="FP_files/figure-revealjs/unnamed-chunk-91-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
 <section id="model-fit---final-model-1" class="slide level2">
 <h2>Model fit - Final model</h2>
 <ul>
-<li>Lasso is the winner 🥇</li>
+<li>Ridge is the winner 🥇</li>
 </ul>
 
-<img data-src="FP_files/figure-revealjs/unnamed-chunk-90-1.png" width="960" class="r-stretch"></section>
+<img data-src="FP_files/figure-revealjs/unnamed-chunk-93-1.png" width="960" class="r-stretch"></section>
 <section id="model-fit---cut-off-point" class="slide level2">
 <h2>Model fit - Cut off point</h2>
 </section>
 <section id="model-fit---other-considerations" class="slide level2">
 <h2>Model fit - Other considerations</h2>
-<ul>
-<li>What got dropped?</li>
-</ul>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>Dropped predictors (69):</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code> [1] "age_poly_2"                          
- [2] "gender_f"                            
- [3] "gender_m"                            
- [4] "ethnicity_Asian"                     
- [5] "ethnicity_Hispanic"                  
- [6] "ethnicity_others"                    
- [7] "ethnicity_Turkish"                   
- [8] "jundice_no"                          
- [9] "jundice_yes"                         
-[10] "contry_of_res_Afghanistan"           
-[11] "contry_of_res_AmericanSamoa"         
-[12] "contry_of_res_Angola"                
-[13] "contry_of_res_Argentina"             
-[14] "contry_of_res_Armenia"               
-[15] "contry_of_res_Aruba"                 
-[16] "contry_of_res_Azerbaijan"            
-[17] "contry_of_res_Bahamas"               
-[18] "contry_of_res_Bangladesh"            
-[19] "contry_of_res_Belgium"               
-[20] "contry_of_res_Bolivia"               
-[21] "contry_of_res_Burundi"               
-[22] "contry_of_res_Chile"                 
-[23] "contry_of_res_China"                 
-[24] "contry_of_res_Costa.Rica"            
-[25] "contry_of_res_Cyprus"                
-[26] "contry_of_res_Czech.Republic"        
-[27] "contry_of_res_Ecuador"               
-[28] "contry_of_res_Egypt"                 
-[29] "contry_of_res_Ethiopia"              
-[30] "contry_of_res_Finland"               
-[31] "contry_of_res_France"                
-[32] "contry_of_res_Germany"               
-[33] "contry_of_res_Hong.Kong"             
-[34] "contry_of_res_Iceland"               
-[35] "contry_of_res_Indonesia"             
-[36] "contry_of_res_Iran"                  
-[37] "contry_of_res_Iraq"                  
-[38] "contry_of_res_Ireland"               
-[39] "contry_of_res_Italy"                 
-[40] "contry_of_res_Japan"                 
-[41] "contry_of_res_Kazakhstan"            
-[42] "contry_of_res_Lebanon"               
-[43] "contry_of_res_Malaysia"              
-[44] "contry_of_res_Nepal"                 
-[45] "contry_of_res_Netherlands"           
-[46] "contry_of_res_Nicaragua"             
-[47] "contry_of_res_Niger"                 
-[48] "contry_of_res_Oman"                  
-[49] "contry_of_res_Pakistan"              
-[50] "contry_of_res_Philippines"           
-[51] "contry_of_res_Portugal"              
-[52] "contry_of_res_Romania"               
-[53] "contry_of_res_Russia"                
-[54] "contry_of_res_Saudi.Arabia"          
-[55] "contry_of_res_Serbia"                
-[56] "contry_of_res_Sierra.Leone"          
-[57] "contry_of_res_Spain"                 
-[58] "contry_of_res_Sweden"                
-[59] "contry_of_res_Tonga"                 
-[60] "contry_of_res_Turkey"                
-[61] "contry_of_res_Ukraine"               
-[62] "contry_of_res_United.Kingdom"        
-[63] "contry_of_res_Uruguay"               
-[64] "contry_of_res_Viet.Nam"              
-[65] "used_app_before_no"                  
-[66] "used_app_before_yes"                 
-[67] "relation_X.Health.care.professional."
-[68] "relation_Others"                     
-[69] "relation_Parent"                     </code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code> [1] "gender_binary"                      "jundice_binary"                    
- [3] "age_poly_1"                         "age_poly_3"                        
- [5] "ethnicity_X."                       "ethnicity_Black"                   
- [7] "ethnicity_Latino"                   "ethnicity_Middle.Eastern"          
- [9] "ethnicity_Others"                   "ethnicity_Pasifika"                
-[11] "ethnicity_South.Asian"              "ethnicity_White.European"          
-[13] "austim_no"                          "austim_yes"                        
-[15] "contry_of_res_Australia"            "contry_of_res_Austria"             
-[17] "contry_of_res_Brazil"               "contry_of_res_Canada"              
-[19] "contry_of_res_India"                "contry_of_res_Jordan"              
-[21] "contry_of_res_Mexico"               "contry_of_res_New.Zealand"         
-[23] "contry_of_res_South.Africa"         "contry_of_res_Sri.Lanka"           
-[25] "contry_of_res_United.Arab.Emirates" "contry_of_res_United.States"       
-[27] "relation_X."                        "relation_Relative"                 
-[29] "relation_Self"                     </code></pre>
-</div>
-</div>
 </section>
-<section id="discussion---what-i-learned" class="slide level2">
-<h2>Discussion - What I learned</h2>
+<section id="what-i-learned-ml" class="slide level2">
+<h2>What I learned: ML</h2>
 <ul>
-<li><p>about ML</p></li>
-<li><p>about variables</p></li>
-<li><p>about findings</p></li>
+<li><p>As with any research method, the quality of data determines the quality of the outcome. In machine learning, this is more critical because it is easy to run models without understanding the dataset or the variables. We must be especially careful about how datasets are constructed, how variables are categorized, and what real-world implications may have.</p></li>
+<li><p>As Gould et al.&nbsp;(2023) noted, “To… effectively eliminate health disparities requires recognition of the subjectivity of data and of the power of data to dictate and reinforce narratives, accompanied by intentional reform of data practices” (p.&nbsp;12).</p></li>
+</ul>
+</section>
+<section id="what-i-learned-variables-findings" class="slide level2">
+<h2>What I learned: Variables &amp; Findings</h2>
+<ul>
+<li><p>There were high positive correlations for participants from the U.S., Canada, and Brazil, and lower ones for those from the UAE, India, South Asia, and New Zealand. Reported Autism diagnosis rates are much higher in the U.S. and Canada than in Brazil (World Population Review, 2025), so Brazil’s similarity here was unexpected.</p></li>
+<li><p>This likely reflects who chose to take the online screener rather than true population patterns. Without knowing participants’ motivations, it’s hard to interpret these results.</p></li>
+<li><p>Family history of Autism was a meaningful predictor, but findings like these must never be misread as suggesting that certain racial/ethnic or national groups are “more likely” to be Autistic.</p></li>
 </ul>
 </section>
 <section id="conclusion" class="slide level2">
 <h2>Conclusion</h2>
-<p>“… all model building efforts are constrained by the existing data” (p.&nbsp;61, Kuhn &amp; Johnson, 2016).</p>
+<p>“… all model building efforts are constrained by the existing data” (Kuhn &amp; Johnson, 2016, p.&nbsp;61), and also by the assumptions researchers bring to our work.</p>
 
 <img data-src="images/muffinorchihuahua.jpg" class="quarto-figure quarto-figure-center r-stretch" style="width:75.0%"></section>
 <section id="references" class="slide level2">
 <h2>References:</h2>
+<div style="font-size: 70%;">
 <ul>
 <li>Allison, C., Auyeung, B., &amp; Baron-Cohen, S. (2012). Toward brief “Red Flags” for Autism screening: The short Autism Spectrum Quotient and the short Quantitative Checklist in 1,000 cases and 3,000 controls. <em>Journal of the American Academy of Child &amp; Adolescent Psychiatry</em>, <em>51</em>(2), 202-212.e7.</li>
 <li>Boehmke, B. &amp; Greenwell, B. (2019). <em>Hands on Machine Learning with R</em>. Taylor &amp; Francis.</li>
+<li>Gould, L. H., Farquhar, S. E., Greer, S., Travers, M., Ramadhar, L., Tantay, L., Gurr, D., Baquero, M., &amp; Vasquez, A. (2023). Data for equity: Creating an antiracist, intersectional approach to data in a local health department. <em>Journal of Public Health Management and Practice</em>, <em>29</em>(1), 11–20. <a href="https://doi.org/10.1097/PHH.0000000000001579" class="uri">https://doi.org/10.1097/PHH.0000000000001579</a></li>
 <li>Growcoot, M. (2023, August 3). <em>Asian MIT student asks AI for a pro headshot, gets turned White.</em> PetaPixel. <a href="https://petapixel.com/2023/08/03/asian-mit-student-asks-ai-for-a-pro-headshot-gets-turned-white/" class="uri">https://petapixel.com/2023/08/03/asian-mit-student-asks-ai-for-a-pro-headshot-gets-turned-white/</a></li>
 <li>Kuhn, M. and Johnson, K. (2014). <em>Applied Predictive Modeling in R</em>. Springer.</li>
+<li>Siqueira, B. (2025, May 23). <em>2022 census identifies 2.4 million persons diagnosed with autism spectrum disorder in Brazil.</em> Agencia Ibge Noticias. <a href="https://agenciadenoticias.ibge.gov.br/en/agencia-news/2184-news-agency/news/43474-2022-census-identifies-2-4-million-persons-diagnosed-with-autism-spectrum-disorder-in-brazil" class="uri">https://agenciadenoticias.ibge.gov.br/en/agencia-news/2184-news-agency/news/43474-2022-census-identifies-2-4-million-persons-diagnosed-with-autism-spectrum-disorder-in-brazil</a></li>
 <li>Vogt, P. W. &amp; Johnson, R. Burke. (2016). <em>The Sage dictionary of statistics &amp; methodology.</em> Sage.</li>
+<li>World Population Review (2025). <em>Autism rates by country 2025.</em> <a href="https://worldpopulationreview.com/country-rankings/autism-rates-by-country" class="uri">https://worldpopulationreview.com/country-rankings/autism-rates-by-country</a></li>
 </ul>
+</div>
 </section>
 <section id="thank-you" class="slide level2">
-<h2>Thank you</h2>
-<p>Please don’t hesitate to reach out via <a href="https://www.linkedin.com/in/maikohata/">LinkedIn page</a> or <a href="mailto:hata@uoregon.edu">Email</a>, I would love to hear from you! I also invite you to <a href="https://maihata.github.io/finalproj/">my website I created using Quarto</a> and take a look at <a href="#/0">my professional history</a>.</p>
+<h2>Thank you!</h2>
+<p>Please don’t hesitate to reach out via <a href="https://www.linkedin.com/in/maikohata/">LinkedIn page</a> or <a href="mailto:hata@uoregon.edu">Email</a>, I would love to hear from you! I also invite you to <a href="https://maihata.github.io/finalproj/">my website I created using Quarto</a> and take a look at <a href="https://maihata.github.io/finalproj/posts.html">my projects</a>.</p>
 <div style="text-align: center;">
 <p>Maiko Hata, University of Oregon</p>
 </div>
 
 
-<img data-src="images/Thank-You-in-Different-Languages.png" class="quarto-figure quarto-figure-center r-stretch" style="width:50.0%"></section>
+<img data-src="images/arigato_bubbles.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">

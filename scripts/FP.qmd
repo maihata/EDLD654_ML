@@ -1,7 +1,6 @@
 ---
 title: "Predicting Autism Screening Outcomes with Machine Learning"
 author: "Maiko Hata"
-institute: "University of Oregon" 
 format:
   revealjs:
     theme: serif
@@ -252,7 +251,7 @@ ggplot(autism, aes(x = age)) +
 
 ## Descriptive statistics
 
-Autism Screener user age with `filter(age <= 100)`
+-   Autism Screener user age with `filter(age <= 100)`
 
 ```{r}
 #| echo: true 
@@ -349,10 +348,14 @@ invisible(lapply(cat_vars, function(v) {
 summary(autism[num_vars])
 ```
 
-## Autism Screener user race/ethnicity
+## Descriptive statistics
+
+-   Autism Screener user race/ethnicity
 
 ```{r}
 #| echo: true
+#| fig-align: center
+
 ggplot(autism, aes(x = ethnicity)) +
   geom_bar(fill = "steelblue") +
   geom_text(aes(label = after_stat(count)),
@@ -491,7 +494,9 @@ Before building the models, it's important to review the Ordinary Least Squares 
 
 ## Modeling assumptions
 
-... and yet, I initially included all 10 screener questions (A1_Score\~A10_Score) and "Class.ASD" in the model, overlooking that "result" which is the total of A1\~A10 was already my outcome variable, and "Class.ASD" was simply coded “YES” for scores of 6 or higher.
+-   ... and yet, I initially included all 10 screener questions (A1_Score\~A10_Score) and "Class.ASD" in the model, overlooking that "result" which is the total of A1\~A10 was already my outcome variable, and "Class.ASD" was simply coded “YES” for scores of 6 or higher.
+
+-   All three models used 10-fold cross-validation to reduce overfitting. This approach provided more reliable measure of generalizability.
 
 ```{r}
 ### NOT USING THE REGULARIZATION PROCESS ###
@@ -514,10 +519,6 @@ idx <- sample.int(n, size = floor(0.9 * n))
 autism_tr <- autism_final[idx, , drop = FALSE]
 autism_te <- autism_final[-idx, , drop = FALSE]
 
-# (optional sanity)
-# anyDuplicated(idx)
-# length(idx); nrow(autism_tr); nrow(autism_te)
-
 ```
 
 ```{r}
@@ -525,7 +526,7 @@ autism_te <- autism_final[-idx, , drop = FALSE]
 
 # Build modeling frames from the split data:
 # - keep score as outcome
-# - drop A1–A10 question items from predictors
+# DROP A1~A10 QUESTION ITEMS FROM PREDICTORS 
 # - (Class.ASD* were already dropped from autism_final earlier, but
 # keeping the line below is harmless if nothing matches)
 
@@ -564,18 +565,32 @@ autism_te_m[] <- lapply(autism_te_m, function(x) if (is.character(x)) as.factor(
 
 ```{r}
 #| include: false
-# Plain OLS on training split (comparison with caret CV)
-lm_model <- lm(score ~ ., data = autism_tr_m)
+# ✅ 10-fold CV OLS (caret), then held-out test
+library(caret)
+set.seed(20251102)
 
-pred_lm <- predict(lm_model, newdata = autism_te_m)
-R2_lm   <- cor(pred_lm, autism_te_m$score)^2
-MAE_lm  <- mean(abs(pred_lm - autism_te_m$score))
-RMSE_lm <- sqrt(mean((pred_lm - autism_te_m$score)^2))
+cv10  <- trainControl(method = "cv", number = 10)
 
-cat("Held-out Test (plain lm)\n",
-    "R²:", round(R2_lm, 3),
-    " MAE:", round(MAE_lm, 3),
-    " RMSE:", round(RMSE_lm, 3), "\n")
+lm_cv <- caret::train(
+  score ~ .,
+  data      = autism_tr_m,
+  method    = "lm",
+  trControl = cv10
+)
+
+# CV (training) summary
+print(lm_cv)
+
+# Held-out test metrics
+pred_cv <- predict(lm_cv, newdata = autism_te_m)
+R2_cv   <- cor(pred_cv, autism_te_m$score)^2
+MAE_cv  <- mean(abs(pred_cv - autism_te_m$score))
+RMSE_cv <- sqrt(mean((pred_cv - autism_te_m$score)^2))
+
+cat("Held-out Test (10-fold CV lm)\n",
+    "R²:", round(R2_cv, 3),
+    " MAE:", round(MAE_cv, 3),
+    " RMSE:", round(RMSE_cv, 3), "\n")
 
 ```
 
@@ -603,9 +618,9 @@ RMSE_cv <- sqrt(mean((pred_cv - autism_te_m$score)^2))
 
 ```{r}
 #| label: coef-counts
-#| include: false
-length(coef(lm_model))              # plain lm
-length(coef(glm_cv$finalModel))     # caret GLM (final)
+#| dependson: lm-cv10
+#| echo: true
+length(coef(lm_cv$finalModel))
 
 ```
 
@@ -645,7 +660,7 @@ RMSE_base <- sqrt(mean((pred_base - autism_te$score)^2))
 
 ```
 
-## Model 1: Ridge Regression Model
+## Model 1: Ridge Regularization model
 
 ```{r}
 #| include: false
@@ -662,19 +677,33 @@ autism_te <- autism_final[-loc, ]
 ```{r}
 # ✅ Chunk 1 – Define the recipe (blueprint)
 #| include: false
-
 library(recipes)
 
 blueprint <- recipe(score ~ ., data = autism_tr) %>%
+  # Remove leakage & any leftover binary label if present
   step_rm(matches("^A(10|[1-9])_Score$"), any_of("Class.ASD_binary")) %>%
-  step_zv(all_numeric()) %>%
-  step_nzv(all_numeric()) %>%
+  # Impute missing values (adjust if you prefer other strategies)
+  step_impute_median(all_numeric_predictors()) %>%
+  step_impute_mode(all_nominal_predictors()) %>%
+  # Drop zero / near-zero variance
+  step_zv(all_predictors()) %>%
+  step_nzv(all_predictors()) %>%
+  # (Optional) Collapse rare levels to "other" (e.g., <1% of rows)
+  # step_other(all_nominal_predictors(), threshold = 0.01) %>%
+  # One-hot encode categoricals BEFORE normalization
+  step_dummy(all_nominal_predictors(), one_hot = TRUE) %>%
+  # Normalize numeric predictors (now includes dummies if you want them scaled)
   step_normalize(all_numeric_predictors())
+  # (Optional for OLS) mitigate multicollinearity:
+  # step_lincomb(all_numeric_predictors()) %>%
+  # step_corr(all_numeric_predictors(), threshold = 0.99)
+
 ```
 
 ```{r}
-# ✅ Chunk 2 – Create folds and cross-validation control
 #| include: false
+
+# ✅ Chunk 2 – Create folds and cross-validation control
 autism_tr <- autism_tr[sample(nrow(autism_tr)), ]
 folds <- cut(seq_len(nrow(autism_tr)), breaks = 10, labels = FALSE)
 my.indices <- vector("list", 10)
@@ -683,9 +712,9 @@ cv <- trainControl(method = "cv", index = my.indices)
 ```
 
 ```{r}
+#| include: false
 #✅ Chunk 3 – Create tuning grid and train ridge model
 # Ridge grid (alpha = 0)
-#| include: false
 grid <- data.frame(alpha = 0, lambda = seq(0.01, 3, 0.01))
 
 ridge <- caret::train(
@@ -698,7 +727,6 @@ ridge <- caret::train(
 ```
 
 ```{r}
-# ✅ Chunk 4 – Inspect and plot results
 #| echo: true
 
 plot(ridge)
@@ -721,12 +749,12 @@ library(vip)
 vip(ridge, num_features = 10, geom = "point") + theme_bw()
 ```
 
-## Model 1: Ridge Regression Model
+## Model 1: Ridge Regularization model
 
 ```{r}
+#| include: false
 #| label: build-ridge-frames
 #| dependson: split-9010
-#| include: false
 
 # Set this flag:
 KEEP_SCREEN_ITEMS <- FALSE   # TRUE = keep A1–A10 & Class.ASD*; FALSE = drop them
@@ -774,9 +802,9 @@ intersect(colnames(autism_tr_r), paste0("A", 1:10, "_Score"))
 ```
 
 ```{r}
+#| include: false
 #| label: fit-ridge
 #| dependson: build-ridge-frames
-#| include: false
 
 set.seed(20251102)
 
@@ -801,9 +829,9 @@ ridge$bestTune
 ```
 
 ```{r}
+#| include: false
 #| label: eval-ridge
 #| dependson: fit-ridge
-#| echo: true
 pred_ridge <- predict(ridge, newdata = autism_te_r)
 
 R2_ridge   <- cor(pred_ridge, autism_te_r$score, use = "complete.obs")^2
@@ -827,6 +855,7 @@ vip(ridge, num_features = 10, geom = "point") + theme_bw()
 ```
 
 ```{r}
+#| include: false
 #| label: ridge-coefs
 #| dependson: fit-ridge
 best_lambda <- ridge$bestTune$lambda
@@ -840,12 +869,17 @@ coef_df <- tibble::tibble(
   dplyr::arrange(dplyr::desc(abs_beta)) |>
   dplyr::slice_head(n = 15)
 
-ggplot2::ggplot(coef_df, ggplot2::aes(x = reorder(term, abs_beta), y = beta)) +
-  ggplot2::geom_col() +
-  ggplot2::coord_flip() +
-  ggplot2::labs(title = "Top 15 predictors by |β| (Ridge)",
-                x = "Predictor", y = "Coefficient (signed)") +
-  ggplot2::theme_minimal()
+coef_df
+
+
+```
+
+```{r}
+#| include: false
+#| label: ridge-plot
+#| dependson: fit-ridge
+
+plot(ridge)
 
 ```
 
@@ -879,51 +913,18 @@ knitr::kable(comp_rounded, digits = 3, caption = "Held-out test metrics")
 # " MAE:", round(MAE_ridge, 3),
 # " RMSE:", round(RMSE_ridge, 3), "\n")
 # 
-# ```
-# 
-# ```{r}
+```
+
+```{r}
 # vip(ridge, num_features = 10, geom = "point") + theme_bw()
 ```
 
-```{r}
-#| include: false
-# coefs <- as.matrix(coef(ridge$finalModel, s = ridge$bestTune$lambda))
-# coef_df <- tibble(term = rownames(coefs), beta = as.numeric(coefs)) %>%
-#   filter(term != "(Intercept)") %>%
-#   mutate(abs_beta = abs(beta)) %>%
-#   arrange(desc(abs_beta)) %>%
-#   slice_head(n = 15)
-# 
-# ggplot(coef_df, aes(x = reorder(term, abs_beta), y = beta)) +
-#   geom_col() +
-#   coord_flip() +
-#   labs(title = "Top 15 predictors by |β| (ridge)",
-#        x = "Predictor", y = "Coefficient (signed)") +
-#   theme_minimal()
-
-```
-
-```{r}
-# ✅ Step 8: Compare to baselinec
-# dplyr way
-#| include: false
-
-comp_rounded <- comp %>% mutate(across(where(is.numeric), ~ round(.x, 3)))
-comp_rounded
-```
-
-## Model 2: Lasso Regression Model
+## Model 2: Lasso Regularization model
 
 ```{r}
 #| include: false
-set.seed(20251102)
-autism_tr
-autism_te
-```
-
-```{r}
-# ✅ LASSO using same recipe and CV folds
-#| include: false
+#| label: fit-lasso
+# ✅ Fit LASSO (α = 1) with same recipe & CV
 
 grid <- data.frame(alpha = 1, lambda = seq(0.01, 3, 0.01))
 
@@ -937,45 +938,76 @@ lasso <- caret::train(
 ```
 
 ```{r}
-#| echo: true
-plot(lasso)        
-lasso$bestTune        
-```
+#| echo: false
 
-## Model 2: Lasso Regression Model
-
-```{r}
-#| label: fit-lasso
-#| dependson: build-ridge-frames
-#| include: false
-library(caret); library(glmnet)
-
-set.seed(20251102)
-
-cv10 <- trainControl(method = "cv", number = 10)
-
-lasso_grid <- expand.grid(
-  alpha  = 1,                                # Lasso
-  lambda = 10 ^ seq(3, -4, length.out = 80)  # wide log grid
-)
-
-lasso <- caret::train(
-  score ~ .,
-  data        = autism_tr_r,   # reuse frames from build-ridge-frames
-  method      = "glmnet",
-  trControl   = cv10,
-  tuneGrid    = lasso_grid,
-  standardize = FALSE          # already centered/scaled upstream
-)
-
+plot(lasso)
 lasso$bestTune
+   
 ```
 
+## Model 2: Lasso Regularization model
+
 ```{r}
-#| echo: true
+#| include: false
 #| label: eval-lasso
 #| dependson: fit-lasso
-pred_lasso <- predict(lasso, newdata = autism_te_r)
+
+pred_lasso <- predict(lasso, newdata = autism_te)
+
+R2_lasso   <- cor(pred_lasso, autism_te$score, use = "complete.obs")^2
+MAE_lasso  <- mean(abs(autism_te$score - pred_lasso))
+RMSE_lasso <- sqrt(mean((autism_te$score - pred_lasso)^2))
+
+cat("Held-out Test (LASSO, 10-fold CV)\n",
+    "R²:", round(R2_lasso, 3),
+    " MAE:", round(MAE_lasso, 3),
+    " RMSE:", round(RMSE_lasso, 3), "\n")
+
+```
+
+```{r}
+#| include: false
+#| label: lasso-coefs
+#| dependson: fit-lasso
+
+best_lambda_lasso <- lasso$bestTune$lambda
+co_mat_lasso <- as.matrix(coef(lasso$finalModel, s = best_lambda_lasso))
+
+coef_df_lasso <- tibble::tibble(
+  term = rownames(co_mat_lasso),
+  beta = as.numeric(co_mat_lasso)
+) |>
+  dplyr::filter(term != "(Intercept)") |>
+  dplyr::mutate(abs_beta = abs(beta)) |>
+  dplyr::arrange(dplyr::desc(abs_beta)) |>
+  dplyr::slice_head(n = 15)
+
+coef_df_lasso
+
+```
+
+```{r}
+#| label: fit-lasso-2
+#| dependson: build-ridge-frames
+#| include: false
+
+grid <- data.frame(alpha = 1, lambda = seq(0.01, 3, 0.01))
+
+lasso <- caret::train(
+  blueprint,
+  data      = autism_tr,   # OR use autism_tr_r if that's what you eval with
+  method    = "glmnet",
+  trControl = cv,
+  tuneGrid  = grid
+)
+```
+
+```{r}
+#| include: false
+#| label: eval-lasso-2
+#| dependson: fit-lasso
+#| 
+pred_lasso <- predict(lasso, newdata = autism_te)  
 
 R2_lasso   <- cor(pred_lasso, autism_te_r$score, use = "complete.obs")^2
 MAE_lasso  <- mean(abs(autism_te_r$score - pred_lasso))
@@ -998,7 +1030,8 @@ vip(lasso, num_features = 10, geom = "point") + theme_bw()
 ```
 
 ```{r}
-#| label: lasso-coefs
+#| include: false
+#| label: lasso-coefs-2
 #| dependson: fit-lasso
 best_lambda_lasso <- lasso$bestTune$lambda
 co_mat_lasso <- as.matrix(coef(lasso$finalModel, s = best_lambda_lasso))
@@ -1027,6 +1060,7 @@ ggplot2::ggplot(
 ```
 
 ```{r}
+#| echo: false
 #| label: compare-baseline-ridge-lasso
 #| dependson: [baseline, eval-lasso]
 rows <- list(
@@ -1094,10 +1128,8 @@ knitr::kable(comp_l1, digits = 3, caption = "Held-out test metrics: Baseline vs 
 # comp_rounded
 ```
 
-## Model 4: Elastic Net Model
-
 ```{r}
-
+#| include: false
 #| label: build-elastic-frames
 #| dependson: split-9010
 # Builds autism_tr_r / autism_te_r from your 90/10 split
@@ -1127,6 +1159,7 @@ stopifnot(ncol(autism_tr_r) > 1, ncol(autism_te_r) > 1)
 ```
 
 ```{r}
+#| include: false
 #| label: fit-elastic
 #| dependson: build-elastic-frames
 set.seed(20251102)
@@ -1146,13 +1179,16 @@ standardize = FALSE
 ```
 
 ```{r}
+#| include: false
 #| label: elastic-cvplot
+#| fig-align: center
 #| dependson: fit-elastic
 plot(elastic)
 
 ```
 
 ```{r}
+#| include: false
 #| label: eval-elastic
 #| dependson: fit-elastic
 pred_enet <- predict(elastic, newdata = autism_te_r)
@@ -1165,20 +1201,18 @@ cat("Held-out Test (Elastic Net, 10-fold CV)\n",
 "R²:", round(R2_enet, 3),
 " MAE:", round(MAE_enet, 3),
 " RMSE:", round(RMSE_enet, 3), "\n")
-
-
 ```
 
 ```{r}
+#| include: false
 #| label: elastic-vip
 #| dependson: fit-elastic
 library(vip)
 vip(elastic, num_features = 10, geom = "point") + theme_bw()
-
-
 ```
 
 ```{r}
+#| include: false
 #| label: elastic-coefs
 #| dependson: fit-elastic
 coefs_en <- as.matrix(coef(elastic$finalModel, s = elastic$bestTune$lambda))
@@ -1201,6 +1235,7 @@ x = "Predictor", y = "Coefficient (signed)"
 ```
 
 ```{r}
+#| include: false
 #| label: compare-baseline-ridge-lasso-enet
 #| dependson: [baseline, eval-ridge, eval-lasso, eval-elastic]
 
@@ -1293,7 +1328,7 @@ caption = "Held-out test metrics: Baseline vs Ridge vs Lasso vs Elastic Net (sor
 # Sys.time()
 ```
 
-## Model 4: Elastic net model
+## Model 3: Elastic Net Regression model 
 
 ```{r}
 #| echo: true
@@ -1315,9 +1350,9 @@ elastic$bestTune
 # # Rank by absolute magnitude (exclude intercept)
 # ind <- order(abs(coefs), decreasing = TRUE)
 # head(as.matrix(coefs[ind[-1], ]), 10)
-# ```
+```
 
-# ```{r}
+```{r}
 # #| include: false
 # 
 # elastic$results %>%
@@ -1329,16 +1364,16 @@ elastic$bestTune
 #        y = "RMSE (10-fold CV)",
 #        color = expression(alpha)) +
 #   theme_minimal()
-# ```
+```
 
-# ```{r}
+```{r}
 # #| include: false
 # 
 # vip(elastic, num_features = 10, geom = "point") +
 #   theme_bw()
-# ```
+```
 
-# ```{r}
+```{r}
 # #| include: false
 # 
 # predict_te_elastic <- predict(elastic, autism_te)
@@ -1352,9 +1387,9 @@ elastic$bestTune
 # 
 # rmse_te <- sqrt(mean((autism_te$score - predict_te_elastic)^2))
 # rmse_te
-# ```
+```
 
-# ```{r}
+```{r}
 # coefs_en <- as.matrix(coef(elastic$finalModel, s = elastic$bestTune$lambda))
 # coef_df_en <- tibble(term = rownames(coefs_en), beta = as.numeric(coefs_en)) %>%
 #   filter(term != "(Intercept)") %>%
@@ -1371,58 +1406,63 @@ elastic$bestTune
 #     x = "Predictor", y = "Coefficient (signed)"
 #   ) +
 #   theme_minimal()
-# ```
-# 
-# ```{r}
+```
+
+```{r}
 # # Rename your Elastic Net metrics to the expected names
 # rsq_te_enet  <- rsq_te
 # mae_te_enet  <- mae_te
 # rmse_te_enet <- rmse_te
 ```
 
-## Evaluating model performance
+```{r}
+#| include: false
+#| label: eval-elastic-2
+#| dependson: fit-elastic
 
--   Among all models, Lasso regression showed the best performance (R2 = 0.317) than Ridge and Elastic Net did. All three models did significantly better than the mean-only baseline did.
+pred_enet <- predict(elastic, newdata = autism_te_r)
+
+R2_enet   <- cor(pred_enet, autism_te_r$score, use = "complete.obs")^2
+MAE_enet  <- mean(abs(autism_te_r$score - pred_enet))
+RMSE_enet <- sqrt(mean((autism_te_r$score - pred_enet)^2))
+
+cat("Held-out Test (Elastic Net, 10-fold CV)\n",
+    "R²:", round(R2_enet, 3),
+    " MAE:", round(MAE_enet, 3),
+    " RMSE:", round(RMSE_enet, 3), "\n")
+
+```
 
 ```{r}
-#| echo: false 
-#| label: compare-models
+#| include: false
+ls(pattern = "enet")
+```
 
-# Recalculate baseline R² properly (since mean-only model gives NA with cor())
+## Evaluating model performance
+
+Among all models, Ridge and Elastic Net regression showed the best performance (R2 = 0.309). LASSO regression performed slightly worse (R2= 0.281), but all three models performed substantially better than the mean-only baseline (R2 = –0.004).
+
+```{r}
+#| echo: false
+#| label: compare-models
+#| dependson: [baseline, eval-ridge, eval-lasso, eval-elastic]
+
+# Recalculate baseline R² properly (mean-only model)
 pred_base   <- rep(mean(autism_tr_r$score), nrow(autism_te_r))
 R2_base_fix <- 1 - sum((autism_te_r$score - pred_base)^2) /
                     sum((autism_te_r$score - mean(autism_te_r$score))^2)
 
-# Build rows dynamically — only if model metrics exist
-rows <- list(
+# Build summary table
+comp_all <- dplyr::bind_rows(
   data.frame(Model = "Baseline (mean-only)",
-             R2 = R2_base_fix,
-             MAE = MAE_base,
-             RMSE = RMSE_base)
-)
-
-if (exists("R2_ridge")) {
-  rows <- c(rows, list(data.frame(
-    Model = "Ridge (10-fold CV)",
-    R2 = R2_ridge, MAE = MAE_ridge, RMSE = RMSE_ridge
-  )))
-}
-
-if (exists("R2_lasso")) {
-  rows <- c(rows, list(data.frame(
-    Model = "Lasso (10-fold CV)",
-    R2 = R2_lasso, MAE = MAE_lasso, RMSE = RMSE_lasso
-  )))
-}
-
-if (exists("R2_enet")) {
-  rows <- c(rows, list(data.frame(
-    Model = "Elastic Net (10-fold CV)",
-    R2 = R2_enet, MAE = MAE_enet, RMSE = RMSE_enet
-  )))
-}
-
-comp_all <- dplyr::bind_rows(rows) |>
+             R2 = R2_base_fix, MAE = MAE_base, RMSE = RMSE_base),
+  data.frame(Model = "Ridge (10-fold CV)",
+             R2 = R2_ridge, MAE = MAE_ridge, RMSE = RMSE_ridge),
+  data.frame(Model = "Lasso (10-fold CV)",
+             R2 = R2_lasso, MAE = MAE_lasso, RMSE = RMSE_lasso),
+  data.frame(Model = "Elastic Net (10-fold CV)",
+             R2 = R2_enet, MAE = MAE_enet, RMSE = RMSE_enet)
+) |>
   dplyr::mutate(dplyr::across(where(is.numeric), ~ round(.x, 3))) |>
   dplyr::arrange(dplyr::desc(R2))
 
@@ -1648,10 +1688,10 @@ ggplot(comp_long, aes(x = Metric, y = Value, fill = Model)) +
 
 ## Model fit - Final model
 
--   Lasso is the winner 🥇
+-   Ridge is the winner 🥇
 
 ```{r}
-#| echo: false
+#| include: false
 
 coefs <- as.matrix(coef(lasso$finalModel, s = lasso$bestTune$lambda))
 coef_df <- tibble(term = rownames(coefs), beta = as.numeric(coefs)) %>%
@@ -1668,73 +1708,97 @@ ggplot(coef_df, aes(x = reorder(term, abs_beta), y = beta)) +
   theme_minimal()
 ```
 
-## Model fit - Cut off point
-
 ```{r}
+#| echo: false
+coefs <- as.matrix(coef(ridge$finalModel, s = ridge$bestTune$lambda))
+coef_df <- tibble(term = rownames(coefs), beta = as.numeric(coefs)) %>%
+  filter(term != "(Intercept)") %>%
+  mutate(abs_beta = abs(beta)) %>%
+  arrange(desc(abs_beta)) %>%
+  slice_head(n = 15)
+
+ggplot(coef_df, aes(x = reorder(term, abs_beta), y = beta)) +
+  geom_col() +
+  coord_flip() +
+  labs(
+    title = "Top 15 predictors by |β| (Ridge)",
+    x = "Predictor",
+    y = "Coefficient (signed)"
+  ) +
+  theme_minimal()
 
 ```
+
+## Model fit - Cut off point
 
 ## Model fit - Other considerations
 
--   What got dropped?
-
 ```{r}
-#| echo: false
+# What got dropped? -->
 
-### 11.3.25. ### 
+#| echo: false -->
+
+### 11.3.25 ###
 # ✅ Which variables did LASSO keep vs drop? (caret + glmnet)
 # ✅ List predictors dropped by LASSO (works with caret)
-best_lambda <- lasso$bestTune$lambda
 
-# Directly use coef() on the glmnet model inside caret
-co <- coef(lasso$finalModel, s = best_lambda)
+# best_lambda <- lasso$bestTune$lambda
 
-# Extract dropped predictors
-dropped <- rownames(as.matrix(co))[as.numeric(co) == 0]
-dropped <- dropped[dropped != "(Intercept)"]
+# # Directly use coef() on the glmnet model inside caret
+# co <- coef(lasso$finalModel, s = best_lambda)
 
-cat("Dropped predictors (", length(dropped), "):\n", sep = "")
-print(dropped)
+# # Extract dropped predictors
+# dropped <- rownames(as.matrix(co))[as.numeric(co) == 0]
+# dropped <- dropped[dropped != "(Intercept)"]
 
+# cat("Dropped predictors (", length(dropped), "):\n", sep = "")
+# print(dropped)
+
+# --- You can similarly check kept predictors with: ---
+# kept <- rownames(as.matrix(co))[as.numeric(co) != 0]
+# kept <- kept[kept != "(Intercept)"]
+# print(kept)
 ```
 
-```{r}
-#| echo: false
+## What I learned: ML 
 
-### You can similarly check kept predictors with:###
-kept <- rownames(as.matrix(co))[as.numeric(co) != 0]
-kept <- kept[kept != "(Intercept)"]
-print(kept)
-```
+-   As with any research method, the quality of data determines the quality of the outcome. In machine learning, this is more critical because it is easy to run models without understanding the dataset or the variables. We must be especially careful about how datasets are constructed, how variables are categorized, and what real-world implications may have.
 
-## Discussion - What I learned
+-   As Gould et al. (2023) noted, “To... effectively eliminate health disparities requires recognition of the subjectivity of data and of the power of data to dictate and reinforce narratives, accompanied by intentional reform of data practices” (p. 12).
 
--   about ML
+## What I learned: Variables & Findings 
 
--   about variables
+-   There were high positive correlations for participants from the U.S., Canada, and Brazil, and lower ones for those from the UAE, India, South Asia, and New Zealand. Reported Autism diagnosis rates are much higher in the U.S. and Canada than in Brazil (World Population Review, 2025), so Brazil’s similarity here was unexpected.
 
--   about findings
+-   This likely reflects who chose to take the online screener rather than true population patterns. Without knowing participants’ motivations, it’s hard to interpret these results.
+
+-   Family history of Autism was a meaningful predictor, but findings like these must never be misread as suggesting that certain racial/ethnic or national groups are “more likely” to be Autistic.
 
 ## Conclusion
 
-"... all model building efforts are constrained by the existing data" (p. 61, Kuhn & Johnson, 2016).
+“... all model building efforts are constrained by the existing data” (Kuhn & Johnson, 2016, p. 61), and also by the assumptions researchers bring to our work.
 
 ![](images/muffinorchihuahua.jpg){fig-align="center" width="75%"}
 
 ## References:
 
+::: {style="font-size: 70%;"}
 -   Allison, C., Auyeung, B., & Baron-Cohen, S. (2012). Toward brief “Red Flags” for Autism screening: The short Autism Spectrum Quotient and the short Quantitative Checklist in 1,000 cases and 3,000 controls. *Journal of the American Academy of Child & Adolescent Psychiatry*, *51*(2), 202-212.e7.
 -   Boehmke, B. & Greenwell, B. (2019). *Hands on Machine Learning with R*. Taylor & Francis.
+-   Gould, L. H., Farquhar, S. E., Greer, S., Travers, M., Ramadhar, L., Tantay, L., Gurr, D., Baquero, M., & Vasquez, A. (2023). Data for equity: Creating an antiracist, intersectional approach to data in a local health department. *Journal of Public Health Management and Practice*, *29*(1), 11–20. <https://doi.org/10.1097/PHH.0000000000001579>
 -   Growcoot, M. (2023, August 3). *Asian MIT student asks AI for a pro headshot, gets turned White.* PetaPixel. <https://petapixel.com/2023/08/03/asian-mit-student-asks-ai-for-a-pro-headshot-gets-turned-white/>
 -   Kuhn, M. and Johnson, K. (2014). *Applied Predictive Modeling in R*. Springer.
+-   Siqueira, B. (2025, May 23). *2022 census identifies 2.4 million persons diagnosed with autism spectrum disorder in Brazil.* Agencia Ibge Noticias. <https://agenciadenoticias.ibge.gov.br/en/agencia-news/2184-news-agency/news/43474-2022-census-identifies-2-4-million-persons-diagnosed-with-autism-spectrum-disorder-in-brazil>
 -   Vogt, P. W. & Johnson, R. Burke. (2016). *The Sage dictionary of statistics & methodology.* Sage.
+-   World Population Review (2025). *Autism rates by country 2025.* <https://worldpopulationreview.com/country-rankings/autism-rates-by-country>
+:::
 
-## Thank you
+## Thank you!
 
-Please don’t hesitate to reach out via [LinkedIn page](https://www.linkedin.com/in/maikohata/) or [Email](mailto:hata@uoregon.edu), I would love to hear from you! I also invite you to [my website I created using Quarto](https://maihata.github.io/finalproj/) and take a look at [my professional history](#0).
+Please don’t hesitate to reach out via [LinkedIn page](https://www.linkedin.com/in/maikohata/) or [Email](mailto:hata@uoregon.edu), I would love to hear from you! I also invite you to [my website I created using Quarto](https://maihata.github.io/finalproj/) and take a look at [my projects](https://maihata.github.io/finalproj/posts.html).
 
 ::: {style="text-align: center;"}
 Maiko Hata, University of Oregon
 :::
 
-![](images/Thank-You-in-Different-Languages.png){fig-align="center" width="50%"}
+![](images/arigato_bubbles.png){fig-align="center" width="60%"}
