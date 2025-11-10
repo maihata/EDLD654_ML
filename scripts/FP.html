@@ -237,7 +237,7 @@ Maiko Hata
 </section>
 <section id="aq-10-screener" class="slide level2">
 <h2>AQ-10 screener</h2>
-<p>Allison et al.&nbsp;(2012) evaluated shortened 10-item versions of the Autism Spectrum Quotient (AQ-10) as quick “red flag” screening tools for Autism. Using data from over 1,000 Autistic individuals and 3,000 controls, the short forms showed high sensitivity (accurately identifying most people with Autism) and high specificity (correctly excluding those without) across age groups.</p>
+<p>Allison et al.&nbsp;(2012) evaluated shortened 10-item versions of the Autism Spectrum Quotient (AQ-10) as quick screening tools for Autism. Using data from over 1,000 Autistic individuals and 3,000 controls, the short forms showed high sensitivity (accurately identifying most people with Autism) and high specificity (correctly excluding those without).</p>
 
 <img data-src="images/AQ_10.png" class="quarto-figure quarto-figure-center r-stretch" style="width:70.0%" alt="AQ-10 screener image"></section>
 <section id="cleaning-up-missing-data" class="slide level2">
@@ -333,8 +333,8 @@ relation             -            -              -</code></pre>
 
 </div>
 <img data-src="FP_files/figure-revealjs/unnamed-chunk-20-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="autism-screener-user-age" class="slide level2">
-<h2>Autism Screener user age</h2>
+<section id="descriptive-statistics-1" class="slide level2">
+<h2>Descriptive statistics</h2>
 <ul>
 <li>Someone was 383 years old 👵🏼</li>
 </ul>
@@ -349,7 +349,7 @@ relation             -            -              -</code></pre>
 
 </div>
 <img data-src="FP_files/figure-revealjs/unnamed-chunk-22-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="descriptive-statistics-1" class="slide level2">
+<section id="descriptive-statistics-2" class="slide level2">
 <h2>Descriptive statistics</h2>
 <ul>
 <li>Autism Screener user age with <code>filter(age &lt;= 100)</code></li>
@@ -367,7 +367,7 @@ relation             -            -              -</code></pre>
 
 </div>
 <img data-src="FP_files/figure-revealjs/unnamed-chunk-23-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="descriptive-statistics-2" class="slide level2">
+<section id="descriptive-statistics-3" class="slide level2">
 <h2>Descriptive statistics</h2>
 <ul>
 <li>Autism Screener user race/ethnicity</li>
@@ -412,19 +412,13 @@ relation             -            -              -</code></pre>
 [21] "Class.ASD"        "gender_binary"    "jundice_binary"   "Class.ASD_binary"</code></pre>
 </div>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a><span class="fu">length</span>(<span class="fu">coef</span>(lm_cv<span class="sc">$</span>finalModel))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 99</code></pre>
-</div>
-</div>
 </section>
 <section id="model-1-ridge-regularization-model" class="slide level2">
 <h2>Model 1: Ridge Regularization model</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href=""></a><span class="fu">plot</span>(ridge)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a><span class="fu">plot</span>(ridge)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href=""></a>ridge<span class="sc">$</span>bestTune</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href=""></a>ridge<span class="sc">$</span>bestTune</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   alpha lambda
 49     0   0.49</code></pre>
@@ -514,9 +508,9 @@ relation             -            -              -</code></pre>
 <section id="model-3-elastic-net-regression-model" class="slide level2">
 <h2>Model 3: Elastic Net Regression model</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href=""></a><span class="fu">plot</span>(elastic)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href=""></a><span class="fu">plot</span>(elastic)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href=""></a>elastic<span class="sc">$</span>bestTune        </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href=""></a>elastic<span class="sc">$</span>bestTune        </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   alpha     lambda
 26     0 0.09249147</code></pre>
@@ -574,12 +568,12 @@ relation             -            -              -</code></pre>
 <li>Model efficiency &amp; effectiveness</li>
 </ul>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href=""></a><span class="fu">ggplot</span>(comp_long, <span class="fu">aes</span>(<span class="at">x =</span> Metric, <span class="at">y =</span> Value, <span class="at">fill =</span> Model)) <span class="sc">+</span></span>
-<span id="cb23-2"><a href=""></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
-<span id="cb23-3"><a href=""></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Model Performance by Regularization"</span>,</span>
-<span id="cb23-4"><a href=""></a>       <span class="at">x =</span> <span class="st">"Metric"</span>, <span class="at">y =</span> <span class="st">"Value"</span>) <span class="sc">+</span></span>
-<span id="cb23-5"><a href=""></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb23-6"><a href=""></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href=""></a><span class="fu">ggplot</span>(comp_long, <span class="fu">aes</span>(<span class="at">x =</span> Metric, <span class="at">y =</span> Value, <span class="at">fill =</span> Model)) <span class="sc">+</span></span>
+<span id="cb21-2"><a href=""></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
+<span id="cb21-3"><a href=""></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Model Performance by Regularization"</span>,</span>
+<span id="cb21-4"><a href=""></a>       <span class="at">x =</span> <span class="st">"Metric"</span>, <span class="at">y =</span> <span class="st">"Value"</span>) <span class="sc">+</span></span>
+<span id="cb21-5"><a href=""></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb21-6"><a href=""></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
 <img data-src="FP_files/figure-revealjs/unnamed-chunk-91-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
@@ -595,9 +589,12 @@ relation             -            -              -</code></pre>
 </section>
 <section id="model-fit---other-considerations" class="slide level2">
 <h2>Model fit - Other considerations</h2>
+<ul>
+<li></li>
+</ul>
 </section>
-<section id="what-i-learned-ml" class="slide level2">
-<h2>What I learned: ML</h2>
+<section id="what-i-learned-machine-learning" class="slide level2">
+<h2>What I learned: Machine Learning</h2>
 <ul>
 <li><p>As with any research method, the quality of data determines the quality of the outcome. In machine learning, this is more critical because it is easy to run models without understanding the dataset or the variables. We must be especially careful about how datasets are constructed, how variables are categorized, and what real-world implications may have.</p></li>
 <li><p>As Gould et al.&nbsp;(2023) noted, “To… effectively eliminate health disparities requires recognition of the subjectivity of data and of the power of data to dictate and reinforce narratives, accompanied by intentional reform of data practices” (p.&nbsp;12).</p></li>
@@ -611,14 +608,21 @@ relation             -            -              -</code></pre>
 <li><p>Family history of Autism was a meaningful predictor, but findings like these must never be misread as suggesting that certain racial/ethnic or national groups are “more likely” to be Autistic.</p></li>
 </ul>
 </section>
+<section id="other-considerations" class="slide level2">
+<h2>Other considerations</h2>
+<ul>
+<li>I struggled with the ethical implications of applying machine learning to this kind of dataset. There were questions about whether participants had explicitly consented to having their responses used in secondary analyses like this. Running models on human-related data requires more than methodological care. It demands ethical reflection about data ownership, informed consent, and the potential consequences of misinterpretation.</li>
+</ul>
+
+<img data-src="images/whosedata.jpeg" class="quarto-figure quarto-figure-center r-stretch" style="width:50.0%"></section>
 <section id="conclusion" class="slide level2">
 <h2>Conclusion</h2>
 <p>“… all model building efforts are constrained by the existing data” (Kuhn &amp; Johnson, 2016, p.&nbsp;61), and also by the assumptions researchers bring to our work.</p>
 
 <img data-src="images/muffinorchihuahua.jpg" class="quarto-figure quarto-figure-center r-stretch" style="width:75.0%"></section>
 <section id="references" class="slide level2">
-<h2>References:</h2>
-<div style="font-size: 70%;">
+<h2>References</h2>
+<div style="font-size: 65%;">
 <ul>
 <li>Allison, C., Auyeung, B., &amp; Baron-Cohen, S. (2012). Toward brief “Red Flags” for Autism screening: The short Autism Spectrum Quotient and the short Quantitative Checklist in 1,000 cases and 3,000 controls. <em>Journal of the American Academy of Child &amp; Adolescent Psychiatry</em>, <em>51</em>(2), 202-212.e7.</li>
 <li>Boehmke, B. &amp; Greenwell, B. (2019). <em>Hands on Machine Learning with R</em>. Taylor &amp; Francis.</li>
@@ -632,7 +636,7 @@ relation             -            -              -</code></pre>
 </div>
 </section>
 <section id="thank-you" class="slide level2">
-<h2>Thank you!</h2>
+<h2>Thank you</h2>
 <p>Please don’t hesitate to reach out via <a href="https://www.linkedin.com/in/maikohata/">LinkedIn page</a> or <a href="mailto:hata@uoregon.edu">Email</a>, I would love to hear from you! I also invite you to <a href="https://maihata.github.io/finalproj/">my website I created using Quarto</a> and take a look at <a href="https://maihata.github.io/finalproj/posts.html">my projects</a>.</p>
 <div style="text-align: center;">
 <p>Maiko Hata, University of Oregon</p>
