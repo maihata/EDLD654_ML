@@ -925,8 +925,12 @@ knitr::kable(comp_rounded, digits = 3, caption = "Held-out test metrics")
 #| include: false
 #| label: fit-lasso
 # ✅ Fit LASSO (α = 1) with same recipe & CV
+set.seed(11042022) 
 
-grid <- data.frame(alpha = 1, lambda = seq(0.01, 3, 0.01))
+grid <- expand.grid(
+  alpha  = 1,
+  lambda = seq(0, 0.8, by = 0.001)   
+)
 
 lasso <- caret::train(
   blueprint,
@@ -1778,6 +1782,7 @@ ggplot(coef_df, aes(x = reorder(term, abs_beta), y = beta)) +
 
 ## Other considerations
 
+-   The AQ-10 was normed primarily on adults in the UK, consisting mostly of White, English-speaking participants without intellectual disabilities (CITATION)
 -   I struggled with the ethical implications of applying machine learning to this kind of dataset. There were questions about whether participants had explicitly consented to having their responses used in secondary analyses like this. Running models on human-related data requires more than methodological care. It demands ethical reflection about data ownership, informed consent, and the potential consequences of misinterpretation.
 
 ![](images/whosedata.jpeg){fig-align="center" width="50%"}
