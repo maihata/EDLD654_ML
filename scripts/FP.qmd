@@ -4,7 +4,7 @@ author: "Maiko Hata"
 format:
   revealjs:
     theme: serif
-    footer: "EDLD654 - Maiko Hata"
+    footer: "Maiko Hata - https://maihata.github.io/finalproj/"
     width: 960
     height: 700
     margin: 0.08
@@ -61,7 +61,7 @@ library(knitr)
 
 -   **Goal**: Predict Autism Spectrum Quotient (AQ-10) screener scores from demographic information.
 
--   **Potential benefit**: Understanding factors relating to scores can potentially support more focused outreach.
+-   **Potential benefit**: Understanding factors related to scores can improve model clarity and later inform real world, focused outreach.
 
 -   **Ethical & equity considerations**: As an Autistic researcher and Early Intervention/Early Childhood Special Education (EI/ECSE) specialist, I want to understand how predictive models are created, what their limitations are, and the ethical considerations.
 
@@ -1733,11 +1733,11 @@ ggplot(coef_df, aes(x = reorder(term, abs_beta), y = beta)) +
 
 ```
 
-## Model fit - Cut off point & other considerations 
+## Model fit - Cut off point & other considerations
 
--   The AQ-10 uses a cut-off score of 6, but I chose not to create a binary outcome because modeling the continuous score offered more nuance and avoided oversimplifying already limited data.
+-   The AQ-10 uses a cut-off score of 6, but I chose not to create a binary outcome. Modeling the continuous score offered more nuance and reduced the risk of oversimplifying an already limited dataset.
 
--   The dataset is highly skewed, and I do not know who was able or motivated to access this online screener, so the sample is not representative of a full population at all.
+-   The dataset is highly skewed. Because I do not know who was able to or motivated to access this online screener, the sample is not representative of a broader population at all.
 
 -   Given these limitations, linear regression was more informative for exploring patterns.
 
@@ -1785,13 +1785,13 @@ ggplot(coef_df, aes(x = reorder(term, abs_beta), y = beta)) +
 ## Other considerations
 
 -   The AQ was developed using adults in the UK who spoke English, of unknown race, and with men overrepresented (Baron-Cohen et al., 2001). This makes the norming process quite skewed.
--   I struggled with the ethical implications of applying ML. I question whether participants consented to secondary use of their responses. Running models requires not just methodological care but also ethical reflection about data ownership, informed consent, and the risks of misinterpretation.
+-   I struggled with the ethical implications of applying ML. It is unclear whether participants consented to secondary use of their responses. Conducting these models requires not only methodological care but also ethical reflection about data ownership, informed consent, and the risks of misinterpretation.
 
-![](images/whosedata.jpeg){fig-align="center" width="50%"}
+![](images/whosedata.jpeg){fig-align="center" width="60%"}
 
 ## Conclusion
 
-“... all model building efforts are constrained by the existing data” (Kuhn & Johnson, 2016, p. 61), and also by the assumptions researchers bring to our work.
+“…all model-building efforts are constrained by the existing data” (Kuhn & Johnson, 2016, p. 61), and equally shaped by the assumptions and interpretive choices researchers make throughout the analytic process.
 
 ![](images/muffinorchihuahua.jpg){fig-align="center" width="75%"}
 
