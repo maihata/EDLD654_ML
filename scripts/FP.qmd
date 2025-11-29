@@ -1443,7 +1443,7 @@ ls(pattern = "enet")
 
 ## Evaluating model performance
 
-Even though I tuned alpha from 0 to 1, the Elastic Net model chose **alpha = 0**, meaning the best-performing model ended up acting like Ridge. In my dataset, with many correlated demographic features, this gentle ridge-style shrinkage improved accuracy more than LASSO’s stronger, variable-dropping penalty. As a result, Ridge and Elastic Net showed the strongest performance (R² = 0.309), while LASSO performed slightly lower (R² = 0.281). Still, all three regularization models performed far better than the mean-only baseline (R² = –0.004).
+The Elastic Net model chose alpha = 0, meaning it behaved like Ridge. With many correlated demographic features, this gentle ridge-style shrinkage worked better than LASSO’s stronger variable-dropping penalty. Ridge and Elastic Net performed the best (R² = 0.309), and while LASSO was slightly lower, all three outperformed the mean-only baseline.
 
 ```{r}
 #| echo: false
