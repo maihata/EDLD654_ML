@@ -225,7 +225,7 @@ Maiko Hata
 <p>From <a href="https://www.kaggle.com/datasets/umeradnaan/autism-screening">Kaggle</a></p>
 <ul>
 <li><strong>Numerical</strong> (age, screener result)</li>
-<li><strong>Categorical</strong> (gender f/m, jaundice yes/no, family history of Autism yes/no, used app before yes/no, results from screener results YES (7+) NO (~6), ethnicity, country of residence)</li>
+<li><strong>Categorical</strong> (gender f/m, jaundice yes/no, family history of Autism yes/no, used app before yes/no, results from screener results YES (6+) NO (~5), ethnicity, country of residence)</li>
 </ul>
 <div class="center">
 <div class="quarto-figure quarto-figure-center">
@@ -237,7 +237,7 @@ Maiko Hata
 </section>
 <section id="aq-10-screener" class="slide level2">
 <h2>AQ-10 screener</h2>
-<p>Allison et al.&nbsp;(2012) evaluated shortened 10-item versions of the Autism Spectrum Quotient (AQ-10) as quick screening tools for Autism. Using data from over 1,000 Autistic individuals and 3,000 controls, the short forms showed high sensitivity (accurately identifying most people with Autism) and high specificity (correctly excluding those without).</p>
+<p>Allison et al.&nbsp;(2012) evaluated shortened 10-item versions of the Autism Spectrum Quotient (AQ-50) as quick screening tools for Autism. Using data from over 1,000 Autistic individuals and 3,000 controls, the short forms showed high sensitivity (accurately identifying most people with Autism) and high specificity (correctly excluding those without).</p>
 
 <img data-src="images/AQ_10.png" class="quarto-figure quarto-figure-center r-stretch" style="width:70.0%" alt="AQ-10 screener image"></section>
 <section id="cleaning-up-missing-data" class="slide level2">
@@ -393,7 +393,7 @@ relation             -            -              -</code></pre>
 <ol type="1">
 <li><p><strong>Linearity</strong>: There should be a roughly linear relationship between predictors and outcome variables.</p></li>
 <li><p><strong>Sample size</strong>: The number of observations (n) should be larger than that of the predictors (p).</p></li>
-<li><p><strong>Multicollinearity</strong>: The independent variables not be highly correlated to each other (p.&nbsp;269, Vogt &amp; Johnson, 2016).</p></li>
+<li><p><strong>Multicollinearity</strong>: The independent variables cannot be highly correlated to each other (p.&nbsp;269, Vogt &amp; Johnson, 2016).</p></li>
 </ol>
 </section>
 <section id="modeling-assumptions-1" class="slide level2">
@@ -611,7 +611,7 @@ relation             -            -              -</code></pre>
 <h2>Other considerations</h2>
 <ul>
 <li>The AQ was developed using adults in the UK who spoke English, of unknown race, and with men overrepresented (Baron-Cohen et al., 2001). This makes the norming process quite skewed.</li>
-<li>I struggled with the ethical implications of applying ML. It is unclear whether participants consented to secondary use of their responses. Conducting these models requires not only methodological care but also ethical reflection about data ownership, informed consent, and the risks of misinterpretation.</li>
+<li>I struggled with the ethical implications of applying ML. It is unclear whether participants consented to secondary use of their responses. Conducting these models requires not only methodological care but also ethical reflection about data ownership, informed consent, economical/environmental impact, and the risks of misinterpretation.</li>
 </ul>
 
 <img data-src="images/whosedata.jpeg" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>

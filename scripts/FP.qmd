@@ -1783,8 +1783,8 @@ ggplot(coef_df, aes(x = reorder(term, abs_beta), y = beta)) +
 
 ## Other considerations
 
--   The AQ was developed using adults in the UK who spoke English, of unknown race, and with men overrepresented (Baron-Cohen et al., 2001). This makes the norming process quite skewed.
--   I struggled with the ethical implications of applying ML. It is unclear whether participants consented to secondary use of their responses. Conducting these models requires not only methodological care but also ethical reflection about data ownership, informed consent, and the risks of misinterpretation.
+-   The AQ was developed using adults in the UK who spoke English, of unknown race, with men overrepresented (Baron-Cohen et al., 2001). This makes the norming very skewed.
+-   I struggled with the ethical implications of applying ML. It is unclear if participants consented to secondary use of data. Conducting these models requires not only methodological care but also ethical reflection about data ownership, economical/environmental impact, and the risks of misinterpretation.
 
 ![](images/whosedata.jpeg){fig-align="center" width="60%"}
 
