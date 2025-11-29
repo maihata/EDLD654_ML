@@ -70,7 +70,7 @@ library(knitr)
 From [Kaggle](https://www.kaggle.com/datasets/umeradnaan/autism-screening)
 
 -   **Numerical** (age, screener result)
--   **Categorical** (gender f/m, jaundice yes/no, family history of Autism yes/no, used app before yes/no, results from screener results YES (7+) NO (\~6), ethnicity, country of residence)
+-   **Categorical** (gender f/m, jaundice yes/no, family history of Autism yes/no, used app before yes/no, results from screener results YES (6+) NO (\~5), ethnicity, country of residence)
 
 ::: center
 ![](images/Autism_Spectrum_dataset.png){fig-align="center" width="60%"}
@@ -78,7 +78,7 @@ From [Kaggle](https://www.kaggle.com/datasets/umeradnaan/autism-screening)
 
 ## AQ-10 screener
 
-Allison et al. (2012) evaluated shortened 10-item versions of the Autism Spectrum Quotient (AQ-10) as quick screening tools for Autism. Using data from over 1,000 Autistic individuals and 3,000 controls, the short forms showed high sensitivity (accurately identifying most people with Autism) and high specificity (correctly excluding those without).
+Allison et al. (2012) evaluated shortened 10-item versions of the Autism Spectrum Quotient (AQ-50) as quick screening tools for Autism. Using data from over 1,000 Autistic individuals and 3,000 controls, the short forms showed high sensitivity (accurately identifying most people with Autism) and high specificity (correctly excluding those without).
 
 ![](images/AQ_10.png){fig-alt="AQ-10 screener image" fig-align="center" width="70%"}
 
@@ -490,7 +490,7 @@ Before building the models, it's important to review the Ordinary Least Squares 
 
 2.  **Sample size**: The number of observations (n) should be larger than that of the predictors (p).
 
-3.  **Multicollinearity**: The independent variables not be highly correlated to each other (p. 269, Vogt & Johnson, 2016).
+3.  **Multicollinearity**: The independent variables cannot be highly correlated to each other (p. 269, Vogt & Johnson, 2016).
 
 ## Modeling assumptions
 
