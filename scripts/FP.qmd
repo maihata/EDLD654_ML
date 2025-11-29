@@ -565,7 +565,7 @@ autism_te_m[] <- lapply(autism_te_m, function(x) if (is.character(x)) as.factor(
 
 ```{r}
 #| include: false
-# ✅ 10-fold CV OLS (caret), then held-out test
+# ✅ 10-fold CV OLS (caret), then test
 library(caret)
 set.seed(20251102)
 
@@ -587,7 +587,7 @@ R2_cv   <- cor(pred_cv, autism_te_m$score)^2
 MAE_cv  <- mean(abs(pred_cv - autism_te_m$score))
 RMSE_cv <- sqrt(mean((pred_cv - autism_te_m$score)^2))
 
-cat("Held-out Test (10-fold CV lm)\n",
+cat("Test (10-fold CV lm)\n",
     "R²:", round(R2_cv, 3),
     " MAE:", round(MAE_cv, 3),
     " RMSE:", round(RMSE_cv, 3), "\n")
@@ -682,7 +682,6 @@ library(recipes)
 blueprint <- recipe(score ~ ., data = autism_tr) %>%
   # Remove leakage & any leftover binary label if present
   step_rm(matches("^A(10|[1-9])_Score$"), any_of("Class.ASD_binary")) %>%
-  # Impute missing values (adjust if you prefer other strategies)
   step_impute_median(all_numeric_predictors()) %>%
   step_impute_mode(all_nominal_predictors()) %>%
   # Drop zero / near-zero variance
@@ -1444,7 +1443,7 @@ ls(pattern = "enet")
 
 ## Evaluating model performance
 
-Ridge and Elastic Net showed the best performance (R2 = 0.309). LASSO regression performed slightly worse (R2= 0.281), but all three performed substantially better than the mean-only baseline (R2 = –0.004).
+Even though I tuned alpha from 0 to 1, the Elastic Net model chose **alpha = 0**, meaning the best-performing model ended up acting like Ridge. In my dataset, with many correlated demographic features, this gentle ridge-style shrinkage improved accuracy more than LASSO’s stronger, variable-dropping penalty. As a result, Ridge and Elastic Net showed the strongest performance (R² = 0.309), while LASSO performed slightly lower (R² = 0.281). Still, all three regularization models performed far better than the mean-only baseline (R² = –0.004).
 
 ```{r}
 #| echo: false
@@ -1817,4 +1816,4 @@ Please don’t hesitate to reach out via [LinkedIn page](https://www.linkedin.co
 Maiko Hata, University of Oregon
 :::
 
-![](images/arigato_bubbles.png){fig-align="center" width="60%"}
+![](images/arigato_bubbles.png){fig-align="center" width="40%"}
