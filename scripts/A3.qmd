@@ -3,6 +3,10 @@ title: "A3"
 author: "Maiko Hata"
 format: html
 editor: visual
+execute: 
+   echo: true
+   warning: false
+   message: false
 ---
 
 # **EDLD 654, Fall 2025: Assignment 3**
@@ -56,7 +60,7 @@ blueprint_tweet <- recipe(x  = tweet,
 ```
 
 ```{r}
-View(blueprint_tweet %>% prep() %>% summary)
+# View(blueprint_tweet %>% prep() %>% summary)
 
     # There are 777 predictors in the processed data
     # 768 sentence embeddings + 3 dummy variables for month + 6 harmonic terms (2 variables per harmonic variable)
@@ -108,7 +112,8 @@ bagged_tweet <- ranger(
   importance = "none"
 )
 
-bagged_tweet
+bagged_tweet$predictions[1:10, ]
+
 ```
 
 **Task 1.3** Evaluate the performance of Bagged Trees model on the test set by computing AUC, TPR, TNR, FPR, and Precision.
@@ -189,7 +194,7 @@ rf_model <- train(
   max.depth = 60
 )
 
-rf_model
+rf_model$results
 ```
 
 **Task 1.5** Evaluate the performance of the Random Forest model on the test set by computing AUC, TPR, TNR, FPR, and Precision.
@@ -285,14 +290,13 @@ gbm_model <- train(
 ```
 
 ```{r}
-install.packages("beepr")
-library(beepr)
-
-beep_on_done <- function(expr) {
-  result <- eval(expr)
-  beepr::beep(1)
-  return(result)
-}
+# library(beepr)
+# 
+# beep_on_done <- function(expr) {
+#   result <- eval(expr)
+#   beepr::beep(1)
+#   return(result)
+# }
 
 ```
 
@@ -352,50 +356,355 @@ Precision
 
 ```
 
+## Part 2: Predicting a Continous Outcome using Bagged Trees, Random Forests, and Gradient Boosting Trees
+
+### Description
+
+For this assignment you will work with the Oregon dataset and try to predict the scores. The same dataset you worked in Assignment 1 is also available as input data in this notebook.
+
+First, import the dataset and create the recipe by running the following code.
+
 ```{r}
+# Import data
+
+oregon <- read.csv('/Users/maiko/Desktop/EDLD654_ML/data/oregon_final.csv', header = TRUE)
+
+#dim(oregon)
+#colnames(oregon)
+```
+
+```{r}
+colnames(oregon)
+```
+
+```{r}
+require(recipes)
+
+# Recipe/Blueprint for data preprocessing
+
+outcome <- c('score')
+
+id      <- c('id')
+
+categorical <- c('sex','ethnic_cd','tst_bnch','migrant_ed_fg','ind_ed_fg',
+                 'sp_ed_fg','tag_ed_fg','econ_dsvntg','stay_in_dist',
+                 'stay_in_schl','dist_sped','trgt_assist_fg',
+                 'ayp_dist_partic','ayp_schl_partic','ayp_dist_prfrm',
+                 'ayp_schl_prfrm','rc_dist_partic','rc_schl_partic',
+                 'rc_dist_prfrm','rc_schl_prfrm','grp_rpt_dist_partic',
+                 'grp_rpt_schl_partic','grp_rpt_dist_prfrm',
+                 'grp_rpt_schl_prfrm')
+
+numeric <- c('enrl_grd')
+
+cyclic <- c('date','month')
+
+blueprint_oregon <- recipe(x     = oregon,
+                    vars  = c(id,outcome,categorical,numeric,cyclic),
+                    roles = c('id','outcome',rep('predictor',27))) %>%
+  step_indicate_na(all_of(categorical),all_of(numeric)) %>%
+  step_zv(all_numeric()) %>%
+  step_impute_mean(all_of(numeric)) %>%
+  step_impute_mode(all_of(categorical)) %>%
+  step_harmonic('date',frequency=1,cycle_size=31) %>%
+  step_harmonic('month',frequency=1,cycle_size=12) %>%
+  step_poly(all_of(numeric),degree=3) %>%
+  step_normalize(paste0(numeric,'_poly_',1:3)) %>%
+  step_dummy(all_of(categorical),one_hot=TRUE)
+
+```
+
+### **Tasks**
+
+**Task 2.1.** Split the original data into two subsets: training and test. Let the training data have the 80% of cases and the test data have the 20% of the cases. Set the seed to **10312022** for any random sampling process before splitting data.
+
+```{r}
+prep_oregon <- blueprint_oregon %>% prep()
+```
+
+```{r}
+set.seed(10312022)
+
+loc <- sample(1:nrow(oregon), round(nrow(oregon) * 0.8))
+oregon_tr <- oregon[loc, ]
+oregon_te <- oregon[-loc, ]
 
 ```
 
 ```{r}
+oregon_tr_processed <- juice(prep_oregon)
+oregon_te_processed <- bake(prep_oregon, oregon_te)
 
 ```
 
 ```{r}
+dim(oregon_tr_processed)
+dim(oregon_te_processed)
 
 ```
 
 ```{r}
+ctrl <- trainControl(
+  method = "cv",
+  number = 10
+)
+
+```
+
+#### **Bagged Trees**
+
+**Task 2.2** Use the `caret::train()` function and `ranger` engine to train a model with 10-fold cross-validation for predicting the test scores using a Bagged Trees model with 250 trees. Set the `max.dept` argument to 60 and the `min.node.size` argument to 30. Note that you are supposed to use all predictors in the processed data for Bagged Trees.
+
+```{r}
+library(caret)
+
+ctrl2 <- trainControl(
+  method = "cv",
+  number = 10
+)
+```
+
+```{r}
+bagged_grid <- expand.grid(
+  mtry = ncol(oregon_tr_processed) - 1,   # all predictors
+  splitrule = "variance",
+  min.node.size = 30
+)
+```
+
+```{r}
+set.seed(10312022)
+
+bagged_model <- train(
+  score ~ .,
+  data = oregon_tr_processed,
+  method = "ranger",
+  trControl = ctrl2,
+  tuneGrid = bagged_grid,
+  num.trees = 250,     # REQUIRED by assignment
+  max.depth = 60
+)
+
+bagged_model$results
+
+```
+
+**Task 2.3** Evaluate the performance of Bagged Trees model on the test set by computing RMSE, MAE, and R-square.
+
+```{r}
+### CHANGED IT 11/29 6:58 
+
+library(Metrics)
+library(caret)
+
+# Step 1: Predict on test data
+bagged_pred <- predict(bagged_model, oregon_te_processed)
+
+# Step 2: Compute metrics
+rmse_bagged <- RMSE(bagged_pred, oregon_te_processed$score)
+mae_bagged  <- MAE(bagged_pred,  oregon_te_processed$score)
+rsq_bagged  <- cor(bagged_pred,  oregon_te_processed$score)^2
+
+rmse_bagged
+mae_bagged
+rsq_bagged
+
+
+# library(Metrics)
+# library(caret)
+# 
+# # Step 1: Predict on test data
+# bagged_pred <- predict(bagged_model, oregon_te_processed)
+# 
+# # Step 2: Compute metrics
+# rmse_bagged <- RMSE(bagged_pred, oregon_te_processed$score)
+# mae_bagged  <- MAE(bagged_pred,  oregon_te_processed$score)
+# rsq_bagged  <- cor(bagged_pred,  oregon_te_processed$score)^2
+# 
+# rmse_bagged
+# mae_bagged
+# rsq_bagged
+```
+
+#### **Random Forests**
+
+**Task 2.4.** Use the `caret::train()` function and `ranger` engine to train a model with 10-fold cross-validation for predicting the test scores using a Random Forest model with 250 trees. Set the `max.dept` argument to 60 and the `min.node.size` argument to 30. Also, set the number of predictors to consider to 30 for each tree while growing a random forest.
+
+```{r}
+# Random Forest (Task 2.4)
+library(ranger)
+library(caret)
+
+set.seed(10312022)
+
+# 10-fold CV control (reuse same folds if ctrl2 already defined)
+ctrl_rf <- trainControl(
+  method = "cv",
+  number = 10
+)
+
+# Tuning grid: mtry must be EXACTLY 30
+rf_grid <- expand.grid(
+  mtry = 30,
+  splitrule = "variance",
+  min.node.size = 30
+)
+
+# Train Random Forest model
+rf_model <- train(
+  score ~ .,
+  data = oregon_tr_processed,
+  method = "ranger",
+  trControl = ctrl_rf,
+  tuneGrid = rf_grid,
+  num.trees = 250,
+  max.depth = 60
+)
+
+rf_model$results
+
+```
+
+**Task 2.5** Evaluate the performance of the Random Forest model on the test set by computing RMSE, MAE, and R-square.
+
+```{r}
+library(Metrics)
+
+# Step 1: Predict on the test set
+rf_pred <- predict(rf_model, oregon_te_processed)
+
+# Step 2: Compute performance metrics
+rmse_rf <- RMSE(rf_pred, oregon_te_processed$score)
+mae_rf  <- MAE(rf_pred,  oregon_te_processed$score)
+rsq_rf  <- cor(rf_pred,  oregon_te_processed$score)^2
+
+rmse_rf
+mae_rf
+rsq_rf
+
+```
+
+#### **Gradient Boosting Trees**
+
+**Task 2.6.** Use the `caret::train()` function and `gbm` engine to train a model with 10-fold cross-validation for predicting the test scores using a Gradient Boosting Tree model with 250 iterations (trees). Set the `interaction.depth` argument to 9, `shrinkage` argument to 0.05, and `n.minobsinnode` argument to 30. Also, set the `bag.fraction` argument to 0.5.
+
+```{r}
+library(gbm)
+library(caret)
+
+set.seed(10312022)
+
+# 10-fold CV (you can reuse ctrl_rf if it already exists)
+ctrl_gbm <- trainControl(
+  method = "cv",
+  number = 10
+)
+
+# GBM tuning grid (only 1 combination required by assignment)
+grid_gbm <- expand.grid(
+  n.trees = 250,          # number of boosting iterations
+  interaction.depth = 9,  # tree depth
+  shrinkage = 0.05,       # learning rate
+  n.minobsinnode = 30     # min observations per terminal node
+)
+
+# Train GBM model
+gbm_model <- train(
+  score ~ .,
+  data = oregon_tr_processed,
+  method = "gbm",
+  trControl = ctrl_gbm,
+  tuneGrid = grid_gbm,
+  bag.fraction = 0.5,
+  verbose = FALSE
+)
+
+gbm_model$results
 
 ```
 
 ```{r}
+gbm_model
+```
+
+**Task 2.7** Evaluate the performance of the Gradient Boosting Trees model on the test set by computing RMSE, MAE, and R-square.
+
+```{r}
+# Predict on test set
+gbm_pred <- predict(gbm_model, oregon_te_processed)
+
+# Compute metrics
+rmse_gbm <- RMSE(gbm_pred, oregon_te_processed$score)
+mae_gbm  <- MAE(gbm_pred,  oregon_te_processed$score)
+rsq_gbm  <- cor(gbm_pred,  oregon_te_processed$score)^2
+
+rmse_gbm
+mae_gbm
+rsq_gbm
+
+```
+
+### Extra, because I'm curious:
+
+```{r}
+# Combine all numbers into a data frame
+results <- data.frame(
+  Model = c("Bagged", "RandomForest", "GBM"),
+  RMSE  = c(rmse_bagged, rmse_rf, rmse_gbm),
+  MAE   = c(mae_bagged,  mae_rf,  mae_gbm),
+  R2    = c(rsq_bagged,  rsq_rf,  rsq_gbm)
+)
+
+# Basic barplots (one metric at a time)
+
+# RMSE chart
+barplot(results$RMSE,
+        names.arg = results$Model,
+        main = "Model Comparison: RMSE",
+        ylab = "RMSE",
+        col = "lightblue")
+
+# MAE chart
+barplot(results$MAE,
+        names.arg = results$Model,
+        main = "Model Comparison: MAE",
+        ylab = "MAE",
+        col = "lightgreen")
+
+# R-squared chart
+barplot(results$R2,
+        names.arg = results$Model,
+        main = "Model Comparison: R-Squared",
+        ylab = "R²",
+        col = "lightpink")
 
 ```
 
 ```{r}
+library(tidyverse)
+
+results_long <- results %>%
+  pivot_longer(cols = c(RMSE, MAE, R2),
+               names_to = "Metric",
+               values_to = "Value")
+
+ggplot(results_long, aes(x = Model, y = Value, fill = Metric)) +
+  geom_col(position = "dodge") +
+  labs(title = "Model Performance Comparison") +
+  theme_minimal()
 
 ```
 
 ```{r}
+results <- data.frame(
+  Model = c("Bagged Trees", "Random Forest", "GBM"),
+  RMSE  = c(69.63476, 77.73958, 88.57618),
+  MAE   = c(54.15146, 60.40240, 68.69239),
+  R2    = c(0.6521901, 0.5560846, 0.4157368)
+)
+
+results
 
 ```
 
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
+So, the model that takes the longest to run is NOT always the model that performs the best, but in this case, it WAS, at least for Oregon data. It took a loooong time!

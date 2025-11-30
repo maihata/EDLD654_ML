@@ -1,0 +1,1519 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Maiko Hata">
+
+<title>A3</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="A3_files/libs/clipboard/clipboard.min.js"></script>
+<script src="A3_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="A3_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="A3_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="A3_files/libs/quarto-html/popper.min.js"></script>
+<script src="A3_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="A3_files/libs/quarto-html/anchor.min.js"></script>
+<link href="A3_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="A3_files/libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="A3_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="A3_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="A3_files/libs/bootstrap/bootstrap-d6a003b94517c951b2d65075d42fb01b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">A3</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Maiko Hata </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="edld-654-fall-2025-assignment-3" class="level1">
+<h1><strong>EDLD 654, Fall 2025: Assignment 3</strong></h1>
+<p>The purpose of this assignment is to get you working with the <code>caret</code> package and <code>ranger</code> and <code>gbm</code> engine to fit Bagged Trees, Random Forests, and Gradient Boosting Trees for predicting a continuous or a categorical outcome. You will use the same datasets and recipes from the previous two assigments. Assignment 1.</p>
+<p>There are alternative ways to submit your assignment depending on your preference.</p>
+<ol type="1">
+<li><p>You can Copy/Edit this notebook and complete it with your responses. Then, you can save and run the completed Kaggle notebook and submit the link through Canvas. If you keep your notebook Private, do not forget to share it with ‘Lina Shanley PhD’ so I can access it.</p></li>
+<li><p>You copy/paste the questions and download the datasets from the notebook to your computer. Then, complete the assignment as an R markdown document. Then, you can knit the R Markdown document to a PDF and submit both the .Rmd and PDF files by uploading them on Canvas.</p></li>
+<li><p>You knit the R Markdown document to an HTML document and host it on your website/blog or any publicly available platform. Then, you can submit the .Rmd file by uploading it on Canvas and putting the link for the HTML document as a comment.</p></li>
+<li><p>If you have a GitHub repo and store all your work for this class in a GitHub repo, you can create a folder for this assignment in that repo and put the.Rmd file and PDF document under a specific folder. Then, you can submit the link for the GitHub repo on Canvas.</p></li>
+</ol>
+<p>To receive full credit, you must complete the following tasks. Please make sure that all the R code you wrote for completing these tasks and any associated output are explicitly printed in your submitted document. If the task asks you to submit the data files you created, please upload these datasets along with your submission.</p>
+<p>If you have any questions, please do not hesitate to reach out to me.</p>
+<section id="task-1-predicting-a-categorical-outcome-using-bagged-trees-random-forests-and-gradient-boosting-trees" class="level2">
+<h2 class="anchored" data-anchor-id="task-1-predicting-a-categorical-outcome-using-bagged-trees-random-forests-and-gradient-boosting-trees"><strong>Task 1: Predicting a Categorical Outcome using Bagged Trees, Random Forests, and Gradient Boosting Trees</strong></h2>
+<section id="description" class="level3">
+<h3 class="anchored" data-anchor-id="description"><strong>Description</strong></h3>
+<p>For this assignment you will work with the twitter dataset and build models to predict the sentiment of a given tweet. We will use the same dataset from the previous two assignments. Processed tweet data is available as input data in this notebook. Please use the tweet data provided as input in this notebook, so there is consistency of code across people.</p>
+<p>First, import the tweet data into the R environment (<strong>../input/assignment1tweet-final/tweet_final.csv</strong>). You can give any name to this data object. Print the structure of this data object using the <code>str</code> function.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>tweet <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">'/Users/maiko/Desktop/EDLD654_ML/data/tweet_final.csv'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(tidyverse)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(recipes)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>blueprint_tweet <span class="ot">&lt;-</span> <span class="fu">recipe</span>(<span class="at">x  =</span> tweet,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>                          <span class="at">vars  =</span> <span class="fu">colnames</span>(tweet),</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>                          <span class="at">roles =</span> <span class="fu">c</span>(<span class="st">'outcome'</span>,<span class="fu">rep</span>(<span class="st">'predictor'</span>,<span class="dv">772</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_dummy</span>(<span class="st">'month'</span>,<span class="at">one_hot=</span><span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_harmonic</span>(<span class="st">'day'</span>,<span class="at">frequency=</span><span class="dv">1</span>,<span class="at">cycle_size=</span><span class="dv">7</span>, <span class="at">role=</span><span class="st">'predictor'</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_harmonic</span>(<span class="st">'date'</span>,<span class="at">frequency=</span><span class="dv">1</span>,<span class="at">cycle_size=</span><span class="dv">31</span>,<span class="at">role=</span><span class="st">'predictor'</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_harmonic</span>(<span class="st">'hour'</span>,<span class="at">frequency=</span><span class="dv">1</span>,<span class="at">cycle_size=</span><span class="dv">24</span>,<span class="at">role=</span><span class="st">'predictor'</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_normalize</span>(<span class="fu">paste0</span>(<span class="st">'V'</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">768</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_normalize</span>(<span class="fu">c</span>(<span class="st">'day_sin_1'</span>,<span class="st">'day_cos_1'</span>,</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>                   <span class="st">'date_sin_1'</span>,<span class="st">'date_cos_1'</span>,</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>                   <span class="st">'hour_sin_1'</span>,<span class="st">'hour_cos_1'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_num2factor</span>(sentiment,</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>                  <span class="at">transform =</span> <span class="cf">function</span>(x) x <span class="sc">+</span> <span class="dv">1</span>,</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>                  <span class="at">levels=</span><span class="fu">c</span>(<span class="st">'Negative'</span>,<span class="st">'Positive'</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># View(blueprint_tweet %&gt;% prep() %&gt;% summary)</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># There are 777 predictors in the processed data</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 768 sentence embeddings + 3 dummy variables for month + 6 harmonic terms (2 variables per harmonic variable)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="tasks" class="level3">
+<h3 class="anchored" data-anchor-id="tasks"><strong>Tasks</strong></h3>
+<p><strong>Task 1.1</strong> Split the original data into two subsets: training and test. Let the training data have the 80% of cases and the test data have the 20% of the cases. Set the seed to <strong>10312022</strong> for any random sampling process before splitting data.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ranger)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pROC)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(caret)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">10312022</span>) </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>loc_tweet <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(tweet), <span class="fu">round</span>(<span class="fu">nrow</span>(tweet) <span class="sc">*</span> <span class="fl">0.8</span>))</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>tweet_tr  <span class="ot">&lt;-</span> tweet[loc_tweet, ]</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>tweet_te  <span class="ot">&lt;-</span> tweet[<span class="sc">-</span>loc_tweet, ]</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(tweet_tr)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1200  773</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(tweet_te)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 300 773</code></pre>
+</div>
+</div>
+<section id="bagged-trees" class="level4">
+<h4 class="anchored" data-anchor-id="bagged-trees"><strong>Bagged Trees</strong></h4>
+<p><strong>Task 1.2</strong> Use the <code>caret::train()</code> function and <code>ranger</code> engine to train a model with 10-fold cross-validation for predicting the probability of sentiment being positive using a Bagged Trees model with 500 trees. Set the <code>max.dept</code> argument to 60 and the <code>min.node.size</code> argument to 30. Note that you are supposed to use all predictors in the processed data for Bagged Trees.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>prep_tweet <span class="ot">&lt;-</span> blueprint_tweet <span class="sc">%&gt;%</span> <span class="fu">prep</span>()</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>tweet_tr_processed <span class="ot">&lt;-</span> <span class="fu">juice</span>(prep_tweet)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>tweet_te_processed <span class="ot">&lt;-</span> <span class="fu">bake</span>(prep_tweet, tweet_te)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">10312022</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>bagged_tweet <span class="ot">&lt;-</span> <span class="fu">ranger</span>(</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  sentiment <span class="sc">~</span> .,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> tweet_tr_processed,</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">num.trees =</span> <span class="dv">500</span>,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">mtry =</span> <span class="fu">ncol</span>(tweet_tr_processed) <span class="sc">-</span> <span class="dv">1</span>,   <span class="co"># use all predictors</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">min.node.size =</span> <span class="dv">30</span>,</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">max.depth =</span> <span class="dv">60</span>,</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">probability =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">importance =</span> <span class="st">"none"</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>bagged_tweet<span class="sc">$</span>predictions[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, ]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        Negative   Positive
+ [1,] 0.95368098 0.04631902
+ [2,] 0.45238640 0.54761360
+ [3,] 0.32504861 0.67495139
+ [4,] 0.09802554 0.90197446
+ [5,] 0.26180638 0.73819362
+ [6,] 0.38280317 0.61719683
+ [7,] 0.93184508 0.06815492
+ [8,] 0.61208601 0.38791399
+ [9,] 0.30669775 0.69330225
+[10,] 0.16494056 0.83505944</code></pre>
+</div>
+</div>
+<p><strong>Task 1.3</strong> Evaluate the performance of Bagged Trees model on the test set by computing AUC, TPR, TNR, FPR, and Precision.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 1: Predict probabilities on the test set</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>bagged_probs <span class="ot">&lt;-</span> <span class="fu">predict</span>(bagged_tweet, tweet_te_processed)<span class="sc">$</span>predictions[,<span class="st">"Positive"</span>]</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(bagged_probs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.7971424 0.7224561 0.2134873 0.7725982 0.2931611 0.9201947</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 2: Convert probabilities to class predictions</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>bagged_class <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(bagged_probs <span class="sc">&gt;</span> <span class="fl">0.5</span>, <span class="st">"Positive"</span>, <span class="st">"Negative"</span>) <span class="sc">%&gt;%</span> <span class="fu">factor</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pROC)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 3: Compute AUC</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>bagged_auc <span class="ot">&lt;-</span> <span class="fu">roc</span>(<span class="at">response =</span> tweet_te_processed<span class="sc">$</span>sentiment,</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>                  <span class="at">predictor =</span> bagged_probs,</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>                  <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Negative"</span>, <span class="st">"Positive"</span>))</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>bagged_auc_value <span class="ot">&lt;-</span> <span class="fu">auc</span>(bagged_auc)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>bagged_auc_value</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Area under the curve: 1</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 4: Confusion matrix</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>cm <span class="ot">&lt;-</span> <span class="fu">table</span>(<span class="at">Predicted =</span> bagged_class,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">Actual    =</span> tweet_te_processed<span class="sc">$</span>sentiment)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>cm</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          Actual
+Predicted  Negative Positive
+  Negative      162        0
+  Positive        0      138</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>TP <span class="ot">&lt;-</span> cm[<span class="st">"Positive"</span>,<span class="st">"Positive"</span>]</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>TN <span class="ot">&lt;-</span> cm[<span class="st">"Negative"</span>,<span class="st">"Negative"</span>]</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>FP <span class="ot">&lt;-</span> cm[<span class="st">"Positive"</span>,<span class="st">"Negative"</span>]</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>FN <span class="ot">&lt;-</span> cm[<span class="st">"Negative"</span>,<span class="st">"Positive"</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="random-forests" class="level4">
+<h4 class="anchored" data-anchor-id="random-forests"><strong>Random Forests</strong></h4>
+<p><strong>Task 1.4.</strong> Use the <code>caret::train()</code> function and <code>ranger</code> engine to train a model with 10-fold cross-validation for predicting the probability of sentiment being positive using a Random Forest model with 500 trees. Set the <code>max.dept</code> argument to 60 and the <code>min.node.size</code> argument to 30. Also, set the number of predictors to consider to 500 for each tree while growing a random forest.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(caret)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ranger)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">10312022</span>)</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>ctrl_rf <span class="ot">&lt;-</span> <span class="fu">trainControl</span>(</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"cv"</span>,</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">number =</span> <span class="dv">10</span>,</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">classProbs =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">summaryFunction =</span> twoClassSummary</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>grid_rf <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">mtry =</span> <span class="dv">500</span>,          <span class="co"># assignment requirement</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">splitrule =</span> <span class="st">"gini"</span>,  <span class="co"># classification</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">min.node.size =</span> <span class="dv">30</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 3: Train Random Forest</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>rf_model <span class="ot">&lt;-</span> <span class="fu">train</span>(</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  sentiment <span class="sc">~</span> .,</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> tweet_tr_processed,</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"ranger"</span>,</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">trControl =</span> ctrl_rf,</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">tuneGrid =</span> grid_rf,</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">num.trees =</span> <span class="dv">500</span>,</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">max.depth =</span> <span class="dv">60</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>rf_model<span class="sc">$</span>results</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  mtry splitrule min.node.size       ROC      Sens      Spec      ROCSD
+1  500      gini            30 0.8503965 0.7106667 0.8425965 0.02601027
+      SensSD     SpecSD
+1 0.08130787 0.04191476</code></pre>
+</div>
+</div>
+<p><strong>Task 1.5</strong> Evaluate the performance of the Random Forest model on the test set by computing AUC, TPR, TNR, FPR, and Precision.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>rf_probs <span class="ot">&lt;-</span> <span class="fu">predict</span>(rf_model, tweet_te_processed, <span class="at">type =</span> <span class="st">"prob"</span>)[,<span class="st">"Positive"</span>]</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(rf_probs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.7939414 0.7494637 0.2731671 0.7764780 0.3079719 0.9102424</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>rf_class <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(rf_probs <span class="sc">&gt;</span> <span class="fl">0.5</span>, <span class="st">"Positive"</span>, <span class="st">"Negative"</span>) <span class="sc">%&gt;%</span> <span class="fu">factor</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>rf_auc <span class="ot">&lt;-</span> <span class="fu">roc</span>(</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">response =</span> tweet_te_processed<span class="sc">$</span>sentiment,</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">predictor =</span> rf_probs,</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Negative"</span>, <span class="st">"Positive"</span>)</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a><span class="fu">auc</span>(rf_auc)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Area under the curve: 1</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>cm_rf <span class="ot">&lt;-</span> <span class="fu">table</span>(</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">Predicted =</span> rf_class,</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">Actual =</span> tweet_te_processed<span class="sc">$</span>sentiment</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>cm_rf</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          Actual
+Predicted  Negative Positive
+  Negative      162        0
+  Positive        0      138</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>TP <span class="ot">&lt;-</span> cm_rf[<span class="st">"Positive"</span>,<span class="st">"Positive"</span>]</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>TN <span class="ot">&lt;-</span> cm_rf[<span class="st">"Negative"</span>,<span class="st">"Negative"</span>]</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>FP <span class="ot">&lt;-</span> cm_rf[<span class="st">"Positive"</span>,<span class="st">"Negative"</span>]</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>FN <span class="ot">&lt;-</span> cm_rf[<span class="st">"Negative"</span>,<span class="st">"Positive"</span>]</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>TPR <span class="ot">&lt;-</span> TP <span class="sc">/</span> (TP <span class="sc">+</span> FN)</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>TNR <span class="ot">&lt;-</span> TN <span class="sc">/</span> (TN <span class="sc">+</span> FP)</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>FPR <span class="ot">&lt;-</span> FP <span class="sc">/</span> (FP <span class="sc">+</span> TN)</span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>Precision <span class="ot">&lt;-</span> TP <span class="sc">/</span> (TP <span class="sc">+</span> FP)</span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>TPR</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>TNR</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>FPR</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>Precision</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1</code></pre>
+</div>
+</div>
+</section>
+<section id="gradient-boosting-trees" class="level4">
+<h4 class="anchored" data-anchor-id="gradient-boosting-trees"><strong>Gradient Boosting Trees</strong></h4>
+<p><strong>Task 1.6.</strong> Use the <code>caret::train()</code> function and <code>gbm</code> engine to train a model with 10-fold cross-validation for predicting the probability of sentiment being positive using a Gradient Boosting Tree model with 250 iterations (trees). Set the <code>interaction.depth</code> argument to 9, <code>shrinkage</code> argument to 0.05, and <code>n.minobsinnode</code> argument to 30. Also, set the <code>bag.fraction</code> argument to 0.5.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gbm)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>ctrl_gbm <span class="ot">&lt;-</span> <span class="fu">trainControl</span>(</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"cv"</span>,</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">number =</span> <span class="dv">10</span>,</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">classProbs =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">summaryFunction =</span> twoClassSummary</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>grid_gbm <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">n.trees =</span> <span class="dv">250</span>,</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">interaction.depth =</span> <span class="dv">9</span>,</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">shrinkage =</span> <span class="fl">0.05</span>,</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">n.minobsinnode =</span> <span class="dv">30</span></span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">10312022</span>)</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>gbm_model <span class="ot">&lt;-</span> <span class="fu">train</span>(</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>  sentiment <span class="sc">~</span> .,</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> tweet_tr_processed,</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"gbm"</span>,</span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">trControl =</span> ctrl_gbm,</span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">tuneGrid =</span> grid_gbm,</span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">bag.fraction =</span> <span class="fl">0.5</span>,</span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># library(beepr)</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="co"># beep_on_done &lt;- function(expr) {</span></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   result &lt;- eval(expr)</span></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   beepr::beep(1)</span></span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   return(result)</span></span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>gbm_model</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Stochastic Gradient Boosting 
+
+1500 samples
+ 777 predictor
+   2 classes: 'Negative', 'Positive' 
+
+No pre-processing
+Resampling: Cross-Validated (10 fold) 
+Summary of sample sizes: 1350, 1350, 1350, 1350, 1351, 1350, ... 
+Resampling results:
+
+  ROC        Sens       Spec     
+  0.8830956  0.7698198  0.8280175
+
+Tuning parameter 'n.trees' was held constant at a value of 250
+Tuning
+
+Tuning parameter 'shrinkage' was held constant at a value of 0.05
+
+Tuning parameter 'n.minobsinnode' was held constant at a value of 30</code></pre>
+</div>
+</div>
+<p><strong>Task 1.7</strong> Evaluate the performance of the Gradient Boosting model on the test set by computing AUC, TPR, TNR, FPR, and Precision.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>gbm_probs <span class="ot">&lt;-</span> <span class="fu">predict</span>(gbm_model, tweet_te_processed, <span class="at">type =</span> <span class="st">"prob"</span>)[,<span class="st">"Positive"</span>]</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(gbm_probs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.86220071 0.85897129 0.09457047 0.96022677 0.13520563 0.99424026</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>gbm_class <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(gbm_probs <span class="sc">&gt;</span> <span class="fl">0.5</span>, <span class="st">"Positive"</span>, <span class="st">"Negative"</span>) <span class="sc">%&gt;%</span> <span class="fu">factor</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>gbm_auc <span class="ot">&lt;-</span> <span class="fu">roc</span>(</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">response =</span> tweet_te_processed<span class="sc">$</span>sentiment,</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">predictor =</span> gbm_probs,</span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Negative"</span>,<span class="st">"Positive"</span>)</span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a><span class="fu">auc</span>(gbm_auc)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Area under the curve: 1</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>cm_gbm <span class="ot">&lt;-</span> <span class="fu">table</span>(</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">Predicted =</span> gbm_class,</span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">Actual =</span> tweet_te_processed<span class="sc">$</span>sentiment</span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a>cm_gbm</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          Actual
+Predicted  Negative Positive
+  Negative      162        0
+  Positive        0      138</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>TP <span class="ot">&lt;-</span> cm_gbm[<span class="st">"Positive"</span>,<span class="st">"Positive"</span>]</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>TN <span class="ot">&lt;-</span> cm_gbm[<span class="st">"Negative"</span>,<span class="st">"Negative"</span>]</span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>FP <span class="ot">&lt;-</span> cm_gbm[<span class="st">"Positive"</span>,<span class="st">"Negative"</span>]</span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>FN <span class="ot">&lt;-</span> cm_gbm[<span class="st">"Negative"</span>,<span class="st">"Positive"</span>]</span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>TPR <span class="ot">&lt;-</span> TP <span class="sc">/</span> (TP <span class="sc">+</span> FN)</span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a>TNR <span class="ot">&lt;-</span> TN <span class="sc">/</span> (TN <span class="sc">+</span> FP)</span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a>FPR <span class="ot">&lt;-</span> FP <span class="sc">/</span> (FP <span class="sc">+</span> TN)</span>
+<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a>Precision <span class="ot">&lt;-</span> TP <span class="sc">/</span> (TP <span class="sc">+</span> FP)</span>
+<span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-11"><a href="#cb53-11" aria-hidden="true" tabindex="-1"></a>TPR</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>TNR</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>FPR</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>Precision</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1</code></pre>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="part-2-predicting-a-continous-outcome-using-bagged-trees-random-forests-and-gradient-boosting-trees" class="level2">
+<h2 class="anchored" data-anchor-id="part-2-predicting-a-continous-outcome-using-bagged-trees-random-forests-and-gradient-boosting-trees">Part 2: Predicting a Continous Outcome using Bagged Trees, Random Forests, and Gradient Boosting Trees</h2>
+<section id="description-1" class="level3">
+<h3 class="anchored" data-anchor-id="description-1">Description</h3>
+<p>For this assignment you will work with the Oregon dataset and try to predict the scores. The same dataset you worked in Assignment 1 is also available as input data in this notebook.</p>
+<p>First, import the dataset and create the recipe by running the following code.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Import data</span></span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a>oregon <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">'/Users/maiko/Desktop/EDLD654_ML/data/oregon_final.csv'</span>, <span class="at">header =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-5"><a href="#cb61-5" aria-hidden="true" tabindex="-1"></a><span class="co">#dim(oregon)</span></span>
+<span id="cb61-6"><a href="#cb61-6" aria-hidden="true" tabindex="-1"></a><span class="co">#colnames(oregon)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(oregon)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "id"                  "sex"                 "ethnic_cd"          
+ [4] "enrl_grd"            "tst_bnch"            "migrant_ed_fg"      
+ [7] "ind_ed_fg"           "sp_ed_fg"            "tag_ed_fg"          
+[10] "econ_dsvntg"         "stay_in_dist"        "stay_in_schl"       
+[13] "dist_sped"           "trgt_assist_fg"      "ayp_dist_partic"    
+[16] "ayp_schl_partic"     "ayp_dist_prfrm"      "ayp_schl_prfrm"     
+[19] "rc_dist_partic"      "rc_schl_partic"      "rc_dist_prfrm"      
+[22] "rc_schl_prfrm"       "grp_rpt_dist_partic" "grp_rpt_schl_partic"
+[25] "grp_rpt_dist_prfrm"  "grp_rpt_schl_prfrm"  "score"              
+[28] "month"               "date"               </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(recipes)</span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Recipe/Blueprint for data preprocessing</span></span>
+<span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-5"><a href="#cb64-5" aria-hidden="true" tabindex="-1"></a>outcome <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">'score'</span>)</span>
+<span id="cb64-6"><a href="#cb64-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-7"><a href="#cb64-7" aria-hidden="true" tabindex="-1"></a>id      <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">'id'</span>)</span>
+<span id="cb64-8"><a href="#cb64-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-9"><a href="#cb64-9" aria-hidden="true" tabindex="-1"></a>categorical <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">'sex'</span>,<span class="st">'ethnic_cd'</span>,<span class="st">'tst_bnch'</span>,<span class="st">'migrant_ed_fg'</span>,<span class="st">'ind_ed_fg'</span>,</span>
+<span id="cb64-10"><a href="#cb64-10" aria-hidden="true" tabindex="-1"></a>                 <span class="st">'sp_ed_fg'</span>,<span class="st">'tag_ed_fg'</span>,<span class="st">'econ_dsvntg'</span>,<span class="st">'stay_in_dist'</span>,</span>
+<span id="cb64-11"><a href="#cb64-11" aria-hidden="true" tabindex="-1"></a>                 <span class="st">'stay_in_schl'</span>,<span class="st">'dist_sped'</span>,<span class="st">'trgt_assist_fg'</span>,</span>
+<span id="cb64-12"><a href="#cb64-12" aria-hidden="true" tabindex="-1"></a>                 <span class="st">'ayp_dist_partic'</span>,<span class="st">'ayp_schl_partic'</span>,<span class="st">'ayp_dist_prfrm'</span>,</span>
+<span id="cb64-13"><a href="#cb64-13" aria-hidden="true" tabindex="-1"></a>                 <span class="st">'ayp_schl_prfrm'</span>,<span class="st">'rc_dist_partic'</span>,<span class="st">'rc_schl_partic'</span>,</span>
+<span id="cb64-14"><a href="#cb64-14" aria-hidden="true" tabindex="-1"></a>                 <span class="st">'rc_dist_prfrm'</span>,<span class="st">'rc_schl_prfrm'</span>,<span class="st">'grp_rpt_dist_partic'</span>,</span>
+<span id="cb64-15"><a href="#cb64-15" aria-hidden="true" tabindex="-1"></a>                 <span class="st">'grp_rpt_schl_partic'</span>,<span class="st">'grp_rpt_dist_prfrm'</span>,</span>
+<span id="cb64-16"><a href="#cb64-16" aria-hidden="true" tabindex="-1"></a>                 <span class="st">'grp_rpt_schl_prfrm'</span>)</span>
+<span id="cb64-17"><a href="#cb64-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-18"><a href="#cb64-18" aria-hidden="true" tabindex="-1"></a>numeric <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">'enrl_grd'</span>)</span>
+<span id="cb64-19"><a href="#cb64-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-20"><a href="#cb64-20" aria-hidden="true" tabindex="-1"></a>cyclic <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">'date'</span>,<span class="st">'month'</span>)</span>
+<span id="cb64-21"><a href="#cb64-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-22"><a href="#cb64-22" aria-hidden="true" tabindex="-1"></a>blueprint_oregon <span class="ot">&lt;-</span> <span class="fu">recipe</span>(<span class="at">x     =</span> oregon,</span>
+<span id="cb64-23"><a href="#cb64-23" aria-hidden="true" tabindex="-1"></a>                    <span class="at">vars  =</span> <span class="fu">c</span>(id,outcome,categorical,numeric,cyclic),</span>
+<span id="cb64-24"><a href="#cb64-24" aria-hidden="true" tabindex="-1"></a>                    <span class="at">roles =</span> <span class="fu">c</span>(<span class="st">'id'</span>,<span class="st">'outcome'</span>,<span class="fu">rep</span>(<span class="st">'predictor'</span>,<span class="dv">27</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb64-25"><a href="#cb64-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_indicate_na</span>(<span class="fu">all_of</span>(categorical),<span class="fu">all_of</span>(numeric)) <span class="sc">%&gt;%</span></span>
+<span id="cb64-26"><a href="#cb64-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_zv</span>(<span class="fu">all_numeric</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb64-27"><a href="#cb64-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_impute_mean</span>(<span class="fu">all_of</span>(numeric)) <span class="sc">%&gt;%</span></span>
+<span id="cb64-28"><a href="#cb64-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_impute_mode</span>(<span class="fu">all_of</span>(categorical)) <span class="sc">%&gt;%</span></span>
+<span id="cb64-29"><a href="#cb64-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_harmonic</span>(<span class="st">'date'</span>,<span class="at">frequency=</span><span class="dv">1</span>,<span class="at">cycle_size=</span><span class="dv">31</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb64-30"><a href="#cb64-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_harmonic</span>(<span class="st">'month'</span>,<span class="at">frequency=</span><span class="dv">1</span>,<span class="at">cycle_size=</span><span class="dv">12</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb64-31"><a href="#cb64-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_poly</span>(<span class="fu">all_of</span>(numeric),<span class="at">degree=</span><span class="dv">3</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb64-32"><a href="#cb64-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_normalize</span>(<span class="fu">paste0</span>(numeric,<span class="st">'_poly_'</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb64-33"><a href="#cb64-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_dummy</span>(<span class="fu">all_of</span>(categorical),<span class="at">one_hot=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="tasks-1" class="level3">
+<h3 class="anchored" data-anchor-id="tasks-1"><strong>Tasks</strong></h3>
+<p><strong>Task 2.1.</strong> Split the original data into two subsets: training and test. Let the training data have the 80% of cases and the test data have the 20% of the cases. Set the seed to <strong>10312022</strong> for any random sampling process before splitting data.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>prep_oregon <span class="ot">&lt;-</span> blueprint_oregon <span class="sc">%&gt;%</span> <span class="fu">prep</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">10312022</span>)</span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a>loc <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(oregon), <span class="fu">round</span>(<span class="fu">nrow</span>(oregon) <span class="sc">*</span> <span class="fl">0.8</span>))</span>
+<span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a>oregon_tr <span class="ot">&lt;-</span> oregon[loc, ]</span>
+<span id="cb66-5"><a href="#cb66-5" aria-hidden="true" tabindex="-1"></a>oregon_te <span class="ot">&lt;-</span> oregon[<span class="sc">-</span>loc, ]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>oregon_tr_processed <span class="ot">&lt;-</span> <span class="fu">juice</span>(prep_oregon)</span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>oregon_te_processed <span class="ot">&lt;-</span> <span class="fu">bake</span>(prep_oregon, oregon_te)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(oregon_tr_processed)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 189426     74</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(oregon_te_processed)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 37885    74</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>ctrl <span class="ot">&lt;-</span> <span class="fu">trainControl</span>(</span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"cv"</span>,</span>
+<span id="cb72-3"><a href="#cb72-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">number =</span> <span class="dv">10</span></span>
+<span id="cb72-4"><a href="#cb72-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="bagged-trees-1" class="level4">
+<h4 class="anchored" data-anchor-id="bagged-trees-1"><strong>Bagged Trees</strong></h4>
+<p><strong>Task 2.2</strong> Use the <code>caret::train()</code> function and <code>ranger</code> engine to train a model with 10-fold cross-validation for predicting the test scores using a Bagged Trees model with 250 trees. Set the <code>max.dept</code> argument to 60 and the <code>min.node.size</code> argument to 30. Note that you are supposed to use all predictors in the processed data for Bagged Trees.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(caret)</span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb73-3"><a href="#cb73-3" aria-hidden="true" tabindex="-1"></a>ctrl2 <span class="ot">&lt;-</span> <span class="fu">trainControl</span>(</span>
+<span id="cb73-4"><a href="#cb73-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"cv"</span>,</span>
+<span id="cb73-5"><a href="#cb73-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">number =</span> <span class="dv">10</span></span>
+<span id="cb73-6"><a href="#cb73-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>bagged_grid <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(</span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">mtry =</span> <span class="fu">ncol</span>(oregon_tr_processed) <span class="sc">-</span> <span class="dv">1</span>,   <span class="co"># all predictors</span></span>
+<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">splitrule =</span> <span class="st">"variance"</span>,</span>
+<span id="cb74-4"><a href="#cb74-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">min.node.size =</span> <span class="dv">30</span></span>
+<span id="cb74-5"><a href="#cb74-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">10312022</span>)</span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb75-3"><a href="#cb75-3" aria-hidden="true" tabindex="-1"></a>bagged_model <span class="ot">&lt;-</span> <span class="fu">train</span>(</span>
+<span id="cb75-4"><a href="#cb75-4" aria-hidden="true" tabindex="-1"></a>  score <span class="sc">~</span> .,</span>
+<span id="cb75-5"><a href="#cb75-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> oregon_tr_processed,</span>
+<span id="cb75-6"><a href="#cb75-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"ranger"</span>,</span>
+<span id="cb75-7"><a href="#cb75-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">trControl =</span> ctrl2,</span>
+<span id="cb75-8"><a href="#cb75-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">tuneGrid =</span> bagged_grid,</span>
+<span id="cb75-9"><a href="#cb75-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">num.trees =</span> <span class="dv">250</span>,     <span class="co"># REQUIRED by assignment</span></span>
+<span id="cb75-10"><a href="#cb75-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">max.depth =</span> <span class="dv">60</span></span>
+<span id="cb75-11"><a href="#cb75-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Growing trees.. Progress: 8%. Estimated remaining time: 5 minutes, 48 seconds.
+Growing trees.. Progress: 17%. Estimated remaining time: 5 minutes, 17 seconds.
+Growing trees.. Progress: 26%. Estimated remaining time: 4 minutes, 41 seconds.
+Growing trees.. Progress: 35%. Estimated remaining time: 4 minutes, 5 seconds.
+Growing trees.. Progress: 44%. Estimated remaining time: 3 minutes, 32 seconds.
+Growing trees.. Progress: 52%. Estimated remaining time: 2 minutes, 58 seconds.
+Growing trees.. Progress: 61%. Estimated remaining time: 2 minutes, 25 seconds.
+Growing trees.. Progress: 70%. Estimated remaining time: 1 minute, 52 seconds.
+Growing trees.. Progress: 78%. Estimated remaining time: 1 minute, 20 seconds.
+Growing trees.. Progress: 87%. Estimated remaining time: 49 seconds.
+Growing trees.. Progress: 96%. Estimated remaining time: 16 seconds.
+Growing trees.. Progress: 8%. Estimated remaining time: 5 minutes, 48 seconds.
+Growing trees.. Progress: 17%. Estimated remaining time: 5 minutes, 12 seconds.
+Growing trees.. Progress: 26%. Estimated remaining time: 4 minutes, 36 seconds.
+Growing trees.. Progress: 35%. Estimated remaining time: 4 minutes, 3 seconds.
+Growing trees.. Progress: 44%. Estimated remaining time: 3 minutes, 30 seconds.
+Growing trees.. Progress: 52%. Estimated remaining time: 2 minutes, 57 seconds.
+Growing trees.. Progress: 61%. Estimated remaining time: 2 minutes, 24 seconds.
+Growing trees.. Progress: 70%. Estimated remaining time: 1 minute, 53 seconds.
+Growing trees.. Progress: 78%. Estimated remaining time: 1 minute, 22 seconds.
+Growing trees.. Progress: 86%. Estimated remaining time: 50 seconds.
+Growing trees.. Progress: 95%. Estimated remaining time: 19 seconds.
+Growing trees.. Progress: 8%. Estimated remaining time: 5 minutes, 48 seconds.
+Growing trees.. Progress: 17%. Estimated remaining time: 5 minutes, 8 seconds.
+Growing trees.. Progress: 26%. Estimated remaining time: 4 minutes, 36 seconds.
+Growing trees.. Progress: 35%. Estimated remaining time: 4 minutes, 5 seconds.
+Growing trees.. Progress: 44%. Estimated remaining time: 3 minutes, 30 seconds.
+Growing trees.. Progress: 52%. Estimated remaining time: 2 minutes, 58 seconds.
+Growing trees.. Progress: 61%. Estimated remaining time: 2 minutes, 24 seconds.
+Growing trees.. Progress: 70%. Estimated remaining time: 1 minute, 51 seconds.
+Growing trees.. Progress: 79%. Estimated remaining time: 1 minute, 18 seconds.
+Growing trees.. Progress: 88%. Estimated remaining time: 46 seconds.
+Growing trees.. Progress: 96%. Estimated remaining time: 14 seconds.
+Growing trees.. Progress: 8%. Estimated remaining time: 5 minutes, 59 seconds.
+Growing trees.. Progress: 17%. Estimated remaining time: 5 minutes, 17 seconds.
+Growing trees.. Progress: 26%. Estimated remaining time: 4 minutes, 38 seconds.
+Growing trees.. Progress: 35%. Estimated remaining time: 4 minutes, 3 seconds.
+Growing trees.. Progress: 44%. Estimated remaining time: 3 minutes, 30 seconds.
+Growing trees.. Progress: 52%. Estimated remaining time: 2 minutes, 59 seconds.
+Growing trees.. Progress: 60%. Estimated remaining time: 2 minutes, 28 seconds.
+Growing trees.. Progress: 69%. Estimated remaining time: 1 minute, 55 seconds.
+Growing trees.. Progress: 78%. Estimated remaining time: 1 minute, 22 seconds.
+Growing trees.. Progress: 87%. Estimated remaining time: 49 seconds.
+Growing trees.. Progress: 96%. Estimated remaining time: 16 seconds.
+Growing trees.. Progress: 8%. Estimated remaining time: 5 minutes, 48 seconds.
+Growing trees.. Progress: 17%. Estimated remaining time: 5 minutes, 12 seconds.
+Growing trees.. Progress: 26%. Estimated remaining time: 4 minutes, 41 seconds.
+Growing trees.. Progress: 34%. Estimated remaining time: 4 minutes, 7 seconds.
+Growing trees.. Progress: 43%. Estimated remaining time: 3 minutes, 34 seconds.
+Growing trees.. Progress: 52%. Estimated remaining time: 2 minutes, 59 seconds.
+Growing trees.. Progress: 61%. Estimated remaining time: 2 minutes, 27 seconds.
+Growing trees.. Progress: 70%. Estimated remaining time: 1 minute, 53 seconds.
+Growing trees.. Progress: 78%. Estimated remaining time: 1 minute, 22 seconds.
+Growing trees.. Progress: 86%. Estimated remaining time: 51 seconds.
+Growing trees.. Progress: 95%. Estimated remaining time: 18 seconds.
+Growing trees.. Progress: 8%. Estimated remaining time: 5 minutes, 48 seconds.
+Growing trees.. Progress: 17%. Estimated remaining time: 5 minutes, 8 seconds.
+Growing trees.. Progress: 26%. Estimated remaining time: 4 minutes, 36 seconds.
+Growing trees.. Progress: 35%. Estimated remaining time: 4 minutes, 1 seconds.
+Growing trees.. Progress: 44%. Estimated remaining time: 3 minutes, 29 seconds.
+Growing trees.. Progress: 52%. Estimated remaining time: 2 minutes, 57 seconds.
+Growing trees.. Progress: 61%. Estimated remaining time: 2 minutes, 24 seconds.
+Growing trees.. Progress: 70%. Estimated remaining time: 1 minute, 51 seconds.
+Growing trees.. Progress: 79%. Estimated remaining time: 1 minute, 18 seconds.
+Growing trees.. Progress: 88%. Estimated remaining time: 46 seconds.
+Growing trees.. Progress: 96%. Estimated remaining time: 13 seconds.
+Growing trees.. Progress: 8%. Estimated remaining time: 5 minutes, 48 seconds.
+Growing trees.. Progress: 17%. Estimated remaining time: 5 minutes, 8 seconds.
+Growing trees.. Progress: 26%. Estimated remaining time: 4 minutes, 36 seconds.
+Growing trees.. Progress: 35%. Estimated remaining time: 4 minutes, 3 seconds.
+Growing trees.. Progress: 44%. Estimated remaining time: 3 minutes, 30 seconds.
+Growing trees.. Progress: 52%. Estimated remaining time: 2 minutes, 58 seconds.
+Growing trees.. Progress: 61%. Estimated remaining time: 2 minutes, 25 seconds.
+Growing trees.. Progress: 70%. Estimated remaining time: 1 minute, 52 seconds.
+Growing trees.. Progress: 79%. Estimated remaining time: 1 minute, 19 seconds.
+Growing trees.. Progress: 88%. Estimated remaining time: 46 seconds.
+Growing trees.. Progress: 96%. Estimated remaining time: 13 seconds.
+Growing trees.. Progress: 8%. Estimated remaining time: 5 minutes, 59 seconds.
+Growing trees.. Progress: 17%. Estimated remaining time: 5 minutes, 17 seconds.
+Growing trees.. Progress: 26%. Estimated remaining time: 4 minutes, 41 seconds.
+Growing trees.. Progress: 35%. Estimated remaining time: 4 minutes, 9 seconds.
+Growing trees.. Progress: 44%. Estimated remaining time: 3 minutes, 34 seconds.
+Growing trees.. Progress: 52%. Estimated remaining time: 3 minutes, 1 seconds.
+Growing trees.. Progress: 61%. Estimated remaining time: 2 minutes, 27 seconds.
+Growing trees.. Progress: 70%. Estimated remaining time: 1 minute, 55 seconds.
+Growing trees.. Progress: 78%. Estimated remaining time: 1 minute, 23 seconds.
+Growing trees.. Progress: 86%. Estimated remaining time: 51 seconds.
+Growing trees.. Progress: 95%. Estimated remaining time: 19 seconds.
+Growing trees.. Progress: 8%. Estimated remaining time: 5 minutes, 48 seconds.
+Growing trees.. Progress: 17%. Estimated remaining time: 5 minutes, 12 seconds.
+Growing trees.. Progress: 26%. Estimated remaining time: 4 minutes, 38 seconds.
+Growing trees.. Progress: 35%. Estimated remaining time: 4 minutes, 7 seconds.
+Growing trees.. Progress: 44%. Estimated remaining time: 3 minutes, 32 seconds.
+Growing trees.. Progress: 52%. Estimated remaining time: 2 minutes, 59 seconds.
+Growing trees.. Progress: 61%. Estimated remaining time: 2 minutes, 25 seconds.
+Growing trees.. Progress: 70%. Estimated remaining time: 1 minute, 54 seconds.
+Growing trees.. Progress: 78%. Estimated remaining time: 1 minute, 22 seconds.
+Growing trees.. Progress: 87%. Estimated remaining time: 49 seconds.
+Growing trees.. Progress: 96%. Estimated remaining time: 16 seconds.
+Growing trees.. Progress: 8%. Estimated remaining time: 5 minutes, 48 seconds.
+Growing trees.. Progress: 17%. Estimated remaining time: 5 minutes, 12 seconds.
+Growing trees.. Progress: 26%. Estimated remaining time: 4 minutes, 41 seconds.
+Growing trees.. Progress: 35%. Estimated remaining time: 4 minutes, 7 seconds.
+Growing trees.. Progress: 44%. Estimated remaining time: 3 minutes, 33 seconds.
+Growing trees.. Progress: 52%. Estimated remaining time: 3 minutes, 1 seconds.
+Growing trees.. Progress: 60%. Estimated remaining time: 2 minutes, 30 seconds.
+Growing trees.. Progress: 69%. Estimated remaining time: 1 minute, 57 seconds.
+Growing trees.. Progress: 77%. Estimated remaining time: 1 minute, 26 seconds.
+Growing trees.. Progress: 86%. Estimated remaining time: 53 seconds.
+Growing trees.. Progress: 94%. Estimated remaining time: 21 seconds.
+Growing trees.. Progress: 8%. Estimated remaining time: 6 minutes, 41 seconds.
+Growing trees.. Progress: 16%. Estimated remaining time: 6 minutes, 2 seconds.
+Growing trees.. Progress: 24%. Estimated remaining time: 5 minutes, 26 seconds.
+Growing trees.. Progress: 32%. Estimated remaining time: 4 minutes, 52 seconds.
+Growing trees.. Progress: 40%. Estimated remaining time: 4 minutes, 17 seconds.
+Growing trees.. Progress: 48%. Estimated remaining time: 3 minutes, 42 seconds.
+Growing trees.. Progress: 56%. Estimated remaining time: 3 minutes, 8 seconds.
+Growing trees.. Progress: 63%. Estimated remaining time: 2 minutes, 35 seconds.
+Growing trees.. Progress: 70%. Estimated remaining time: 2 minutes, 5 seconds.
+Growing trees.. Progress: 78%. Estimated remaining time: 1 minute, 33 seconds.
+Growing trees.. Progress: 86%. Estimated remaining time: 1 minute, 1 seconds.
+Growing trees.. Progress: 93%. Estimated remaining time: 28 seconds.</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>bagged_model<span class="sc">$</span>results</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  mtry splitrule min.node.size    RMSE  Rsquared      MAE    RMSESD  RsquaredSD
+1   73  variance            30 89.7534 0.4016066 69.43991 0.4969368 0.005352224
+      MAESD
+1 0.3453717</code></pre>
+</div>
+</div>
+<p><strong>Task 2.3</strong> Evaluate the performance of Bagged Trees model on the test set by computing RMSE, MAE, and R-square.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="do">### CHANGED IT 11/29 6:58 </span></span>
+<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb79-3"><a href="#cb79-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Metrics)</span>
+<span id="cb79-4"><a href="#cb79-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(caret)</span>
+<span id="cb79-5"><a href="#cb79-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb79-6"><a href="#cb79-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 1: Predict on test data</span></span>
+<span id="cb79-7"><a href="#cb79-7" aria-hidden="true" tabindex="-1"></a>bagged_pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(bagged_model, oregon_te_processed)</span>
+<span id="cb79-8"><a href="#cb79-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb79-9"><a href="#cb79-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 2: Compute metrics</span></span>
+<span id="cb79-10"><a href="#cb79-10" aria-hidden="true" tabindex="-1"></a>rmse_bagged <span class="ot">&lt;-</span> <span class="fu">RMSE</span>(bagged_pred, oregon_te_processed<span class="sc">$</span>score)</span>
+<span id="cb79-11"><a href="#cb79-11" aria-hidden="true" tabindex="-1"></a>mae_bagged  <span class="ot">&lt;-</span> <span class="fu">MAE</span>(bagged_pred,  oregon_te_processed<span class="sc">$</span>score)</span>
+<span id="cb79-12"><a href="#cb79-12" aria-hidden="true" tabindex="-1"></a>rsq_bagged  <span class="ot">&lt;-</span> <span class="fu">cor</span>(bagged_pred,  oregon_te_processed<span class="sc">$</span>score)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb79-13"><a href="#cb79-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb79-14"><a href="#cb79-14" aria-hidden="true" tabindex="-1"></a>rmse_bagged</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 69.63476</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb81"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a>mae_bagged</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 54.15146</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a>rsq_bagged</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.6521901</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="co"># library(Metrics)</span></span>
+<span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a><span class="co"># library(caret)</span></span>
+<span id="cb85-3"><a href="#cb85-3" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb85-4"><a href="#cb85-4" aria-hidden="true" tabindex="-1"></a><span class="co"># # Step 1: Predict on test data</span></span>
+<span id="cb85-5"><a href="#cb85-5" aria-hidden="true" tabindex="-1"></a><span class="co"># bagged_pred &lt;- predict(bagged_model, oregon_te_processed)</span></span>
+<span id="cb85-6"><a href="#cb85-6" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb85-7"><a href="#cb85-7" aria-hidden="true" tabindex="-1"></a><span class="co"># # Step 2: Compute metrics</span></span>
+<span id="cb85-8"><a href="#cb85-8" aria-hidden="true" tabindex="-1"></a><span class="co"># rmse_bagged &lt;- RMSE(bagged_pred, oregon_te_processed$score)</span></span>
+<span id="cb85-9"><a href="#cb85-9" aria-hidden="true" tabindex="-1"></a><span class="co"># mae_bagged  &lt;- MAE(bagged_pred,  oregon_te_processed$score)</span></span>
+<span id="cb85-10"><a href="#cb85-10" aria-hidden="true" tabindex="-1"></a><span class="co"># rsq_bagged  &lt;- cor(bagged_pred,  oregon_te_processed$score)^2</span></span>
+<span id="cb85-11"><a href="#cb85-11" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb85-12"><a href="#cb85-12" aria-hidden="true" tabindex="-1"></a><span class="co"># rmse_bagged</span></span>
+<span id="cb85-13"><a href="#cb85-13" aria-hidden="true" tabindex="-1"></a><span class="co"># mae_bagged</span></span>
+<span id="cb85-14"><a href="#cb85-14" aria-hidden="true" tabindex="-1"></a><span class="co"># rsq_bagged</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="random-forests-1" class="level4">
+<h4 class="anchored" data-anchor-id="random-forests-1"><strong>Random Forests</strong></h4>
+<p><strong>Task 2.4.</strong> Use the <code>caret::train()</code> function and <code>ranger</code> engine to train a model with 10-fold cross-validation for predicting the test scores using a Random Forest model with 250 trees. Set the <code>max.dept</code> argument to 60 and the <code>min.node.size</code> argument to 30. Also, set the number of predictors to consider to 30 for each tree while growing a random forest.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Random Forest (Task 2.4)</span></span>
+<span id="cb86-2"><a href="#cb86-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ranger)</span>
+<span id="cb86-3"><a href="#cb86-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(caret)</span>
+<span id="cb86-4"><a href="#cb86-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-5"><a href="#cb86-5" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">10312022</span>)</span>
+<span id="cb86-6"><a href="#cb86-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-7"><a href="#cb86-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 10-fold CV control (reuse same folds if ctrl2 already defined)</span></span>
+<span id="cb86-8"><a href="#cb86-8" aria-hidden="true" tabindex="-1"></a>ctrl_rf <span class="ot">&lt;-</span> <span class="fu">trainControl</span>(</span>
+<span id="cb86-9"><a href="#cb86-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"cv"</span>,</span>
+<span id="cb86-10"><a href="#cb86-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">number =</span> <span class="dv">10</span></span>
+<span id="cb86-11"><a href="#cb86-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb86-12"><a href="#cb86-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-13"><a href="#cb86-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Tuning grid: mtry must be EXACTLY 30</span></span>
+<span id="cb86-14"><a href="#cb86-14" aria-hidden="true" tabindex="-1"></a>rf_grid <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(</span>
+<span id="cb86-15"><a href="#cb86-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">mtry =</span> <span class="dv">30</span>,</span>
+<span id="cb86-16"><a href="#cb86-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">splitrule =</span> <span class="st">"variance"</span>,</span>
+<span id="cb86-17"><a href="#cb86-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">min.node.size =</span> <span class="dv">30</span></span>
+<span id="cb86-18"><a href="#cb86-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb86-19"><a href="#cb86-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-20"><a href="#cb86-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Train Random Forest model</span></span>
+<span id="cb86-21"><a href="#cb86-21" aria-hidden="true" tabindex="-1"></a>rf_model <span class="ot">&lt;-</span> <span class="fu">train</span>(</span>
+<span id="cb86-22"><a href="#cb86-22" aria-hidden="true" tabindex="-1"></a>  score <span class="sc">~</span> .,</span>
+<span id="cb86-23"><a href="#cb86-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> oregon_tr_processed,</span>
+<span id="cb86-24"><a href="#cb86-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"ranger"</span>,</span>
+<span id="cb86-25"><a href="#cb86-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">trControl =</span> ctrl_rf,</span>
+<span id="cb86-26"><a href="#cb86-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">tuneGrid =</span> rf_grid,</span>
+<span id="cb86-27"><a href="#cb86-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">num.trees =</span> <span class="dv">250</span>,</span>
+<span id="cb86-28"><a href="#cb86-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">max.depth =</span> <span class="dv">60</span></span>
+<span id="cb86-29"><a href="#cb86-29" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Growing trees.. Progress: 21%. Estimated remaining time: 1 minute, 58 seconds.
+Growing trees.. Progress: 42%. Estimated remaining time: 1 minute, 27 seconds.
+Growing trees.. Progress: 63%. Estimated remaining time: 54 seconds.
+Growing trees.. Progress: 84%. Estimated remaining time: 23 seconds.
+Growing trees.. Progress: 21%. Estimated remaining time: 1 minute, 55 seconds.
+Growing trees.. Progress: 42%. Estimated remaining time: 1 minute, 25 seconds.
+Growing trees.. Progress: 63%. Estimated remaining time: 54 seconds.
+Growing trees.. Progress: 84%. Estimated remaining time: 23 seconds.
+Growing trees.. Progress: 20%. Estimated remaining time: 2 minutes, 0 seconds.
+Growing trees.. Progress: 40%. Estimated remaining time: 1 minute, 31 seconds.
+Growing trees.. Progress: 62%. Estimated remaining time: 57 seconds.
+Growing trees.. Progress: 84%. Estimated remaining time: 24 seconds.
+Growing trees.. Progress: 21%. Estimated remaining time: 1 minute, 55 seconds.
+Growing trees.. Progress: 43%. Estimated remaining time: 1 minute, 24 seconds.
+Growing trees.. Progress: 64%. Estimated remaining time: 52 seconds.
+Growing trees.. Progress: 86%. Estimated remaining time: 20 seconds.
+Growing trees.. Progress: 21%. Estimated remaining time: 1 minute, 55 seconds.
+Growing trees.. Progress: 43%. Estimated remaining time: 1 minute, 25 seconds.
+Growing trees.. Progress: 64%. Estimated remaining time: 54 seconds.
+Growing trees.. Progress: 84%. Estimated remaining time: 23 seconds.
+Growing trees.. Progress: 21%. Estimated remaining time: 1 minute, 55 seconds.
+Growing trees.. Progress: 42%. Estimated remaining time: 1 minute, 25 seconds.
+Growing trees.. Progress: 63%. Estimated remaining time: 55 seconds.
+Growing trees.. Progress: 84%. Estimated remaining time: 23 seconds.
+Growing trees.. Progress: 21%. Estimated remaining time: 1 minute, 55 seconds.
+Growing trees.. Progress: 42%. Estimated remaining time: 1 minute, 25 seconds.
+Growing trees.. Progress: 63%. Estimated remaining time: 54 seconds.
+Growing trees.. Progress: 84%. Estimated remaining time: 23 seconds.
+Growing trees.. Progress: 21%. Estimated remaining time: 1 minute, 55 seconds.
+Growing trees.. Progress: 42%. Estimated remaining time: 1 minute, 24 seconds.
+Growing trees.. Progress: 64%. Estimated remaining time: 53 seconds.
+Growing trees.. Progress: 85%. Estimated remaining time: 21 seconds.
+Growing trees.. Progress: 21%. Estimated remaining time: 1 minute, 55 seconds.
+Growing trees.. Progress: 43%. Estimated remaining time: 1 minute, 25 seconds.
+Growing trees.. Progress: 64%. Estimated remaining time: 54 seconds.
+Growing trees.. Progress: 84%. Estimated remaining time: 23 seconds.
+Growing trees.. Progress: 21%. Estimated remaining time: 1 minute, 58 seconds.
+Growing trees.. Progress: 43%. Estimated remaining time: 1 minute, 24 seconds.
+Growing trees.. Progress: 64%. Estimated remaining time: 53 seconds.
+Growing trees.. Progress: 85%. Estimated remaining time: 22 seconds.
+Growing trees.. Progress: 19%. Estimated remaining time: 2 minutes, 18 seconds.
+Growing trees.. Progress: 37%. Estimated remaining time: 1 minute, 46 seconds.
+Growing trees.. Progress: 56%. Estimated remaining time: 1 minute, 15 seconds.
+Growing trees.. Progress: 74%. Estimated remaining time: 44 seconds.
+Growing trees.. Progress: 92%. Estimated remaining time: 12 seconds.</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb88"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a>rf_model<span class="sc">$</span>results</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  mtry splitrule min.node.size     RMSE  Rsquared     MAE    RMSESD  RsquaredSD
+1   30  variance            30 89.04629 0.4095034 68.9093 0.4548885 0.004993349
+      MAESD
+1 0.3326724</code></pre>
+</div>
+</div>
+<p><strong>Task 2.5</strong> Evaluate the performance of the Random Forest model on the test set by computing RMSE, MAE, and R-square.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Metrics)</span>
+<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-3"><a href="#cb90-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 1: Predict on the test set</span></span>
+<span id="cb90-4"><a href="#cb90-4" aria-hidden="true" tabindex="-1"></a>rf_pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(rf_model, oregon_te_processed)</span>
+<span id="cb90-5"><a href="#cb90-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-6"><a href="#cb90-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 2: Compute performance metrics</span></span>
+<span id="cb90-7"><a href="#cb90-7" aria-hidden="true" tabindex="-1"></a>rmse_rf <span class="ot">&lt;-</span> <span class="fu">RMSE</span>(rf_pred, oregon_te_processed<span class="sc">$</span>score)</span>
+<span id="cb90-8"><a href="#cb90-8" aria-hidden="true" tabindex="-1"></a>mae_rf  <span class="ot">&lt;-</span> <span class="fu">MAE</span>(rf_pred,  oregon_te_processed<span class="sc">$</span>score)</span>
+<span id="cb90-9"><a href="#cb90-9" aria-hidden="true" tabindex="-1"></a>rsq_rf  <span class="ot">&lt;-</span> <span class="fu">cor</span>(rf_pred,  oregon_te_processed<span class="sc">$</span>score)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb90-10"><a href="#cb90-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-11"><a href="#cb90-11" aria-hidden="true" tabindex="-1"></a>rmse_rf</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 77.73958</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb92"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a>mae_rf</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 60.4024</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb94"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a>rsq_rf</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.5560846</code></pre>
+</div>
+</div>
+</section>
+<section id="gradient-boosting-trees-1" class="level4">
+<h4 class="anchored" data-anchor-id="gradient-boosting-trees-1"><strong>Gradient Boosting Trees</strong></h4>
+<p><strong>Task 2.6.</strong> Use the <code>caret::train()</code> function and <code>gbm</code> engine to train a model with 10-fold cross-validation for predicting the test scores using a Gradient Boosting Tree model with 250 iterations (trees). Set the <code>interaction.depth</code> argument to 9, <code>shrinkage</code> argument to 0.05, and <code>n.minobsinnode</code> argument to 30. Also, set the <code>bag.fraction</code> argument to 0.5.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb96"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gbm)</span>
+<span id="cb96-2"><a href="#cb96-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(caret)</span>
+<span id="cb96-3"><a href="#cb96-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb96-4"><a href="#cb96-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">10312022</span>)</span>
+<span id="cb96-5"><a href="#cb96-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb96-6"><a href="#cb96-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 10-fold CV (you can reuse ctrl_rf if it already exists)</span></span>
+<span id="cb96-7"><a href="#cb96-7" aria-hidden="true" tabindex="-1"></a>ctrl_gbm <span class="ot">&lt;-</span> <span class="fu">trainControl</span>(</span>
+<span id="cb96-8"><a href="#cb96-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"cv"</span>,</span>
+<span id="cb96-9"><a href="#cb96-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">number =</span> <span class="dv">10</span></span>
+<span id="cb96-10"><a href="#cb96-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb96-11"><a href="#cb96-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb96-12"><a href="#cb96-12" aria-hidden="true" tabindex="-1"></a><span class="co"># GBM tuning grid (only 1 combination required by assignment)</span></span>
+<span id="cb96-13"><a href="#cb96-13" aria-hidden="true" tabindex="-1"></a>grid_gbm <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(</span>
+<span id="cb96-14"><a href="#cb96-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">n.trees =</span> <span class="dv">250</span>,          <span class="co"># number of boosting iterations</span></span>
+<span id="cb96-15"><a href="#cb96-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">interaction.depth =</span> <span class="dv">9</span>,  <span class="co"># tree depth</span></span>
+<span id="cb96-16"><a href="#cb96-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">shrinkage =</span> <span class="fl">0.05</span>,       <span class="co"># learning rate</span></span>
+<span id="cb96-17"><a href="#cb96-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">n.minobsinnode =</span> <span class="dv">30</span>     <span class="co"># min observations per terminal node</span></span>
+<span id="cb96-18"><a href="#cb96-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb96-19"><a href="#cb96-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb96-20"><a href="#cb96-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Train GBM model</span></span>
+<span id="cb96-21"><a href="#cb96-21" aria-hidden="true" tabindex="-1"></a>gbm_model <span class="ot">&lt;-</span> <span class="fu">train</span>(</span>
+<span id="cb96-22"><a href="#cb96-22" aria-hidden="true" tabindex="-1"></a>  score <span class="sc">~</span> .,</span>
+<span id="cb96-23"><a href="#cb96-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> oregon_tr_processed,</span>
+<span id="cb96-24"><a href="#cb96-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"gbm"</span>,</span>
+<span id="cb96-25"><a href="#cb96-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">trControl =</span> ctrl_gbm,</span>
+<span id="cb96-26"><a href="#cb96-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">tuneGrid =</span> grid_gbm,</span>
+<span id="cb96-27"><a href="#cb96-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">bag.fraction =</span> <span class="fl">0.5</span>,</span>
+<span id="cb96-28"><a href="#cb96-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
+<span id="cb96-29"><a href="#cb96-29" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb96-30"><a href="#cb96-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb96-31"><a href="#cb96-31" aria-hidden="true" tabindex="-1"></a>gbm_model<span class="sc">$</span>results</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  n.trees interaction.depth shrinkage n.minobsinnode     RMSE  Rsquared
+1     250                 9      0.05             30 88.53114 0.4158404
+       MAE    RMSESD  RsquaredSD     MAESD
+1 68.60485 0.4400649 0.005083441 0.3085066</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb98"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a>gbm_model</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Stochastic Gradient Boosting 
+
+189426 samples
+    73 predictor
+
+No pre-processing
+Resampling: Cross-Validated (10 fold) 
+Summary of sample sizes: 170483, 170482, 170483, 170484, 170483, 170483, ... 
+Resampling results:
+
+  RMSE      Rsquared   MAE     
+  88.53114  0.4158404  68.60485
+
+Tuning parameter 'n.trees' was held constant at a value of 250
+Tuning
+
+Tuning parameter 'shrinkage' was held constant at a value of 0.05
+
+Tuning parameter 'n.minobsinnode' was held constant at a value of 30</code></pre>
+</div>
+</div>
+<p><strong>Task 2.7</strong> Evaluate the performance of the Gradient Boosting Trees model on the test set by computing RMSE, MAE, and R-square.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb100"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Predict on test set</span></span>
+<span id="cb100-2"><a href="#cb100-2" aria-hidden="true" tabindex="-1"></a>gbm_pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(gbm_model, oregon_te_processed)</span>
+<span id="cb100-3"><a href="#cb100-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb100-4"><a href="#cb100-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute metrics</span></span>
+<span id="cb100-5"><a href="#cb100-5" aria-hidden="true" tabindex="-1"></a>rmse_gbm <span class="ot">&lt;-</span> <span class="fu">RMSE</span>(gbm_pred, oregon_te_processed<span class="sc">$</span>score)</span>
+<span id="cb100-6"><a href="#cb100-6" aria-hidden="true" tabindex="-1"></a>mae_gbm  <span class="ot">&lt;-</span> <span class="fu">MAE</span>(gbm_pred,  oregon_te_processed<span class="sc">$</span>score)</span>
+<span id="cb100-7"><a href="#cb100-7" aria-hidden="true" tabindex="-1"></a>rsq_gbm  <span class="ot">&lt;-</span> <span class="fu">cor</span>(gbm_pred,  oregon_te_processed<span class="sc">$</span>score)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb100-8"><a href="#cb100-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb100-9"><a href="#cb100-9" aria-hidden="true" tabindex="-1"></a>rmse_gbm</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 88.57618</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb102"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a>mae_gbm</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 68.69239</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb104"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a>rsq_gbm</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.4157368</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="extra-because-im-curious" class="level3">
+<h3 class="anchored" data-anchor-id="extra-because-im-curious">Extra, because I’m curious:</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb106"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine all numbers into a data frame</span></span>
+<span id="cb106-2"><a href="#cb106-2" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb106-3"><a href="#cb106-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">Model =</span> <span class="fu">c</span>(<span class="st">"Bagged"</span>, <span class="st">"RandomForest"</span>, <span class="st">"GBM"</span>),</span>
+<span id="cb106-4"><a href="#cb106-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">RMSE  =</span> <span class="fu">c</span>(rmse_bagged, rmse_rf, rmse_gbm),</span>
+<span id="cb106-5"><a href="#cb106-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">MAE   =</span> <span class="fu">c</span>(mae_bagged,  mae_rf,  mae_gbm),</span>
+<span id="cb106-6"><a href="#cb106-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">R2    =</span> <span class="fu">c</span>(rsq_bagged,  rsq_rf,  rsq_gbm)</span>
+<span id="cb106-7"><a href="#cb106-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb106-8"><a href="#cb106-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb106-9"><a href="#cb106-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Basic barplots (one metric at a time)</span></span>
+<span id="cb106-10"><a href="#cb106-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb106-11"><a href="#cb106-11" aria-hidden="true" tabindex="-1"></a><span class="co"># RMSE chart</span></span>
+<span id="cb106-12"><a href="#cb106-12" aria-hidden="true" tabindex="-1"></a><span class="fu">barplot</span>(results<span class="sc">$</span>RMSE,</span>
+<span id="cb106-13"><a href="#cb106-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">names.arg =</span> results<span class="sc">$</span>Model,</span>
+<span id="cb106-14"><a href="#cb106-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">main =</span> <span class="st">"Model Comparison: RMSE"</span>,</span>
+<span id="cb106-15"><a href="#cb106-15" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">"RMSE"</span>,</span>
+<span id="cb106-16"><a href="#cb106-16" aria-hidden="true" tabindex="-1"></a>        <span class="at">col =</span> <span class="st">"lightblue"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="A3_files/figure-html/unnamed-chunk-49-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb107"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a><span class="co"># MAE chart</span></span>
+<span id="cb107-2"><a href="#cb107-2" aria-hidden="true" tabindex="-1"></a><span class="fu">barplot</span>(results<span class="sc">$</span>MAE,</span>
+<span id="cb107-3"><a href="#cb107-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">names.arg =</span> results<span class="sc">$</span>Model,</span>
+<span id="cb107-4"><a href="#cb107-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">main =</span> <span class="st">"Model Comparison: MAE"</span>,</span>
+<span id="cb107-5"><a href="#cb107-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">"MAE"</span>,</span>
+<span id="cb107-6"><a href="#cb107-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">col =</span> <span class="st">"lightgreen"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="A3_files/figure-html/unnamed-chunk-49-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb108"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R-squared chart</span></span>
+<span id="cb108-2"><a href="#cb108-2" aria-hidden="true" tabindex="-1"></a><span class="fu">barplot</span>(results<span class="sc">$</span>R2,</span>
+<span id="cb108-3"><a href="#cb108-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">names.arg =</span> results<span class="sc">$</span>Model,</span>
+<span id="cb108-4"><a href="#cb108-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">main =</span> <span class="st">"Model Comparison: R-Squared"</span>,</span>
+<span id="cb108-5"><a href="#cb108-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">"R²"</span>,</span>
+<span id="cb108-6"><a href="#cb108-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">col =</span> <span class="st">"lightpink"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="A3_files/figure-html/unnamed-chunk-49-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb109"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb109-1"><a href="#cb109-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb109-2"><a href="#cb109-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb109-3"><a href="#cb109-3" aria-hidden="true" tabindex="-1"></a>results_long <span class="ot">&lt;-</span> results <span class="sc">%&gt;%</span></span>
+<span id="cb109-4"><a href="#cb109-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(RMSE, MAE, R2),</span>
+<span id="cb109-5"><a href="#cb109-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"Metric"</span>,</span>
+<span id="cb109-6"><a href="#cb109-6" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">"Value"</span>)</span>
+<span id="cb109-7"><a href="#cb109-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb109-8"><a href="#cb109-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(results_long, <span class="fu">aes</span>(<span class="at">x =</span> Model, <span class="at">y =</span> Value, <span class="at">fill =</span> Metric)) <span class="sc">+</span></span>
+<span id="cb109-9"><a href="#cb109-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
+<span id="cb109-10"><a href="#cb109-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Model Performance Comparison"</span>) <span class="sc">+</span></span>
+<span id="cb109-11"><a href="#cb109-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="A3_files/figure-html/unnamed-chunk-50-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb110"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb110-2"><a href="#cb110-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">Model =</span> <span class="fu">c</span>(<span class="st">"Bagged Trees"</span>, <span class="st">"Random Forest"</span>, <span class="st">"GBM"</span>),</span>
+<span id="cb110-3"><a href="#cb110-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">RMSE  =</span> <span class="fu">c</span>(<span class="fl">69.63476</span>, <span class="fl">77.73958</span>, <span class="fl">88.57618</span>),</span>
+<span id="cb110-4"><a href="#cb110-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">MAE   =</span> <span class="fu">c</span>(<span class="fl">54.15146</span>, <span class="fl">60.40240</span>, <span class="fl">68.69239</span>),</span>
+<span id="cb110-5"><a href="#cb110-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">R2    =</span> <span class="fu">c</span>(<span class="fl">0.6521901</span>, <span class="fl">0.5560846</span>, <span class="fl">0.4157368</span>)</span>
+<span id="cb110-6"><a href="#cb110-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb110-7"><a href="#cb110-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb110-8"><a href="#cb110-8" aria-hidden="true" tabindex="-1"></a>results</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          Model     RMSE      MAE        R2
+1  Bagged Trees 69.63476 54.15146 0.6521901
+2 Random Forest 77.73958 60.40240 0.5560846
+3           GBM 88.57618 68.69239 0.4157368</code></pre>
+</div>
+</div>
+<p>So, the model that takes the longest to run is NOT always the model that performs the best, but in this case, it WAS, at least for Oregon data. It took a loooong time!</p>
+</section>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
