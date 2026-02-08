@@ -399,26 +399,15 @@ relation             -            -              -</code></pre>
 <section id="modeling-assumptions-1" class="slide level2">
 <h2>Modeling assumptions</h2>
 <ul>
-<li><p>… and yet, I initially included 10 screener questions (A1_Score~A10_Score) and “Class.ASD” , overlooking that “result” which is the total of A1~A10 was already my outcome variable, and “Class.ASD” was simply coded “YES” for scores of 6 or higher.</p></li>
-<li><p>To reduce overfitting, the models used 10-fold cross-validation, providing more reliable measure of generalizability.</p></li>
+<li>To reduce overfitting, the models used 10-fold cross-validation, providing more reliable measure of generalizability.</li>
 </ul>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code> [1] "A1_Score"         "A2_Score"         "A3_Score"         "A4_Score"        
- [5] "A5_Score"         "A6_Score"         "A7_Score"         "A8_Score"        
- [9] "A9_Score"         "A10_Score"        "age"              "gender"          
-[13] "ethnicity"        "jundice"          "austim"           "contry_of_res"   
-[17] "used_app_before"  "result"           "age_desc"         "relation"        
-[21] "Class.ASD"        "gender_binary"    "jundice_binary"   "Class.ASD_binary"</code></pre>
-</div>
-</div>
 </section>
 <section id="model-1-ridge-regularization-model" class="slide level2">
 <h2>Model 1: Ridge Regularization model</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a><span class="fu">plot</span>(ridge)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href=""></a><span class="fu">plot</span>(ridge)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href=""></a>ridge<span class="sc">$</span>bestTune</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a>ridge<span class="sc">$</span>bestTune</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   alpha lambda
 49     0   0.49</code></pre>
@@ -508,9 +497,9 @@ relation             -            -              -</code></pre>
 <section id="model-3-elastic-net-regression-model" class="slide level2">
 <h2>Model 3: Elastic Net Regression model</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href=""></a><span class="fu">plot</span>(elastic)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href=""></a><span class="fu">plot</span>(elastic)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href=""></a>elastic<span class="sc">$</span>bestTune        </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href=""></a>elastic<span class="sc">$</span>bestTune        </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   alpha     lambda
 26     0 0.09249147</code></pre>
@@ -568,12 +557,12 @@ relation             -            -              -</code></pre>
 <li>Model efficiency &amp; effectiveness</li>
 </ul>
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href=""></a><span class="fu">ggplot</span>(comp_long, <span class="fu">aes</span>(<span class="at">x =</span> Metric, <span class="at">y =</span> Value, <span class="at">fill =</span> Model)) <span class="sc">+</span></span>
-<span id="cb21-2"><a href=""></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
-<span id="cb21-3"><a href=""></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Model Performance by Regularization"</span>,</span>
-<span id="cb21-4"><a href=""></a>       <span class="at">x =</span> <span class="st">"Metric"</span>, <span class="at">y =</span> <span class="st">"Value"</span>) <span class="sc">+</span></span>
-<span id="cb21-5"><a href=""></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb21-6"><a href=""></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href=""></a><span class="fu">ggplot</span>(comp_long, <span class="fu">aes</span>(<span class="at">x =</span> Metric, <span class="at">y =</span> Value, <span class="at">fill =</span> Model)) <span class="sc">+</span></span>
+<span id="cb20-2"><a href=""></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
+<span id="cb20-3"><a href=""></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Model Performance by Regularization"</span>,</span>
+<span id="cb20-4"><a href=""></a>       <span class="at">x =</span> <span class="st">"Metric"</span>, <span class="at">y =</span> <span class="st">"Value"</span>) <span class="sc">+</span></span>
+<span id="cb20-5"><a href=""></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb20-6"><a href=""></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
 <img data-src="FP_files/figure-revealjs/unnamed-chunk-91-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
