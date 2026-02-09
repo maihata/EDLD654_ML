@@ -1,5 +1,4 @@
 ---
-ex---
 title: "Predicting Autism Screening Outcomes with Machine Learning"
 author: "Maiko Hata"
 format:
